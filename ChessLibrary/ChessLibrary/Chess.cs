@@ -28,7 +28,7 @@
         {
             Square square = new Square(x, y);
             Figure figure = Board.GetFigureAt(square);
-            return (char)figure;
+            return figure == Figure.None ? '.' : (char)figure;
         }   
     }
 }

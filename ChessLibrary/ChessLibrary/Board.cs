@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,17 +19,13 @@ namespace ChessLibrary
             Fen = fen;
             Figures = new Figure[8, 8];
             Init();
-            string[] parts = fen.Split();
-            if (parts.Length != 6)
-                throw new Exception("Invalid FEN string: " + fen);
-
-            MoveColor = parts[1] == "b" ? Color.Black : Color.White;
-            MoveNumber = int.Parse(parts[5]);
+            Figures = DecodeFen(fen);
         }
 
         void Init()
         {
             MoveColor = Color.White;
+            MoveNumber = 0;
         }
 
         public Figure GetFigureAt(Square square)
@@ -48,12 +45,38 @@ namespace ChessLibrary
         public Board Move(FigureMoving fm)
         {
             Board next = new Board(Fen);
+            if (next.GetFigureAt(fm.From) != fm.Figure)
+                return next;
             next.SetFigureAt(fm.From, Figure.None);
             next.SetFigureAt(fm.To, fm.Promotion == Figure.None ? fm.Figure : fm.Promotion);
             if (MoveColor == Color.Black)
                 next.MoveNumber++;
             next.MoveColor = MoveColor.FlipColor();
             return next;
+        }
+
+        Figure[,] DecodeFen(string fen)
+        {
+            Figure[,] figures = new Figure[8, 8];
+
+            string coordinates = fen.Substring(0, fen.IndexOf(' '));
+            string[] horisontals = coordinates.Split('/');
+            
+            for (int i = 0; i < 8; i++)
+            {
+                int vertical = 0;
+                foreach (char figure in horisontals[7-i])
+                {
+                    if (Char.IsDigit(figure))
+                        vertical += figure - '0';
+                    else
+                    {
+                        figures[vertical, i] = (Figure)figure;
+                        vertical++;
+                    }
+                }
+            }
+            return figures;
         }
     }
 }
