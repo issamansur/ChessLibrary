@@ -14,6 +14,7 @@
         Chess(Board board)
         {
             Board = board;
+            Fen = board.Fen;
         }
 
         public Chess Move(string move)
