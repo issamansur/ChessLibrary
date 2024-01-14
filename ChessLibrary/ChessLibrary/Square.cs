@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessLibrary
+﻿namespace ChessLibrary
 {
-    struct Square
+    struct Square: IEquatable<Square>
     {
         public static Square None = new Square(-1, -1);
+        public static string Alphabet = "abcdefgh";
 
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -36,7 +31,27 @@ namespace ChessLibrary
 
         public bool OnBoard()
         {
-            return X >= 0 && X < 8 && Y >= 0 && Y < 8;
+            return (X is >= 0 and < 8) && (Y is >= 0 and < 8);
+        }
+
+        public static bool operator ==(Square square1, Square square2)
+        {
+            return square1.Equals(square2);
+        }
+        
+        public static bool operator !=(Square square1, Square square2)
+        {
+            return !square1.Equals(square2);
+        }
+        
+        public bool Equals(Square square)
+        {
+            return X == square.X && Y == square.Y;
+        }
+
+        public override string ToString()
+        {
+            return $"{Alphabet[X]}{Y}";
         }
     }
 }

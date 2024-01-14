@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessLibrary
+﻿namespace ChessLibrary
 {
     class Board
     {
         public string Fen { get; private set; }
-        Figure[,] Figures;
+        private Figure[,] Figures { get; set; }
         public Color MoveColor { get; private set; }
         public int MoveNumber { get; private set; }
         public bool CanCastleA1 { get; private set; }
@@ -24,6 +17,8 @@ namespace ChessLibrary
         public Board(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         {
             Fen = fen;
+
+            // Default
             Figures = new Figure[8, 8];
             HalfMoveClock = 0;
             CanCastleA1 = true;
@@ -32,45 +27,11 @@ namespace ChessLibrary
             CanCastleH8 = true;
             EnPassant = Square.None;
 
+            // By Fen
             InitByFen(Fen);
         }
-
-        public Figure GetFigureAt(Square square)
-        {
-            if (!square.OnBoard())
-                return Figure.None;
-            return Figures[square.X, square.Y];
-        }
-
-        private void SetFigureAt(Square square, Figure figure)
-        {
-            if (!square.OnBoard())
-                return;
-            Figures[square.X, square.Y] = figure;
-        }
-
-        public Board Move(FigureMoving fm)
-        {
-            Board next = new Board(Fen);
-            if (next.GetFigureAt(fm.From) != fm.Figure)
-                return next;
-
-            if (next.GetFigureAt(fm.From) == Figure.BlackPawn || next.GetFigureAt(EnPassant) == Figure.WhitePawn)
-                next.HalfMoveClock = 0;
-            else
-                next.HalfMoveClock++;
-
-            next.SetFigureAt(fm.From, Figure.None);
-            next.SetFigureAt(fm.To, fm.Promotion != Figure.None ? fm.Promotion : fm.Figure);
-            
-            if (MoveColor == Color.Black)
-                next.MoveNumber++;
-            next.MoveColor = MoveColor.FlipColor();
-            
-            return next;
-        }
-
-        void InitByFen(string fen)
+        
+        private void InitByFen(string fen)
         {
             string[] parts = fen.Split();
             if (parts.Length != 6)
@@ -79,11 +40,11 @@ namespace ChessLibrary
             // 1. Piece placement data
             string coordinates = parts[0];
             string[] horisontals = coordinates.Split('/');
-            
+
             for (int horizonal = 0; horizonal < 8; horizonal++)
             {
                 int vertical = 0;
-                foreach (char figure in horisontals[7-horizonal])
+                foreach (char figure in horisontals[7 - horizonal])
                 {
                     if (Char.IsDigit(figure))
                         vertical += figure - '0';
@@ -112,6 +73,147 @@ namespace ChessLibrary
 
             // 6. Fullmove number
             MoveNumber = int.Parse(parts[5]);
+        }
+
+        private void GenerateFen()
+        {
+            // 1. Piece placement data
+            string coordinates = "";
+            
+            for (int horizonal = 0; horizonal < 8; horizonal++)
+            {
+                int emptyCounter = 0;
+                for (int vertical = 0; vertical < 8; vertical++)
+                {
+                    Figure figure = Figures[vertical, horizonal];
+                    // If no fugure in position
+                    if (figure == Figure.None)
+                    {
+                        emptyCounter += 1;
+                        if (vertical == 7)
+                        {
+                            coordinates += emptyCounter;
+                        }
+                    }
+                    // If figure exist
+                    else
+                    {
+                        if (emptyCounter != 0)
+                        {
+                            coordinates += emptyCounter;
+                            emptyCounter = 0;
+                        }
+                        coordinates += figure;
+                    }
+                }
+
+                // Add separator
+                if (horizonal != 7)
+                {
+                    coordinates += '/';
+                }
+            }
+
+            // 2. Active color
+            string moveColor = MoveColor == Color.White ? "w": "b";
+
+            // 3. Castling availability
+            string castleAv = "";
+            if (CanCastleH1)
+            {
+                castleAv += "K";
+            }
+            if (CanCastleA1)
+            {
+                castleAv += "Q";
+            }
+            if (CanCastleH8)
+            {
+                castleAv += "k";
+            }
+            if (CanCastleA8)
+            {
+                castleAv += "q";
+            }
+
+            // 4. En Passant
+            string enPassant = EnPassant == Square.None ? "-" : EnPassant.ToString();
+
+            // 5. HalfMove Clock
+            string halfMove = HalfMoveClock.ToString();
+
+            // 6. Fullmove number
+            string moveNumber = MoveNumber.ToString();
+            
+            // Create fen
+            Fen = coordinates + " " + moveColor + " " + castleAv + " " + enPassant + " " + halfMove + " " + moveNumber;
+        }
+
+        public Figure GetFigureAt(Square square)
+        {
+            return !square.OnBoard() ? Figure.None : Figures[square.X, square.Y];
+        }
+        
+        private void SetFigureAt(Square square, Figure figure)
+        {
+            if (!square.OnBoard())
+                return;
+            Figures[square.X, square.Y] = figure;
+        }
+        
+        public Board Move(FigureMoving move)
+        {
+            // Create Board
+            Board nextBoard = new Board(Fen);
+
+            // Check on valid. If no - return board without changes 
+            if (nextBoard.GetFigureAt(move.From) != move.Figure)
+                return nextBoard;
+
+            // Main moving
+            nextBoard.SetFigureAt(move.From, Figure.None);
+            nextBoard.SetFigureAt(move.To, move.Promotion != Figure.None ? move.Promotion : move.Figure);
+            
+            // Set enPassant
+            if (move.Figure is Figure.WhitePawn or Figure.BlackPawn && Math.Abs(move.From.Y - move.To.Y) == 2)
+            {
+                if (move.To.Y == 4)
+                {
+                    EnPassant = new Square(move.To.X, 3);
+                }
+                else if (move.To.Y == 5)
+                {
+                    EnPassant = new Square(move.To.X, 6);
+                }
+            }
+            else
+            {
+                EnPassant = Square.None;
+            }
+
+            // If it pawn increase HalfMoveClock, else set 0
+            if (nextBoard.GetFigureAt(move.From) is Figure.BlackPawn or Figure.WhitePawn)
+            {
+                nextBoard.HalfMoveClock = 0;
+            }
+            else
+            {
+                nextBoard.HalfMoveClock++;
+            }
+
+            // If now was Black Move, then increase MoveNumber
+            if (MoveColor == Color.Black)
+            {
+                nextBoard.MoveNumber++;
+            }
+
+            // Change MoveColor
+            nextBoard.MoveColor = MoveColor.FlipColor();
+            
+            // Set fen via changes
+            nextBoard.GenerateFen();
+
+            return nextBoard;
         }
     }
 }
