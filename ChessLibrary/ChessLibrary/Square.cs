@@ -1,6 +1,6 @@
 ﻿namespace ChessLibrary
 {
-    struct Square: IEquatable<Square>
+    public struct Square: IEquatable<Square>
     {
         public static Square None = new Square(-1, -1);
         public static string Alphabet = "abcdefgh";

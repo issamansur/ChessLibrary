@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessLibrary
 {
-    internal class FigureOnSquare
+    public class FigureOnSquare
     {
         public Figure Figure { get; private set; }
         public Square Square { get; private set; }

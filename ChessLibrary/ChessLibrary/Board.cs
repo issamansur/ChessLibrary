@@ -1,6 +1,6 @@
 ﻿namespace ChessLibrary
 {
-    class Board
+    public class Board
     {
         public string Fen { get; private set; }
         private Figure[,] Figures { get; set; }
@@ -46,7 +46,7 @@
                 int vertical = 0;
                 foreach (char figure in horisontals[7 - horizonal])
                 {
-                    if (Char.IsDigit(figure))
+                    if (char.IsDigit(figure))
                         vertical += figure - '0';
                     else
                     {
@@ -80,7 +80,7 @@
             // 1. Piece placement data
             string coordinates = "";
             
-            for (int horizonal = 0; horizonal < 8; horizonal++)
+            for (int horizonal = 7; horizonal >= 0; horizonal--)
             {
                 int emptyCounter = 0;
                 for (int vertical = 0; vertical < 8; vertical++)
@@ -103,12 +103,12 @@
                             coordinates += emptyCounter;
                             emptyCounter = 0;
                         }
-                        coordinates += figure;
+                        coordinates += (char)figure;
                     }
                 }
 
                 // Add separator
-                if (horizonal != 7)
+                if (horizonal != 0)
                 {
                     coordinates += '/';
                 }

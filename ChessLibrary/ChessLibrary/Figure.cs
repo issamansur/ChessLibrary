@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ChessLibrary
 {
-    enum Figure
+    public enum Figure
     {
         None,
-
+        
         WhiteKing = 'K',
         WhiteQueen = 'Q',
         WhiteRook = 'R',

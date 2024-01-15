@@ -11,7 +11,7 @@
             Board = new Board(fen);
         }
 
-        Chess(Board board)
+        private Chess(Board board)
         {
             Board = board;
             Fen = board.Fen;
