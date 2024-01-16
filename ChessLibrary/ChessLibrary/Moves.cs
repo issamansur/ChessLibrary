@@ -79,7 +79,7 @@ public class Moves
         if (Board.GetFigureAt(FigMov.To) == Figure.None &&
             FigMov.DeltaX == 0 && FigMov.DeltaY == 2 * stepY &&
             FigMov.From.Y is 1 or 6 && 
-            Board.GetFigureAt(new Square(FigMov.From.X, FigMov.From.Y + 1)) == 0)
+            Board.GetFigureAt(new Square(FigMov.From.X, FigMov.From.Y + stepY)) == 0)
             return true;
         return false;
     }
