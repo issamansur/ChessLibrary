@@ -8,44 +8,15 @@ while (true)
     Console.OutputEncoding = Encoding.UTF8;
     ChessToAscii(chess);
     Console.WriteLine(chess.Fen);
+    foreach (string avMove in chess.GetAllMoves())
+    {
+        Console.Write($"{avMove} ");
+    }
     var move = Console.ReadLine();
     if (move == "")
         break;
     chess = chess.Move(move!);
 }
-
-static char ToUnicode(char figure)
-{
-    switch (figure)
-    {
-        case 'K':
-            return '\u2654';
-        case 'Q':
-            return '\u2655';
-        case 'R':
-            return '\u2656';
-        case 'B':
-            return '\u2657';
-        case 'N':
-            return '\u2658';
-        case 'P':
-            return '\u2659';
-        case 'k':
-            return '\u265A';
-        case 'q':
-            return '\u265B';
-        case 'r':
-            return '\u265C';
-        case 'b':
-            return '\u265D';
-        case 'n':
-            return '\u265E';
-        case 'p':
-            return '\u265F';
-    }
-
-    return '.';
-} 
 
 static void ChessToAscii(Chess chess)
 {
@@ -61,12 +32,12 @@ static void ChessToAscii(Chess chess)
         {
             char figure = chess.GetFigureAt(x, y);
             if (figure == '.')
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.ForegroundColor = ConsoleColor.Gray;
             else if (char.IsLower(figure))
                 Console.ForegroundColor = ConsoleColor.Black;
             else 
                 Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(ToUnicode(figure));
+            Console.Write(ConsoleMethods.ToUnicode(figure));
             Console.Write(' ');
         }
         Console.ForegroundColor = ConsoleColor.Cyan;

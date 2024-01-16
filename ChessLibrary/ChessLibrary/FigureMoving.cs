@@ -26,13 +26,28 @@ namespace ChessLibrary
 
         public FigureMoving(string move)
         {
-            if (move.Length < 5 || move.Length > 6)
+            if (move.Length is < 5 or > 6)
                 throw new Exception("Invalid move format: " + move);
 
             Figure = (Figure)move[0];
             From = new Square(move.Substring(1, 2));
             To = new Square(move.Substring(3, 2));
             Promotion = move.Length == 6 ? (Figure)move[5] : Figure.None;
-        }   
+        }
+
+        public int DeltaX => To.X - From.X;
+        public int DeltaY => To.Y - From.Y;
+        public int AbsDeltaX => Math.Abs(DeltaX);
+        public int AbsDeltaY => Math.Abs(DeltaY);
+        public int SignDeltaX => Math.Sign(DeltaX);
+        public int SignDeltaY => Math.Sign(DeltaY);
+
+        public override string ToString()
+        {
+            string move = $"{(char)Figure}{From}{To}";
+            if (Promotion != Figure.None)
+                move += (char)Promotion;
+            return move;
+        }
     }
 }

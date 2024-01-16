@@ -166,25 +166,19 @@
             // Create Board
             Board nextBoard = new Board(Fen);
 
-            // Check on valid. If no - return board without changes 
-            if (nextBoard.GetFigureAt(move.From) != move.Figure)
-                return nextBoard;
-
             // Main moving
             nextBoard.SetFigureAt(move.From, Figure.None);
             nextBoard.SetFigureAt(move.To, move.Promotion != Figure.None ? move.Promotion : move.Figure);
             
             // Set enPassant
-            if (move.Figure is Figure.WhitePawn or Figure.BlackPawn && Math.Abs(move.From.Y - move.To.Y) == 2)
+            if (move.Figure is Figure.WhitePawn or Figure.BlackPawn && move.AbsDeltaY == 2)
             {
-                if (move.To.Y == 4)
+                EnPassant = move.To.Y switch
                 {
-                    EnPassant = new Square(move.To.X, 3);
-                }
-                else if (move.To.Y == 5)
-                {
-                    EnPassant = new Square(move.To.X, 6);
-                }
+                    3 => new Square(move.To.X, 2),
+                    4 => new Square(move.To.X, 5),
+                    _ => throw new Exception("InvalidSituation")
+                };
             }
             else
             {
@@ -214,6 +208,18 @@
             nextBoard.GenerateFen();
 
             return nextBoard;
+        }
+
+        public IEnumerable<FigureOnSquare> YieldFigures()
+        {
+            foreach (Square square in Square.YieldSquares())
+            {
+                Figure current = GetFigureAt(square);
+                if (current.GetColor() == MoveColor)
+                {
+                    yield return new FigureOnSquare(current, square);
+                }
+            }
         }
     }
 }

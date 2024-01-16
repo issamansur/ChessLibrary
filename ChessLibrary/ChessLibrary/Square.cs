@@ -34,6 +34,17 @@
             return (X is >= 0 and < 8) && (Y is >= 0 and < 8);
         }
 
+        public static IEnumerable<Square> YieldSquares()
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    yield return new Square(x, y);
+                }
+            }
+        }
+
         public static bool operator ==(Square square1, Square square2)
         {
             return square1.Equals(square2);
@@ -51,7 +62,7 @@
 
         public override string ToString()
         {
-            return $"{Alphabet[X]}{Y}";
+            return $"{Alphabet[X]}{Y+1}";
         }
     }
 }
