@@ -95,7 +95,7 @@ public class Moves
     
     private bool CanPawnMove()
     {
-        if (FigMov.From.Y < 1 || FigMov.From.Y > 6)
+        if (FigMov.From.Y is < 1 or > 6)
             return false;
         int stepY = FigMov.Figure.GetColor() == Color.White ? 1 : -1;
         return CanPawnGo(stepY) || CanPawnJump(stepY) || CanPawnEat(stepY);

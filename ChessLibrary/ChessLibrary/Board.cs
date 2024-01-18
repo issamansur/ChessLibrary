@@ -222,20 +222,20 @@
             }
         }
 
-        private Square FindBadKing()
+        private Square FindEnemyKing()
         {
-            Figure badKing = MoveColor == Color.White? Figure.WhiteKing : Figure.BlackKing;
+            Figure badKing = MoveColor == Color.Black? Figure.WhiteKing : Figure.BlackKing;
             return Square.YieldSquares().FirstOrDefault(s => GetFigureAt(s) == badKing);
         }
         
-        private bool CanEatKing()
+        private bool CanEatEnemyKing()
         {
-            Square badKing = FindBadKing();
+            Square badKing = FindEnemyKing();
             Moves moves = new Moves(this);
             foreach (FigureOnSquare fs in YieldFigures())
             {
                 FigureMoving figMov = new FigureMoving(fs, badKing);
-                if (moves.CanMove(figMov))
+                if (fs.Figure.GetColor() == MoveColor && moves.CanMove(figMov))
                 {
                     return true;
                 }
@@ -244,17 +244,17 @@
             return false;
         }
 
-        public bool IsCheck()
+        public bool IsCheckNow()
         {
-            Board after = new Board(Fen);
-            after.MoveColor = MoveColor.FlipColor();
-            return after.CanEatKing();
+            Board board = new Board(Fen);
+            board.MoveColor = MoveColor.FlipColor();
+            return board.CanEatEnemyKing();
         }
-
+        
         public bool IsCheckAfterMove(FigureMoving figureMoving)
         {
             Board after = Move(figureMoving);
-            return after.CanEatKing();
+            return after.CanEatEnemyKing();
         }
     }
 }

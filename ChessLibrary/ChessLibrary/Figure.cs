@@ -53,7 +53,7 @@ namespace ChessLibrary
                 'b' => '\u265D',
                 'n' => '\u265E',
                 'p' => '\u265F',
-                _ => '\u25A3'
+                _ => '_'
             };
         } 
     }

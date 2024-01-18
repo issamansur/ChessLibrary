@@ -7,6 +7,19 @@ while (true)
     Console.Clear();
     Console.OutputEncoding = Encoding.UTF8;
     ChessToAscii(chess);
+    if (chess.IsStalemate())
+    {
+        Console.WriteLine("Stalemate");
+    }
+    else if (chess.IsMate())
+    {
+        Console.WriteLine("Mate");
+    }
+    else if (chess.IsCheck())
+    {
+        Console.WriteLine("Check");
+    }
+
     Console.WriteLine(chess.Fen);
     foreach (string avMove in chess.GetAllMoves())
     {

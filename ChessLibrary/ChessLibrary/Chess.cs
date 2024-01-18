@@ -6,6 +6,8 @@
         private Board Board { get; set;}
         private Moves Moves { get; init; }
         private List<FigureMoving> FigureMovings { get; init; }
+        
+        private bool IsNoMoves() => FigureMovings.Count == 0;
 
         public Chess(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         {
@@ -21,14 +23,22 @@
             Fen = board.Fen;
             Moves = new Moves(Board);
             FigureMovings = new List<FigureMoving>();
+            
+            FindAllMoves();
         }
 
         public Chess Move(string move)
-        {
+        {            
             FigureMoving fm = new FigureMoving(move);
             
+            // Check on end the game.
+            if (IsNoMoves())
+            {
+                return this;
+            }     
+                
             // Check on valid. If no - return Chess without changes 
-            if (!Moves.CanMove(fm))
+            if (!Moves.CanMove(fm) || Board.IsCheckAfterMove(fm))
                 return this;
             
             Board nextBoard = Board.Move(fm);
@@ -46,14 +56,14 @@
         private void FindAllMoves()
         {
             foreach (FigureOnSquare fs in Board.YieldFigures())
-            foreach (Square to in Square.YieldSquares())
             {
-                FigureMoving fm = new FigureMoving(fs, to);
-                if (Moves.CanMove(fm))
+                foreach (Square to in Square.YieldSquares())
                 {
-                    if (!Board.IsCheckAfterMove(fm))
-                        continue;
-                    FigureMovings.Add(fm);
+                    FigureMoving fm = new FigureMoving(fs, to);
+                    if (Moves.CanMove(fm) && !Board.IsCheckAfterMove(fm))
+                    {
+                        FigureMovings.Add(fm);
+                    }
                 }
             }
         }
@@ -68,6 +78,22 @@
             }
 
             return moves;
+        }
+
+        public bool IsCheck()
+        {
+            return Board.IsCheckNow();
+        }
+
+
+        public bool IsMate()
+        {
+            return IsNoMoves() && IsCheck();
+        }
+
+        public bool IsStalemate()
+        {
+            return IsNoMoves() && !IsCheck();
         }
     }
 }
