@@ -51,6 +51,8 @@
                 FigureMoving fm = new FigureMoving(fs, to);
                 if (Moves.CanMove(fm))
                 {
+                    if (!Board.IsCheckAfterMove(fm))
+                        continue;
                     FigureMovings.Add(fm);
                 }
             }

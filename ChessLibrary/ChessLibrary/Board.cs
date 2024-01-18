@@ -221,5 +221,40 @@
                 }
             }
         }
+
+        private Square FindBadKing()
+        {
+            Figure badKing = MoveColor == Color.White? Figure.WhiteKing : Figure.BlackKing;
+            return Square.YieldSquares().FirstOrDefault(s => GetFigureAt(s) == badKing);
+        }
+        
+        private bool CanEatKing()
+        {
+            Square badKing = FindBadKing();
+            Moves moves = new Moves(this);
+            foreach (FigureOnSquare fs in YieldFigures())
+            {
+                FigureMoving figMov = new FigureMoving(fs, badKing);
+                if (moves.CanMove(figMov))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsCheck()
+        {
+            Board after = new Board(Fen);
+            after.MoveColor = MoveColor.FlipColor();
+            return after.CanEatKing();
+        }
+
+        public bool IsCheckAfterMove(FigureMoving figureMoving)
+        {
+            Board after = Move(figureMoving);
+            return after.CanEatKing();
+        }
     }
 }

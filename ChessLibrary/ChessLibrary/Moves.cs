@@ -39,14 +39,14 @@ public class Moves
     private bool CanStraightMove()
     {
         Square movement = FigMov.From;
-        while (movement.OnBoard() && Board.GetFigureAt(movement) == Figure.None)
+        do
         {
             movement = new Square(movement.X + FigMov.SignDeltaX, movement.Y + FigMov.SignDeltaY);
             if (movement == FigMov.To)
             {
                 return true;
             }
-        }
+        } while (movement.OnBoard() && Board.GetFigureAt(movement) == Figure.None);
 
         return false;
     }
