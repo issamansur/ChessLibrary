@@ -15,6 +15,8 @@
             Board = new Board(fen);
             Moves = new Moves(Board);
             FigureMovings = new List<FigureMoving>();
+            
+            FindAllMoves();
         }
 
         private Chess(Board board)

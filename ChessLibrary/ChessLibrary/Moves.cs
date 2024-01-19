@@ -86,11 +86,9 @@ public class Moves
     
     private bool CanPawnEat(int stepY)
     {
-        if (FigMov.DeltaX == 1 && 
-            FigMov.DeltaY == stepY && 
-            Board.GetFigureAt(FigMov.To) != 0)
-            return true;
-        return false;
+        return FigMov.DeltaX == 1 &&
+               FigMov.DeltaY == stepY &&
+               (Board.GetFigureAt(FigMov.To) != 0 || FigMov.To == Board.EnPassant);
     }
     
     private bool CanPawnMove()

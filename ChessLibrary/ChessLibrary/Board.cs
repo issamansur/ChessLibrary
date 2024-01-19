@@ -170,10 +170,24 @@
             nextBoard.SetFigureAt(move.From, Figure.None);
             nextBoard.SetFigureAt(move.To, move.Promotion != Figure.None ? move.Promotion : move.Figure);
             
+            // Check enPassant and Promotion
+            if (move.Figure is Figure.WhitePawn or Figure.BlackPawn)
+            {
+                if (move.To == EnPassant)
+                {
+                    nextBoard.SetFigureAt(new Square(move.To.X, move.From.Y), Figure.None);
+                }
+
+                if (move.To.X is 0 or 7 && move.Promotion != Figure.None)
+                {
+                    nextBoard.SetFigureAt(move.To, move.Promotion);
+                }
+            }
+            
             // Set enPassant
             if (move.Figure is Figure.WhitePawn or Figure.BlackPawn && move.AbsDeltaY == 2)
             {
-                EnPassant = move.To.Y switch
+                nextBoard.EnPassant = move.To.Y switch
                 {
                     3 => new Square(move.To.X, 2),
                     4 => new Square(move.To.X, 5),
@@ -182,7 +196,7 @@
             }
             else
             {
-                EnPassant = Square.None;
+                nextBoard.EnPassant = Square.None;
             }
 
             // If it pawn increase HalfMoveClock, else set 0

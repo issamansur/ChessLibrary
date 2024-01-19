@@ -25,6 +25,8 @@ while (true)
     {
         Console.Write($"{avMove} ");
     }
+    Console.WriteLine();
+    
     var move = Console.ReadLine();
     if (move == "")
         break;
