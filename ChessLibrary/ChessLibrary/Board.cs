@@ -168,7 +168,54 @@
 
             // Main moving
             nextBoard.SetFigureAt(move.From, Figure.None);
-            nextBoard.SetFigureAt(move.To, move.Promotion != Figure.None ? move.Promotion : move.Figure);
+            nextBoard.SetFigureAt(move.To, move.Figure);
+            
+            // Check on Castling
+            if (move.Figure is Figure.BlackKing or Figure.WhiteKing && move.DeltaX is 2)
+            {
+                Figure rock = move.Figure.GetColor() == Color.White ? Figure.WhiteRook : Figure.BlackRook;
+                if (move.SignDeltaX == -1)
+                    SetFigureAt(new Square(0, move.From.Y), Figure.None);
+                else 
+                    SetFigureAt(new Square(7, move.From.Y), Figure.None);
+                SetFigureAt(new Square(move.From.X + move.SignDeltaX, move.From.Y), rock);
+            }
+
+            if (move.Figure is Figure.WhiteKing && (CanCastleA1 || CanCastleH1))
+            {
+                CanCastleA1 = CanCastleH1 = false;
+            }
+
+            if (move.Figure is Figure.WhiteRook && (CanCastleA1 || CanCastleH1))
+            {
+                switch (move.From.ToString())
+                {
+                    case "a1":
+                        CanCastleA1 = false;
+                        break;
+                    case "h1":
+                        CanCastleH1 = false;
+                        break;
+                }
+            }
+            
+            if (move.Figure is Figure.BlackKing && (CanCastleA8 || CanCastleH8))
+            {
+                CanCastleA8 = CanCastleH8 = false;
+            }
+            
+            if (move.Figure is Figure.WhiteRook && (CanCastleA8 || CanCastleH8))
+            {
+                switch (move.From.ToString())
+                {
+                    case "a8":
+                        CanCastleA8 = false;
+                        break;
+                    case "h8":
+                        CanCastleH8 = false;
+                        break;
+                }
+            }
             
             // Check enPassant and Promotion
             if (move.Figure is Figure.WhitePawn or Figure.BlackPawn)
@@ -200,7 +247,7 @@
             }
 
             // If it pawn increase HalfMoveClock, else set 0
-            if (nextBoard.GetFigureAt(move.From) is Figure.BlackPawn or Figure.WhitePawn)
+            if (move.Figure is Figure.BlackPawn or Figure.WhitePawn)
             {
                 nextBoard.HalfMoveClock = 0;
             }
@@ -269,6 +316,40 @@
         {
             Board after = Move(figureMoving);
             return after.CanEatEnemyKing();
+        }
+
+        public bool IsCanCastleNow(FigureMoving fm)
+        {
+            if (IsCheckNow())
+                return false;
+            if (MoveColor == Color.White)
+            {
+                if (fm.Figure is not Figure.WhiteKing || fm.From.ToString() != "e1")
+                    return false;
+                if (fm.To.ToString() == "c1")
+                {
+                    return CanCastleA1 || GetFigureAt(new Square(1, 0)) is Figure.None;
+                }
+                if (fm.To.ToString() == "g1")
+                {
+                    return CanCastleH1;
+                }
+            }
+            else
+            {
+                if (fm.Figure is not Figure.BlackKing || fm.From.ToString() != "e8")
+                    return false;
+                if (fm.To.ToString() == "c8")
+                {
+                    return CanCastleA8 || GetFigureAt(new Square(1, 7)) is Figure.None;
+                }
+                if (fm.To.ToString() == "g8")
+                {
+                    return CanCastleH8;
+                }
+            }
+
+            return false;
         }
     }
 }

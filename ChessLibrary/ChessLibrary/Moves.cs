@@ -33,7 +33,8 @@ public class Moves
 
     private bool CanKingMove()
     {
-        return FigMov is { AbsDeltaX: <= 1, AbsDeltaY: <= 1 };
+        return FigMov is { AbsDeltaX: <= 1, AbsDeltaY: <= 1 } || 
+               (Board.IsCanCastleNow(FigMov) && CanHorizontalMove());
     }
 
     private bool CanStraightMove()
