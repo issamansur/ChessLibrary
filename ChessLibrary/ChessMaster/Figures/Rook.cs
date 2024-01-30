@@ -1,10 +1,10 @@
 namespace ChessMaster.Figures;
 
-public class King: Figure
+public class Rook: Figure
 {
-    public override string Symbol { get; protected init; } = "K";
+    public override string Symbol { get; protected init; } = "R";
 
-    public King(Color color) : base(color)
+    public Rook(Color color) : base(color)
     {
     }
 

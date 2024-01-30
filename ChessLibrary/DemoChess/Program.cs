@@ -1,7 +1,12 @@
 ﻿using ChessLibrary;
+using ChessMaster;
 using System.Text;
+using Chess = ChessLibrary.Chess;
 
 Chess chess = new Chess();
+
+/*
+Chess chess = new ChessLibrary.Chess();
 while (true)
 {
     Console.Clear();
@@ -64,3 +69,4 @@ static void ChessToAscii(Chess chess)
     Console.ResetColor();
     Console.WriteLine();
 }
+*/

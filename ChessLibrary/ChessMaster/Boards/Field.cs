@@ -15,7 +15,7 @@ public struct Field
     public int X { get; private init; }
     public int Y { get; private init; }
     
-    public Figure? Figure { get; private set; }
+    public Figure? Figure { get; set; }
     
     // Constructor
     public Field(int x, int y)
@@ -31,10 +31,10 @@ public struct Field
     {
         if (square.Length != 2)
         {
-            return None;
+            return None; // or throw exception
         }
         
-        int x = ALPHABET.IndexOf(square[0]);
+        int x = ALPHABET.IndexOf(square.ToLower()[0]);
         int y = int.Parse(square[1].ToString()) - 1;
         
         return new Field(x, y);
