@@ -1,3 +1,6 @@
+using ChessMaster.Boards;
+using ChessMaster.States;
+
 namespace ChessMaster.Figures;
 
 public class Bishop: Figure
@@ -7,9 +10,9 @@ public class Bishop: Figure
     public Bishop(Color color) : base(color)
     {
     }
-
-    public override bool CanMove(Field fromTo, Field fieldTo)
+    
+    public override bool CanMove(Board board, Move move)
     {
-        throw new NotImplementedException();
+        return move.AbsDiffX == move.AbsDiffY && board.CanMoveFromTo(move);
     }
 }

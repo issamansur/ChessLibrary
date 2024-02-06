@@ -1,3 +1,7 @@
+using ChessMaster.Boards;
+using ChessMaster.States;
+
+
 namespace ChessMaster.Figures;
 
 public class Rook: Figure
@@ -7,9 +11,9 @@ public class Rook: Figure
     public Rook(Color color) : base(color)
     {
     }
-
-    public override bool CanMove(Field fromTo, Field fieldTo)
+    
+    public override bool CanMove(Board board, Move move)
     {
-        throw new NotImplementedException();
+        return (move.AbsDiffX == 0 || move.AbsDiffY == 0) && board.CanMoveFromTo(move);
     }
 }

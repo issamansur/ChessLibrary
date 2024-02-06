@@ -1,3 +1,6 @@
+using ChessMaster.Boards;
+using ChessMaster.States;
+
 namespace ChessMaster.Figures;
 
 public class Queen: Figure
@@ -7,9 +10,9 @@ public class Queen: Figure
     public Queen(Color color) : base(color)
     {
     }
-
-    public override bool CanMove(Field fromTo, Field fieldTo)
+    
+    public override bool CanMove(Board board, Move move)
     {
-        throw new NotImplementedException();
+        return board.CanMoveFromTo(move);
     }
 }

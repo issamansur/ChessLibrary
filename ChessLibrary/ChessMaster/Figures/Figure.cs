@@ -1,24 +1,21 @@
+using ChessMaster.Boards;
+using ChessMaster.States;
+
 namespace ChessMaster.Figures;
 
 public abstract class Figure
 {
+    // Properties
     public abstract string Symbol { get; protected init; }
     public Color Color { get; private init; }
     
+    // Constructors
     public Figure(Color color)
     {
         Color = color;
     }
     
-    public abstract bool CanMove(Field fromTo, Field fieldTo);
-    
-    
-    public override string ToString()
-    {
-        return Color == Color.White ? Symbol.ToUpper() : Symbol.ToLower();
-    }
-    
-    public static Figure? FromChar(char symbol)
+    public static Figure FromChar(char symbol)
     {
         return symbol switch
         {
@@ -34,7 +31,36 @@ public abstract class Figure
             'n' => new Knight(Color.Black),
             'P' => new Pawn(Color.White),
             'p' => new Pawn(Color.Black),
-            _ => null,
+            _ => throw new ArgumentException("Invalid figure"),
         };
+    }
+    
+    // Methods
+    public abstract bool CanMove(Board board, Move move);
+    
+    public virtual char ToUnicode()
+    {
+        return Symbol[0] switch
+        {
+            'K' => '\u2654',
+            'Q' => '\u2655',
+            'R' => '\u2656',
+            'B' => '\u2657',
+            'N' => '\u2658',
+            'P' => '\u2659',
+            'k' => '\u265A',
+            'q' => '\u265B',
+            'r' => '\u265C',
+            'b' => '\u265D',
+            'n' => '\u265E',
+            'p' => '\u265F',
+            _ => '_'
+        };
+    }
+    
+    // Overrides
+    public override string ToString()
+    {
+        return Color == Color.White ? Symbol.ToUpper() : Symbol.ToLower();
     }
 }

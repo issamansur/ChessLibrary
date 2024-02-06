@@ -1,6 +1,6 @@
-namespace ChessMaster;
+namespace ChessMaster.States;
 
-public enum State
+public enum GameState
 {
     None,
     Playing,

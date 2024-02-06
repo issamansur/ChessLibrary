@@ -1,4 +1,4 @@
-namespace ChessMaster;
+namespace ChessMaster.States;
 
 public enum Color
 {
@@ -19,7 +19,16 @@ public static class Colors {
         };
     }
     
-    // Is this a good idea?
+    public static Color FromChar(char c)
+    {
+        return c switch
+        {
+            'w' => Color.White,
+            'b' => Color.Black,
+            _ => throw new ArgumentException("Invalid color"),
+        };
+    }
+    
     public static string ToString(this Color color)
     {
         return color switch

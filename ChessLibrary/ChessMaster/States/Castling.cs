@@ -1,30 +1,83 @@
-namespace ChessMaster;
+using System.Text.RegularExpressions;
+using ChessMaster.Boards;
+using ChessMaster.Figures;
+
+namespace ChessMaster.States;
 
 public class Castling
 {
-    public bool CanCastleE1C1 { get; set; }
-    public bool CanCastleE1G1 { get; set; }
-    public bool CanCastleE8C8 { get; set; }
-    public bool CanCastleE8G8 { get; set; }
+    // Fields and Properties
+    public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
     
+    public bool CanCastleE1C1 { get; private set; }
+    public bool CanCastleE1G1 { get; private set; }
+    public bool CanCastleE8C8 { get; private set; }
+    public bool CanCastleE8G8 { get; private set; }
+    
+    // Constructors
     public Castling(string castlingFen)
     {
-        if (castlingFen.Length is 0 or > 4)
+        if (!CastlingPattern.IsMatch(castlingFen))
         {
-            throw new ArgumentException("Invalid fen (Castling): Length must be 1-4");
+            throw new ArgumentException("Invalid castling");
         }
         
-        CanCastleE1C1 = castlingFen.Contains("K");
-        CanCastleE1G1 = castlingFen.Contains("Q");
-        CanCastleE8C8 = castlingFen.Contains("k");
-        CanCastleE8G8 = castlingFen.Contains("q");
+        CanCastleE1C1 = castlingFen.Contains('K');
+        CanCastleE1G1 = castlingFen.Contains('Q');
+        CanCastleE8C8 = castlingFen.Contains('k');
+        CanCastleE8G8 = castlingFen.Contains('q');
     }
     
-    public bool CanCastle() //?
+    // Methods
+    public bool CanCastle(Move move) //?
     {
-        return CanCastleE1C1 || CanCastleE1G1 || CanCastleE8C8 || CanCastleE8G8;
+        return (move.From.ToString(), move.To.ToString()) switch
+        {
+            ("e1", "g1") => CanCastleE1G1,
+            ("e1", "c1") => CanCastleE1C1,
+            ("e8", "g8") => CanCastleE8G8,
+            ("e8", "c8") => CanCastleE8C8,
+            _ => false
+        };
     }
 
+    public void Update(Move move)
+    {
+        if (move.Figure is King)
+        {
+            switch (move.Figure.Color)
+            {
+                case Color.White:
+                    CanCastleE1C1 = false;
+                    CanCastleE1G1 = false;
+                    break;
+                case Color.Black:
+                    CanCastleE8C8 = false;
+                    CanCastleE8G8 = false;
+                    break;
+            }
+        }
+        else if (move.Figure is Rook)
+        {
+            switch (move.From.ToString())
+            {
+                case "a1":
+                    CanCastleE1C1 = false;
+                    break;
+                case "h1":
+                    CanCastleE1G1 = false;
+                    break;
+                case "a8":
+                    CanCastleE8C8 = false;
+                    break;
+                case "h8":
+                    CanCastleE8G8 = false;
+                    break;
+            }
+        }
+    }
+
+    // Overrides
     public override string ToString()
     {
         string castlingFen = "";
