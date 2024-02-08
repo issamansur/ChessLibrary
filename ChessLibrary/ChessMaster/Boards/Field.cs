@@ -14,15 +14,11 @@ public struct Field
     public int X { get; private init; }
     public int Y { get; private init; }
     
-    public Figure? Figure { get; set; }
-    
     // Constructors
     public Field(int x, int y)
     {
         X = x;
         Y = y;
-        
-        Figure = null;
     }
     
     public static Field FromString(string field)
@@ -42,7 +38,7 @@ public struct Field
     // Equals (we no need to compare Figure)
     private bool Equals(Field other)
     {
-        return X == other.X && Y == other.Y/* && Equals(Figure, other.Figure) */;
+        return X == other.X && Y == other.Y;
     }
     
     public override bool Equals(object? obj)
@@ -52,7 +48,7 @@ public struct Field
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(X, Y/*, Figure*/);
+        return HashCode.Combine(X, Y);
     }
     
     // operators + and -

@@ -8,7 +8,7 @@ public class Board
 {
     // FEN parts
     private string _fen;
-    private readonly Field[,] _fields;
+    private readonly Figure?[,] _figures;
     public Color ActiveColor { get; private set; }
     private Castling _castling;
     public Field? EnPassantTargetSquare { get; private set; }
@@ -16,21 +16,14 @@ public class Board
     public int FullMoveNumber { get; private set; }
     
     // Indexers
-    public Figure? this[int x, int y] => _fields[x, y].Figure;
-    public Figure? this[Field field] => _fields[field.X, field.Y].Figure;
+    public Figure? this[int x, int y] => _figures[x, y];
+    public Figure? this[Field field] => _figures[field.X, field.Y];
     
     // Constructors
     public Board(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     {
         _fen = fen;
-        _fields = new Field[8, 8];
-        for (var y = 0; y < 8; y++)
-        {
-            for (var x = 0; x < 8; x++) 
-            {
-                _fields[x, y] = new Field(x, y);
-            }
-        }
+        _figures = new Figure?[8, 8];
         
         FenInit(fen);
     }
@@ -92,7 +85,7 @@ public class Board
                 }
                 else
                 {
-                    _fields[x, y].Figure = Figure.FromChar(c);
+                    _figures[x, y] = Figure.FromChar(c);
                     x++;
                 }
             }
@@ -167,15 +160,14 @@ public class Board
             throw new ArgumentException("Invalid move");
         }
         
+        _figures[move.From.X, move.From.Y] = null;
         if (move.CapturedFigure != null)
         {
-            _fields[move.To.X, move.To.Y].Figure = move.Figure;
-            _fields[move.From.X, move.From.Y].Figure = null;
+            _figures[move.To.X, move.To.Y] = move.Figure;
         }
         else
         {
-            _fields[move.To.X, move.To.Y].Figure = move.Figure;
-            _fields[move.From.X, move.From.Y].Figure = null;
+            _figures[move.To.X, move.To.Y] = move.CapturedFigure;
         }
 
         UpdateState(move);
@@ -221,7 +213,7 @@ public class Board
             var empty = 0;
             for (var x = 0; x < 8; x++)
             {
-                var figure = _fields[x, y].Figure;
+                var figure = _figures[x, y];
                 if (figure == null)
                 {
                     empty++;
