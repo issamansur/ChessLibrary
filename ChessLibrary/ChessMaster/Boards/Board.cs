@@ -85,9 +85,11 @@ public class Board
                 }
                 else
                 {
-                    _figures[x, y] = Figure.FromChar(c);
+                    _figures[x, 7 - y] = Figure.FromChar(c);
                     x++;
                 }
+                if (x > 8)
+                    throw new ArgumentException($"Invalid fen (Piece Placement): ...{row}...");
             }
 
             if (x != 8)
@@ -144,8 +146,8 @@ public class Board
         // 4. Move is not to the same field +
         if (this[move.From] != move.Figure || 
             move.Figure.Color != ActiveColor || 
-            this[move.To]?.Color == ActiveColor ||
-            move.From != move.To)
+            (this[move.To] != null && this[move.To]?.Color == ActiveColor) ||
+            move.From == move.To)
         {
             return false;
         }
@@ -161,7 +163,7 @@ public class Board
         }
         
         _figures[move.From.X, move.From.Y] = null;
-        if (move.CapturedFigure != null)
+        if (move.CapturedFigure == null)
         {
             _figures[move.To.X, move.To.Y] = move.Figure;
         }
@@ -213,7 +215,7 @@ public class Board
             var empty = 0;
             for (var x = 0; x < 8; x++)
             {
-                var figure = _figures[x, y];
+                var figure = _figures[x, 7 - y];
                 if (figure == null)
                 {
                     empty++;
@@ -225,7 +227,7 @@ public class Board
                         fen.Append(empty);
                         empty = 0;
                     }
-                    fen.Append(figure.Symbol);
+                    fen.Append(figure);
                 }
             }
             if (empty > 0)
@@ -240,7 +242,7 @@ public class Board
         fen.Append(' ');
         
         // 2. "Active color" part
-        fen.Append(ActiveColor);
+        fen.Append(ActiveColor.ToStr());
         fen.Append(' ');
         
         // 3. "Castling Availability" part

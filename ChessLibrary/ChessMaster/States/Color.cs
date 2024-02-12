@@ -29,7 +29,7 @@ public static class Colors {
         };
     }
     
-    public static string ToString(this Color color)
+    public static string ToStr(this Color color)
     {
         return color switch
         {

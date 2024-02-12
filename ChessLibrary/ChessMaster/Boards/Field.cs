@@ -54,12 +54,12 @@ public struct Field
     // operators + and -
     public static Field operator +(Field field1, Field field2)
     {
-        return new Field(field1.X + field1.X, field2.Y + field2.Y);
+        return new Field(field1.X + field2.X, field1.Y + field2.Y);
     }
     
     public static Field operator -(Field field1, Field field2)
     {
-        return new Field(field1.X - field1.X, field2.Y - field2.Y);
+        return new Field(field1.X - field2.X, field1.Y - field2.Y);
     }
     
     // operators == and !=

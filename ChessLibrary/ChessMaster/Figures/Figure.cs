@@ -57,8 +57,22 @@ public abstract class Figure
             _ => '_'
         };
     }
-    
+
     // Overrides
+
+    // operators == and !=
+    public static bool operator ==(Figure? a, Figure? b)
+    {
+        return a?.Symbol == b?.Symbol && a?.Color == b?.Color;
+    }
+
+    public static bool operator !=(Figure? a, Figure? b)
+    {
+        return !(a == b);
+    }
+
+
+    // ToString
     public override string ToString()
     {
         return Color == Color.White ? Symbol.ToUpper() : Symbol.ToLower();

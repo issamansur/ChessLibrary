@@ -42,11 +42,9 @@ static void ChessToAscii(Chess chess)
             Figure? figure = chess[x, y];
             if (figure == null)
                 Console.ForegroundColor = ConsoleColor.Gray;
-            else if (figure.Color == ChessMaster.States.Color.White)
-                Console.ForegroundColor = ConsoleColor.White;
             else 
-                Console.ForegroundColor = ConsoleColor.Black;
-            Console.Write(figure?.ToUnicode() ?? '.');
+                Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(figure?.ToString() ?? ".");
             Console.Write(' ');
         }
         Console.ForegroundColor = ConsoleColor.Cyan;

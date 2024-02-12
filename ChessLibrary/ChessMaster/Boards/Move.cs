@@ -30,9 +30,9 @@ public struct Move
         }
         
         var figure = Figure.FromChar(move[0]);
-        var from = Field.FromString(move[..2]);
-        var to = Field.FromString(move[2..4]);
-        var capturedFigure = move.Length == 5 ? Figure.FromChar(move[4]) : null;
+        var from = Field.FromString(move[1..3]);
+        var to = Field.FromString(move[3..5]);
+        var capturedFigure = move.Length == 6 ? Figure.FromChar(move[5]) : null;
         
         return new Move(figure, from, to, capturedFigure);
     }
