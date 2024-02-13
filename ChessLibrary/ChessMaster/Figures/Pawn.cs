@@ -48,7 +48,10 @@ public class Pawn: Figure
 
     public bool CanEat(Board board, Move move)
     {
-        if (move is { AbsDiffX: 1, AbsDiffY: 1})
+        if (move is not { AbsDiffX: 1, AbsDiffY: 1 })
+        {
+            return false;
+        }
 
         // Check on Capturing
         if (!CanCapturing(move))
