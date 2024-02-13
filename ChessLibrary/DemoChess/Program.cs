@@ -1,6 +1,7 @@
 ﻿using ChessLibrary;
 using ChessMaster;
 using System.Text;
+using ChessMaster.States;
 using Chess = ChessMaster.Chess;
 using Figure = ChessMaster.Figures.Figure;
 
@@ -12,6 +13,19 @@ while (true)
 {
     Console.Clear();
     ChessToAscii(chess);
+
+    switch (chess.GameState)
+    {
+        case GameState.Check:
+            Console.WriteLine("Check");
+            break;
+        case GameState.Checkmate:
+            Console.WriteLine("Checkmate");
+            break;
+        case GameState.Stalemate:
+            Console.WriteLine("Stalemate");
+            break;
+    }
     
     //Console.WriteLine(chess.Fen);
     /*
