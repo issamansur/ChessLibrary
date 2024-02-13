@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoChess", "DemoChess\Demo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster", "ChessMaster\ChessMaster.csproj", "{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Tests", "ChessMaster.Tests\ChessMaster.Tests.csproj", "{06863613-089F-4B4F-97E7-C6C2A959ABED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
