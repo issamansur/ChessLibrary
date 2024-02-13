@@ -3,7 +3,7 @@ using ChessMaster.States;
 
 namespace ChessMaster.Figures;
 
-public class Pawn: Figure
+public class Pawn : Figure
 {
     public override string Symbol { get; protected init; } = "P";
 
@@ -34,11 +34,11 @@ public class Pawn: Figure
     public bool CanDoubleMove(Board board, Move move)
     {
         // if starting/end place correct - false
-        if (move is not ({ DiffX: 0 } 
-            and ({ Figure.Color: Color.White, From.Y: 1, To.Y: 3 } 
+        if (move is not ({ DiffX: 0 }
+            and ({ Figure.Color: Color.White, From.Y: 1, To.Y: 3 }
             or { Figure.Color: Color.Black, From.Y: 6, To.Y: 4 }
             )))
-           return false;
+            return false;
 
         // if fields on board is empty - true, else - false
         return
@@ -48,6 +48,7 @@ public class Pawn: Figure
 
     public bool CanEat(Board board, Move move)
     {
+        // Check on Direction
         if (move is not { AbsDiffX: 1, AbsDiffY: 1 })
         {
             return false;
@@ -60,7 +61,7 @@ public class Pawn: Figure
         }
 
         return
-            board[move.To] is not null;
+            board[move.To] is not null || board.EnPassantTargetSquare == move.To;
     }
 
     public bool CanCapturing(Move move)
@@ -77,9 +78,10 @@ public class Pawn: Figure
         {
             return false;
         }
+
         return true;
     }
-    
+
     public override bool CanMove(Board board, Move move)
     {
         // Can move if:
@@ -87,8 +89,8 @@ public class Pawn: Figure
         // 1. AND IF IT IS LAST LINE - CHECK IF CAPTURING CORRECT
         // 2. AbsDiffX is 0 and AbsDiffY is 2 (if on starting position and the field in front is empty)
         // 3. AbsDiffX is 1 and AbsDiffY is 1 (if on non-empty field)
-        return 
-            CanSimpleMove(board, move) || 
+        return
+            CanSimpleMove(board, move) ||
             CanDoubleMove(board, move) ||
             CanEat(board, move);
     }
