@@ -104,6 +104,11 @@ public class Board
     {
         return field is { X: >= 0, X: < 8, Y: >= 0, Y: < 8 };
     }
+
+    private void SetFigure(Field field, Figure? figure)
+    {
+        _figures[field.X, field.Y] = figure;
+    }
     
     public bool CanMoveFromTo(Move move)
     {
@@ -144,10 +149,12 @@ public class Board
         // 2. This figure is active color +
         // 3. On this field is figure of active color +
         // 4. Move is not to the same field +
+        // 5. Move cannot have CapturedFigure if not a Pawn +
         if (this[move.From] != move.Figure || 
             move.Figure.Color != ActiveColor || 
             (this[move.To] != null && this[move.To]?.Color == ActiveColor) ||
-            move.From == move.To)
+            move.From == move.To ||
+            move.CapturedFigure is not null && move.Figure is not Pawn)
         {
             return false;
         }
@@ -157,23 +164,49 @@ public class Board
     
     public Board Move(Move move)
     {
+        // Check to avaibility move
         if (!CanMove(move))
         {
             throw new ArgumentException("Invalid move");
         }
-        
-        _figures[move.From.X, move.From.Y] = null;
-        if (move.CapturedFigure == null)
+
+        // Default move
+        SetFigure(move.From, null);
+        SetFigure(move.To, move.Figure);
+
+        // Add effects in this situation:
+        // 1. Castling (Move Rock)
+        // 2. Taking at en Passant (Remove enemy Pawn)
+        // 3. Capturing (change Pawn to Figure)
+
+        if (move.Figure is King && move.AbsDiffX == 2)
         {
-            _figures[move.To.X, move.To.Y] = move.Figure;
-        }
-        else
-        {
-            _figures[move.To.X, move.To.Y] = move.CapturedFigure;
+            Field RockPosition = Castling.GetRockPosition(move);
+            Figure rook = this[RockPosition]!;
+
+            SetFigure(RockPosition, null);
+            SetFigure(move.From + move.Direction, rook);
         }
 
+        if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
+        {
+            if (EnPassantTargetSquare is not null)
+            {
+                Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
+                SetFigure(field, null);
+            }
+        }
+
+        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
+        {
+            SetFigure(move.To, move.CapturedFigure);
+        }
+
+
+        // Update properties for FEN (and create new FEN)
         UpdateState(move);
 
+        // Return new Board with new FEN
         return new Board(_fen);
     }
     
