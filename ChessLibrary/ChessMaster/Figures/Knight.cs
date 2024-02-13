@@ -13,6 +13,6 @@ public class Knight: Figure
     
     public override bool CanMove(Board board, Move move)
     {
-        return move is { AbsDiffX: 1, AbsDiffY: 2 } || move is { AbsDiffX: 2, AbsDiffY: 1 } && board.CanCastleTo(move);
+        return move is { AbsDiffX: 1, AbsDiffY: 2 } or { AbsDiffX: 2, AbsDiffY: 1 };
     }
 }
