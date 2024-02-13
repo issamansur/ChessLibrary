@@ -4,15 +4,15 @@ using ChessMaster.Figures;
 
 namespace ChessMaster.States;
 
-public class Castling
+public struct Castling
 {
     // Fields and Properties
     public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
-    
-    public bool CanCastleE1C1 { get; private set; }
-    public bool CanCastleE1G1 { get; private set; }
-    public bool CanCastleE8C8 { get; private set; }
-    public bool CanCastleE8G8 { get; private set; }
+
+    private bool CanCastleE1C1 { get; set; }
+    private bool CanCastleE1G1 { get; set; }
+    private bool CanCastleE8C8 { get; set; }
+    private bool CanCastleE8G8 { get; set; }
     
     // Constructors
     public Castling(string castlingFen)
@@ -41,14 +41,14 @@ public class Castling
         };
     }
 
-    public static Field GetRockPosition(Move move)
+    public static Field GetRockPosition(Field to)
     {
-        return (move.From.ToString(), move.To.ToString()) switch
+        return to.ToString() switch
         {
-            ("e1", "g1") => Field.FromString("h1"),
-            ("e1", "c1") => Field.FromString("a1"),
-            ("e8", "g8") => Field.FromString("h8"),
-            ("e8", "c8") => Field.FromString("a8"),
+            "g1" => Field.FromString("h1"),
+            "c1" => Field.FromString("a1"),
+            "g8" => Field.FromString("h8"),
+            "c8" => Field.FromString("a8"),
             _ => throw new NotImplementedException()
         };
     } 

@@ -10,7 +10,7 @@ public class Board
     private string _fen;
     private readonly Figure?[,] _figures;
     public Color ActiveColor { get; private set; }
-    private Castling _castling;
+    public Castling Castling { get; private set; }
     public Field? EnPassantTargetSquare { get; private set; }
     private int _halfMoveClock;
     public int FullMoveNumber { get; private set; }
@@ -49,7 +49,7 @@ public class Board
         };
 
         // 3. Set "Castling Availability" part
-        _castling = new Castling(parts[2]);
+        Castling = new Castling(parts[2]);
 
         // 4. Set "En passant target square" part
         EnPassantTargetSquare = parts[3] switch
@@ -126,21 +126,6 @@ public class Board
 
         return false;
     }
-
-    public bool CanCastleTo(Move move)
-    {
-        // Check on:
-        // 1. Castling is available (King and Rook are on their initial squares)
-        // 2. King is not in check
-        // 3. King does not pass through a square that is attacked by an enemy piece
-        // 4. King does not end up in check
-        // 5. There are no pieces between the king and the rook
-        return _castling.CanCastle(move) /*&& 
-               !IsInCheck(ActiveColor) && 
-               !IsAttacked(move.From) && 
-               !IsAttacked(move.To) && 
-               !IsPiecesBetween(move.From, move.To)*/;
-    }
     
     public bool CanMove(Move move)
     {
@@ -179,12 +164,12 @@ public class Board
         // 2. Taking at en Passant (Remove enemy Pawn)
         // 3. Capturing (change Pawn to Figure)
 
-        if (move.Figure is King && move.AbsDiffX == 2)
+        if (move is { Figure: King, AbsDiffX: 2 })
         {
-            Field RockPosition = Castling.GetRockPosition(move);
-            Figure rook = this[RockPosition]!;
+            Field rockPosition = Castling.GetRockPosition(move.To);
+            Figure rook = this[rockPosition]!;
 
-            SetFigure(RockPosition, null);
+            SetFigure(rockPosition, null);
             SetFigure(move.From + move.Direction, rook);
         }
 
@@ -216,7 +201,7 @@ public class Board
         ActiveColor = ActiveColor.ChangeColor();
         
         // Update Castling
-        _castling.Update(move);
+        Castling.Update(move);
         
         // Update EnPassantTargetSquare
         EnPassantTargetSquare = null;
@@ -279,7 +264,7 @@ public class Board
         fen.Append(' ');
         
         // 3. "Castling Availability" part
-        fen.Append(_castling);
+        fen.Append(Castling);
         fen.Append(' ');
         
         // 4. "En passant target square" part
