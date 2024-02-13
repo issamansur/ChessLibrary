@@ -110,14 +110,14 @@ public class Board
         _figures[field.X, field.Y] = figure;
     }
     
-    public bool CanMoveFromTo(Move move)
+    public bool CanMoveFromTo(Field from, Field to, Field direction)
     {
-        Field current = move.From;
+        Field current = from;
         
         do
         {
-            current += move.Direction;
-            if (current == move.To)
+            current += direction;
+            if (current == to)
             {
                 return true;
             }
@@ -125,6 +125,11 @@ public class Board
         while (IsFieldOnBoard(current) && this[current] == null);
 
         return false;
+    }
+
+    public bool CanMoveFromTo(Move move)
+    {
+        return CanMoveFromTo(move.From, move.To, move.Direction);
     }
     
     public bool CanMove(Move move)
