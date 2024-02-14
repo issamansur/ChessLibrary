@@ -53,7 +53,7 @@ public struct Castling
         };
     } 
 
-    public void Update(Move move)
+    public Castling Update(Move move)
     {
         if (move.Figure is King)
         {
@@ -68,6 +68,8 @@ public struct Castling
                     CanCastleE8G8 = false;
                     break;
             }
+
+            return this;
         }
         else if (move.Figure is Rook)
         {
