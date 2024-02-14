@@ -3,7 +3,7 @@ using ChessMaster.States;
 
 namespace ChessMaster.Figures;
 
-public class King: Figure
+public class King : Figure
 {
     public override string Symbol { get; protected init; } = "K";
 
@@ -15,7 +15,7 @@ public class King: Figure
     {
         return move is { AbsDiffX: <= 1, AbsDiffY: <= 1 };
     }
-    
+
     private bool CanCastle(Board board, Move move)
     {
         // Check on Direction
@@ -23,24 +23,46 @@ public class King: Figure
         {
             return false;
         }
-        
+
         // Check on Castling:
         // 1. Castling is available (King and Rook are on their initial squares)
         if (!board.Castling.CanCastle(move))
         {
             return false;
         }
-        
-        // 2. King is not in check
-        // 3. King does not pass through a square that is attacked by an enemy piece
-        // 4. King does not end up in check
-        
-        // 5. There are no pieces between the king and the rook
+
+        // 2. There are no pieces between the king and the rook
         Field rock = Castling.GetRockPosition(move.To);
-        return
-            board.CanMoveFromTo(move.From, rock, move.Direction);
+        if (!board.CanMoveFromTo(move.From, rock, move.Direction))
+        {
+            return false;
+        }
+
+        // 3. King is not in check
+        if (board.IsCheck(board.ActiveColor))
+        {
+            return false;
+        }
+
+        // 4. King does not pass through a square that is attacked by an enemy piece
+        Move newMove1 = new Move(move.Figure, move.From, move.From + move.Direction, null);
+        Board newBoard1 = board.Move(newMove1);
+        if (newBoard1.IsCheck(board.ActiveColor))
+        {
+            return false;
+        }
+
+        // 5. King does not end up in check
+        Move newMove2 = new Move(
+            move.Figure,
+            move.From + move.Direction,
+            move.To,
+            null);
+        newBoard1.ActiveColor = newBoard1.ActiveColor.ChangeColor();
+        Board newBoard2 = newBoard1.Move(newMove2);
+        return !newBoard2.IsCheck(board.ActiveColor);
     }
-    
+
     public override bool CanMove(Board board, Move move)
     {
         // Can move if:

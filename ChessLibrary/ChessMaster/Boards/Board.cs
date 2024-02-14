@@ -11,7 +11,7 @@ public class Board
     private readonly Figure?[,] _figures;
 
     // Active color of the current player
-    public Color ActiveColor { get; private set; }
+    public Color ActiveColor { get; set; }
 
     // Castling state of the current board
     public Castling Castling { get; private set; }
@@ -158,13 +158,13 @@ public class Board
     // Method to check if the king of a certain color is in checkmate
     public bool IsCheckmate(Color kingColor)
     {
-        throw new NotImplementedException();
+        return false;
     }
     
     // Method to check if the king of a certain color is in stalemate
     public bool IsStalemate(Color kingColor)
     {
-        throw new NotImplementedException();
+        return false;
     }
 
     // Method to set a figure on a field
