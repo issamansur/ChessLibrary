@@ -118,11 +118,10 @@ public class Board
         return field is { X: >= 0, X: < 8, Y: >= 0, Y: < 8 };
     }
 
-    // Method to check if the king of a certain color is in check
-    public bool IsCheck(Color kingColor)
+    public Field GetKingField(Color kingColor)
     {
         // Find the king's position
-        Field kingField = default;
+        Field? kingField = null;
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 8; y++)
@@ -134,6 +133,45 @@ public class Board
                 }
             }
         }
+
+        return kingField ?? throw new InvalidOperationException();
+    }
+
+    // Method to get available moves for certain color
+    public List<Move> GetAvailableMoves(Color sideColor)
+    {
+        List<Move> availableMoves = new List<Move>();
+
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                Figure? ourFigure = this[x, y];
+                // If it our figure, do cycle to all fields and try to move
+                if (ourFigure?.Color == sideColor)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        for (int j = 0; j < 8; j++)
+                        {
+                            Move triedMove = new Move(ourFigure!, new Field(x, y), new Field(i, j));
+                            if (CanMove(triedMove))
+                            {
+                                availableMoves.Add(triedMove);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    // Method to check if the king of a certain color is in check
+    public bool IsCheck(Color kingColor)
+    {
+        Field kingField = GetKingField(kingColor);
 
         // Check if any of the opponent's pieces can move to the king's position
         for (int x = 0; x < 8; x++)
@@ -158,13 +196,13 @@ public class Board
     // Method to check if the king of a certain color is in checkmate
     public bool IsCheckmate(Color kingColor)
     {
-        return false;
+        return IsCheck(kingColor) && GetAvailableMoves(kingColor).Count is 0;
     }
     
     // Method to check if the king of a certain color is in stalemate
     public bool IsStalemate(Color kingColor)
     {
-        return false;
+        return !IsCheck(kingColor) && GetAvailableMoves(kingColor).Count is 0;
     }
 
     // Method to set a figure on a field
@@ -206,30 +244,30 @@ public class Board
         // 3. The figure on the target field is not of the active color.
         // 4. The move is not to the same field where the figure currently is.
         // 5. If the figure is not a Pawn, it cannot have a captured figure in the move.
+        // 6. The figure should be able to walk like that.
+        // 7. There should be no check after the move
         if (this[move.From] != move.Figure ||
             move.Figure.Color != ActiveColor ||
             (this[move.To] != null && this[move.To]?.Color == ActiveColor) ||
             move.From == move.To ||
-            move.CapturedFigure is not null && move.Figure is not Pawn)
+            move.CapturedFigure is not null && move.Figure is not Pawn ||
+            !move.Figure.CanMove(this, move))
         {
             return false;
         }
 
-        return move.Figure.CanMove(this, move);
+        return !UnsafeMove(move).IsCheck(ActiveColor);
     }
 
-    // Method to make a move on the board
-    public Board Move(Move move)
+    // Method to make a hard move (for check a ... check?!)
+    private Board UnsafeMove(Move move)
     {
-        // Check if the move is valid
-        if (!CanMove(move))
-        {
-            throw new ArgumentException("Invalid move");
-        }
+        // Create new Board from FEN by copy.
+        Board board = new Board(_fen);
 
         // Default move
-        SetFigure(move.From, null);
-        SetFigure(move.To, move.Figure);
+        board.SetFigure(move.From, null);
+        board.SetFigure(move.To, move.Figure);
 
         // Implement effects in the following scenarios:
         // 1. Castling (Move Rook)
@@ -241,8 +279,8 @@ public class Board
             Field rockPosition = Castling.GetRockPosition(move.To);
             Figure rook = this[rockPosition]!;
 
-            SetFigure(rockPosition, null);
-            SetFigure(move.From + move.Direction, rook);
+            board.SetFigure(rockPosition, null);
+            board.SetFigure(move.From + move.Direction, rook);
         }
 
         if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
@@ -250,21 +288,73 @@ public class Board
             if (EnPassantTargetSquare is not null)
             {
                 Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
-                SetFigure(field, null);
+                board.SetFigure(field, null);
             }
         }
 
         if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
         {
-            SetFigure(move.To, move.CapturedFigure);
+            board.SetFigure(move.To, move.CapturedFigure);
         }
 
 
         // Update properties for FEN (and create new FEN)
-        UpdateState(move);
+        board.UpdateState(move);
 
         // Return new Board with new FEN
-        return new Board(_fen);
+        return board;
+    }
+
+    // Method to make a move on the board
+    public Board Move(Move move)
+    {
+        // Check if the move is valid
+        if (!CanMove(move))
+        {
+            throw new ArgumentException("Invalid move");
+        }
+
+        // Create new Board from FEN by copy.
+        Board board = new Board(_fen);
+
+        // Default move
+        board.SetFigure(move.From, null);
+        board.SetFigure(move.To, move.Figure);
+
+        // Implement effects in the following scenarios:
+        // 1. Castling (Move Rook)
+        // 2. En Passant capture (Remove opponent's Pawn)
+        // 3. Promotion (Replace Pawn with another piece when it reaches the end of the board)
+
+        if (move is { Figure: King, AbsDiffX: 2 })
+        {
+            Field rockPosition = Castling.GetRockPosition(move.To);
+            Figure rook = this[rockPosition]!;
+
+            board.SetFigure(rockPosition, null);
+            board.SetFigure(move.From + move.Direction, rook);
+        }
+
+        if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
+        {
+            if (EnPassantTargetSquare is not null)
+            {
+                Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
+                board.SetFigure(field, null);
+            }
+        }
+
+        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
+        {
+            board.SetFigure(move.To, move.CapturedFigure);
+        }
+
+
+        // Update properties for FEN (and create new FEN)
+        board.UpdateState(move);
+
+        // Return new Board with new FEN
+        return board;
     }
 
     // Method to update the state of the board after a move
