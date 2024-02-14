@@ -235,6 +235,52 @@ public class Board
         return CanMoveFromTo(move.From, move.To, move.Direction);
     }
 
+    // Method to make a hard move figure (for check a ... check?!)
+    private Board MoveFigure(Move move)
+    {
+        // Create new Board from FEN by copy.
+        Board board = new Board(_fen);
+
+        // Default move
+        board.SetFigure(move.From, null);
+        board.SetFigure(move.To, move.Figure);
+
+        // Implement effects in the following scenarios:
+        // 1. Castling (Move Rook)
+        // 2. En Passant capture (Remove opponent's Pawn)
+        // 3. Promotion (Replace Pawn with another piece when it reaches the end of the board)
+
+        if (move is { Figure: King, AbsDiffX: 2 })
+        {
+            Field rockPosition = Castling.GetRockPosition(move.To);
+            Figure rook = this[rockPosition]!;
+
+            board.SetFigure(rockPosition, null);
+            board.SetFigure(move.From + move.Direction, rook);
+        }
+
+        if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
+        {
+            if (EnPassantTargetSquare is not null)
+            {
+                Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
+                board.SetFigure(field, null);
+            }
+        }
+
+        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
+        {
+            board.SetFigure(move.To, move.CapturedFigure);
+        }
+
+
+        // Update properties for FEN (and create new FEN)
+        board.UpdateState(move);
+
+        // Return new Board with new FEN
+        return board;
+    }
+
     // Method to check if a figure can make a certain move
     public bool CanMove(Move move)
     {
@@ -256,53 +302,7 @@ public class Board
             return false;
         }
 
-        return !UnsafeMove(move).IsCheck(ActiveColor);
-    }
-
-    // Method to make a hard move (for check a ... check?!)
-    private Board UnsafeMove(Move move)
-    {
-        // Create new Board from FEN by copy.
-        Board board = new Board(_fen);
-
-        // Default move
-        board.SetFigure(move.From, null);
-        board.SetFigure(move.To, move.Figure);
-
-        // Implement effects in the following scenarios:
-        // 1. Castling (Move Rook)
-        // 2. En Passant capture (Remove opponent's Pawn)
-        // 3. Promotion (Replace Pawn with another piece when it reaches the end of the board)
-
-        if (move is { Figure: King, AbsDiffX: 2 })
-        {
-            Field rockPosition = Castling.GetRockPosition(move.To);
-            Figure rook = this[rockPosition]!;
-
-            board.SetFigure(rockPosition, null);
-            board.SetFigure(move.From + move.Direction, rook);
-        }
-
-        if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
-        {
-            if (EnPassantTargetSquare is not null)
-            {
-                Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
-                board.SetFigure(field, null);
-            }
-        }
-
-        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
-        {
-            board.SetFigure(move.To, move.CapturedFigure);
-        }
-
-
-        // Update properties for FEN (and create new FEN)
-        board.UpdateState(move);
-
-        // Return new Board with new FEN
-        return board;
+        return !MoveFigure(move).IsCheck(ActiveColor);
     }
 
     // Method to make a move on the board
@@ -314,47 +314,8 @@ public class Board
             throw new ArgumentException("Invalid move");
         }
 
-        // Create new Board from FEN by copy.
-        Board board = new Board(_fen);
-
-        // Default move
-        board.SetFigure(move.From, null);
-        board.SetFigure(move.To, move.Figure);
-
-        // Implement effects in the following scenarios:
-        // 1. Castling (Move Rook)
-        // 2. En Passant capture (Remove opponent's Pawn)
-        // 3. Promotion (Replace Pawn with another piece when it reaches the end of the board)
-
-        if (move is { Figure: King, AbsDiffX: 2 })
-        {
-            Field rockPosition = Castling.GetRockPosition(move.To);
-            Figure rook = this[rockPosition]!;
-
-            board.SetFigure(rockPosition, null);
-            board.SetFigure(move.From + move.Direction, rook);
-        }
-
-        if (move.Figure is Pawn && move is { AbsDiffX: 1, AbsDiffY: 1 })
-        {
-            if (EnPassantTargetSquare is not null)
-            {
-                Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
-                board.SetFigure(field, null);
-            }
-        }
-
-        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
-        {
-            board.SetFigure(move.To, move.CapturedFigure);
-        }
-
-
-        // Update properties for FEN (and create new FEN)
-        board.UpdateState(move);
-
         // Return new Board with new FEN
-        return board;
+        return MoveFigure(move);
     }
 
     // Method to update the state of the board after a move

@@ -68,8 +68,6 @@ public struct Castling
                     CanCastleE8G8 = false;
                     break;
             }
-
-            return this;
         }
         else if (move.Figure is Rook)
         {
@@ -89,6 +87,8 @@ public struct Castling
                     break;
             }
         }
+
+        return this;
     }
 
     // Overrides
