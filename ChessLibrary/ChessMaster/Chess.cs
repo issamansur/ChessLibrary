@@ -1,10 +1,8 @@
-using System.Runtime.InteropServices;
-using ChessMaster.Figures;
-
 namespace ChessMaster;
 
-using ChessMaster.Boards;
-using ChessMaster.States;
+using Figures;
+using Boards;
+using States;
 
 public class Chess
 {

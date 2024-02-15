@@ -21,7 +21,7 @@ public class Pawn : Figure
             return false;
 
         // Check on Capturing
-        if (!CanCapturing(move))
+        if (!CanPromote(move))
         {
             return false;
         }
@@ -46,16 +46,19 @@ public class Pawn : Figure
             board[move.To] is null;
     }
 
-    public bool CanEat(Board board, Move move)
+    public bool CanCapture(Board board, Move move)
     {
         // Check on Direction
-        if (move is not { AbsDiffX: 1, AbsDiffY: 1 })
+        if (move is not ({ AbsDiffX: 1, }
+            and ({ Figure.Color: Color.White, DiffY: 1 } 
+            or { Figure.Color: Color.Black, DiffY: -1 }
+            )))
         {
             return false;
         }
 
         // Check on Capturing
-        if (!CanCapturing(move))
+        if (!CanPromote(move))
         {
             return false;
         }
@@ -64,17 +67,17 @@ public class Pawn : Figure
             board[move.To] is not null || board.EnPassantTargetSquare == move.To;
     }
 
-    public bool CanCapturing(Move move)
+    public bool CanPromote(Move move)
     {
         // if not last line
         if (move.To is not { Y: 0 or 7 })
         {
-            return move.CapturedFigure is null;
+            return move.PromotedFigure is null;
         }
 
         // if last line
-        if (move is { CapturedFigure: null or Pawn or King } ||
-            move.CapturedFigure.Color != move.Figure.Color)
+        if (move is { PromotedFigure: null or Pawn or King } ||
+            move.PromotedFigure.Color != move.Figure.Color)
         {
             return false;
         }
@@ -92,6 +95,6 @@ public class Pawn : Figure
         return
             CanSimpleMove(board, move) ||
             CanDoubleMove(board, move) ||
-            CanEat(board, move);
+            CanCapture(board, move);
     }
 }

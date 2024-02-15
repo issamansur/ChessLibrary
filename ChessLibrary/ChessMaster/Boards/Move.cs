@@ -11,15 +11,15 @@ public class Move
     public readonly Figure Figure;
     public readonly Field From;
     public readonly Field To;
-    public readonly Figure? CapturedFigure;
+    public readonly Figure? PromotedFigure;
     
     // Constructors
-    public Move(Figure figure, Field from, Field to, Figure? capturedFigure = null)
+    public Move(Figure figure, Field from, Field to, Figure? promotedFigure = null)
     {
         Figure = figure;
         From = from;
         To = to;
-        CapturedFigure = capturedFigure;
+        PromotedFigure = promotedFigure;
     }
     
     public static Move FromString(string move)
@@ -32,9 +32,9 @@ public class Move
         var figure = Figure.FromChar(move[0]);
         var from = Field.FromString(move[1..3]);
         var to = Field.FromString(move[3..5]);
-        var capturedFigure = move.Length == 6 ? Figure.FromChar(move[5]) : null;
+        var promotedFigure = move.Length == 6 ? Figure.FromChar(move[5]) : null;
         
-        return new Move(figure, from, to, capturedFigure);
+        return new Move(figure, from, to, promotedFigure);
     }
     
     // Methods
@@ -48,6 +48,6 @@ public class Move
     // Overrides
     public override string ToString()
     {
-        return $"{Figure}{From}{To}{CapturedFigure}"; // ?
+        return $"{Figure}{From}{To}{PromotedFigure}"; // ?
     }
 }

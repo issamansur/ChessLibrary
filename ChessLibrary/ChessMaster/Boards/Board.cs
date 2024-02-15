@@ -270,7 +270,7 @@ public class Board
 
         if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
         {
-            board.SetFigure(move.To, move.CapturedFigure);
+            board.SetFigure(move.To, move.PromotedFigure);
         }
 
 
@@ -296,7 +296,7 @@ public class Board
             move.Figure.Color != ActiveColor ||
             (this[move.To] != null && this[move.To]?.Color == ActiveColor) ||
             move.From == move.To ||
-            move.CapturedFigure is not null && move.Figure is not Pawn ||
+            move.PromotedFigure is not null && move.Figure is not Pawn ||
             !move.Figure.CanMove(this, move))
         {
             return false;
