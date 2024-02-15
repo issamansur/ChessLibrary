@@ -30,10 +30,16 @@ public class King : Figure
         {
             return false;
         }
+        
+        Field rookPos = Castling.GetRockPosition(move.To);
+        Figure? rook = board[rookPos];
+        if (rook is not Rook || rook.Color != move.Figure.Color)
+        {
+            return false;
+        }
 
         // 2. There are no pieces between the king and the rook
-        Field rock = Castling.GetRockPosition(move.To);
-        if (!board.CanMoveFromTo(move.From, rock, move.Direction))
+        if (!board.CanMoveFromTo(move.From, rookPos, move.Direction))
         {
             return false;
         }
@@ -45,7 +51,7 @@ public class King : Figure
         }
 
         // 4. King does not pass through a square that is attacked by an enemy piece
-        Move newMove1 = new Move(move.Figure, move.From, move.From + move.Direction, null);
+        Move newMove1 = new Move(move.Figure, move.From, move.From + move.Direction);
         Board newBoard1 = board.Move(newMove1);
         if (newBoard1.IsCheck(board.ActiveColor))
         {
@@ -56,8 +62,7 @@ public class King : Figure
         Move newMove2 = new Move(
             move.Figure,
             move.From + move.Direction,
-            move.To,
-            null);
+            move.To);
         newBoard1.ActiveColor = newBoard1.ActiveColor.ChangeColor();
         Board newBoard2 = newBoard1.Move(newMove2);
         return !newBoard2.IsCheck(board.ActiveColor);
