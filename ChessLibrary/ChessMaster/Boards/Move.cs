@@ -3,7 +3,7 @@ using ChessMaster.Figures;
 
 namespace ChessMaster.Boards;
 
-public struct Move
+public class Move
 {
     // Fields and Properties
     private static Regex MovePattern => new Regex("^[kqrbnp][a-h][1-8][a-h][1-8]([kqrbnp])?$");

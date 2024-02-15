@@ -63,9 +63,9 @@ public class Field
     }
     
     // operators == and !=
-    public static bool operator ==(Field a, Field b)
+    public static bool operator ==(Field? a, Field? b)
     {
-        return a.X == b.X && a.Y == b.Y;
+        return a?.X == b?.X && a?.Y == b?.Y;
     }
     
     public static bool operator !=(Field a, Field b)
