@@ -325,7 +325,7 @@ public class Board
         ActiveColor = ActiveColor.ChangeColor();
 
         // Update Castling
-        Castling = Castling.Update(move);
+        Castling.Update(move);
 
         // Update EnPassantTargetSquare
         EnPassantTargetSquare = null;

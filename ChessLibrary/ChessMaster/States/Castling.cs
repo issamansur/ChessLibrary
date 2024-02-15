@@ -4,7 +4,7 @@ using ChessMaster.Figures;
 
 namespace ChessMaster.States;
 
-public struct Castling
+public class Castling
 {
     // Fields and Properties
     public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
@@ -53,7 +53,7 @@ public struct Castling
         };
     } 
 
-    public Castling Update(Move move)
+    public void Update(Move move)
     {
         if (move.Figure is King)
         {
@@ -87,8 +87,6 @@ public struct Castling
                     break;
             }
         }
-
-        return this;
     }
 
     // Overrides

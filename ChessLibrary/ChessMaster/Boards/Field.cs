@@ -4,15 +4,15 @@ using ChessMaster.Figures;
 namespace ChessMaster.Boards;
 
 
-public struct Field
+public class Field
 {
     // Fields and Properties
     private const string Alphabet = "abcdefgh";
 
     private static Regex FieldPattern => new Regex("^[a-h][1-8]$");
-    
-    public int X { get; private init; }
-    public int Y { get; private init; }
+
+    public readonly int X;
+    public readonly int Y;
     
     // Constructors
     public Field(int x, int y)
