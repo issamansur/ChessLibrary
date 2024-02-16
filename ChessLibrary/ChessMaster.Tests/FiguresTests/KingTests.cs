@@ -256,15 +256,10 @@ public class KingTests
         _chess.Move("Ng1f3");
         _chess.Move("ng8f6");
         
-        _chess.Move("Ke1e2");
-        _chess.Move("ke8e7");
-        _chess.Move("Ke2e1");
-        _chess.Move("ke7e8");
-        
         _chess.Move("Ra1a2");
         _chess.Move("rh8h7");
         /*
-         * Position after 4 moves and Map of moves
+         * Position after 6 moves and Map of moves
          *
          * 8    r  .  1  .  k  .  2  r
          * 7    .  .  .  n  .  .  .  .
@@ -289,14 +284,54 @@ public class KingTests
     }
 
     [Test]
-    public void CastleFault_FiguresBetween()
+    [TestCase("4k3/8/8/8/8/8/8/RN2K1NR w KQkq - 0 1")]
+    [TestCase("4k3/8/8/8/8/8/8/R1B1KB1R w KQkq - 0 1")]
+    [TestCase("4k3/8/8/8/8/8/8/R2QKB1R w KQkq - 0 1")]
+    [TestCase("4k3/8/8/8/8/8/8/RN1QKBNR w KQkq - 0 1")]
+    public void CastleFault_FiguresBetween(string boardFen)
     {
-        // TODO: Add test
+        _chess = new Chess(boardFen);
+        /*
+         * Position for fen
+         *
+         * 1    R  N  .  .  K  .  N  R
+         * 
+         * 1    R  .  B  .  K  B  .  R
+         * 
+         * 1    R  .  .  Q  K  B  .  R
+         * 
+         * 1    R  N  .  Q  K  B  N  R
+         *
+         *      a  b  c  d  e  f  g  h
+         */
+        
+        Assert.Throws<ArgumentException>(() => _chess.Move("Ke1c1"));
+        Assert.Throws<ArgumentException>(() => _chess.Move("Ke1g1"));
     }
 
     [Test]
-    public void CastleFault_KingInCheck()
+    [TestCase("3kr3/8/8/8/8/8/8/R3K2R w KQkq - 0 1")]
+    [TestCase("3rkr2/8/8/8/8/8/8/R3K2R w KQkq - 0 1")]
+    [TestCase("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1")]
+    public void CastleFault_KingInCheck(string boardFen)
     {
-        // TODO: Add test
+        _chess = new Chess(boardFen);
+        /*
+         * Position for fen
+         *
+         * 8    .  .  .  k  r  .  .  .
+         * 1    R  .  .  .  K  .  .  R
+         *
+         * 8    .  .  .  r  k  r  .  .
+         * 1    R  .  .  .  K  .  .  R
+         *
+         * 8    .  .  r  .  k  .  r  .
+         * 1    R  .  .  .  K  .  .  R
+         *
+         *      a  b  c  d  e  f  g  h
+         */
+        
+        Assert.Throws<ArgumentException>(() => _chess.Move("Ke1c1"));
+        Assert.Throws<ArgumentException>(() => _chess.Move("Ke1g1"));
     }
 }
