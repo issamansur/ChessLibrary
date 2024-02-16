@@ -77,7 +77,7 @@ public class PawnTests
         
         Assert.Throws(
             typeof(ArgumentException), 
-            () => _chess.Move("Pe6e7")
+            () => _chess.Move("pe6e7")
         );
     }
 
