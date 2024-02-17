@@ -1,7 +1,7 @@
-using ChessMaster.Figures;
-using ChessMaster.States;
+using ChessMaster.Domain.Figures;
+using ChessMaster.Domain.States;
 
-namespace ChessMaster.Utils;
+namespace ChessMaster.Domain.Utils;
 
 public class FigureBuilder
 {

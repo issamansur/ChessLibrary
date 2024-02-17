@@ -1,4 +1,4 @@
-namespace ChessMaster.Utils;
+namespace ChessMaster.Domain.Utils;
 
 using Boards;
 

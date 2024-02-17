@@ -1,9 +1,9 @@
 ﻿using ChessLibrary;
-using ChessMaster;
+using ChessMaster.Domain;
 using System.Text;
-using ChessMaster.States;
-using Chess = ChessMaster.Chess;
-using Figure = ChessMaster.Figures.Figure;
+using ChessMaster.Domain.States;
+using Chess = ChessMaster.Domain.Chess;
+using Figure = ChessMaster.Domain.Figures.Figure;
 
 Console.OutputEncoding = Encoding.UTF8;
 

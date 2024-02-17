@@ -1,3 +1,5 @@
+using ChessMaster.Domain;
+
 namespace ChessMaster.Tests.FiguresTests;
 
 public class BishopTests

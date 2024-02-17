@@ -1,4 +1,4 @@
-namespace ChessMaster.Exceptions;
+namespace ChessMaster.Domain.Exceptions;
 
 public class InvalidMoveException : ChessMasterException
 {

@@ -1,4 +1,4 @@
-using ChessMaster.Boards;
+using ChessMaster.Domain;
 
 namespace ChessMaster.Tests.FiguresTests;
 

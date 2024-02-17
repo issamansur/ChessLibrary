@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using ChessMaster.Boards;
-using ChessMaster.Figures;
+using ChessMaster.Domain.Boards;
+using ChessMaster.Domain.Figures;
 
-namespace ChessMaster.Utils;
+namespace ChessMaster.Domain.Utils;
 
 public class MoveBuilder
 {
@@ -57,7 +57,7 @@ public class MoveBuilder
         Figure = move.Figure;
         From = move.From;
         To = move.To;
-        CapturedFigure = move.CapturedFigure;
+        CapturedFigure = move.PromotedFigure;
 
         return this;
     }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessLibrary", "ChessLibrar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoChess", "DemoChess\DemoChess.csproj", "{90513C9D-C0AD-455E-BAEE-87FD758F7F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster", "ChessMaster\ChessMaster.csproj", "{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Domain", "ChessMaster.Domain\ChessMaster.Domain.csproj", "{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Tests", "ChessMaster.Tests\ChessMaster.Tests.csproj", "{06863613-089F-4B4F-97E7-C6C2A959ABED}"
 EndProject
