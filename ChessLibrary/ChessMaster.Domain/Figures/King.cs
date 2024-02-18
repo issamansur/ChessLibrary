@@ -5,7 +5,6 @@ namespace ChessMaster.Domain.Figures;
 
 public class King : Figure
 {
-    public override string Symbol { get; protected init; } = "K";
 
     public King(Color color) : base(color)
     {

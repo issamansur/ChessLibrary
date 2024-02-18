@@ -6,7 +6,6 @@ namespace ChessMaster.Domain.Figures;
 
 public class Rook: Figure
 {
-    public override string Symbol { get; protected init; } = "R";
 
     public Rook(Color color) : base(color)
     {

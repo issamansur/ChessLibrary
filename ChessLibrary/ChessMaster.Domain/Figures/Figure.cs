@@ -6,7 +6,6 @@ namespace ChessMaster.Domain.Figures;
 public abstract class Figure
 {
     // Properties
-    public abstract string Symbol { get; protected init; }
     public Color Color { get; private init; }
     
     // Constructors
@@ -37,7 +36,7 @@ public abstract class Figure
     
     // Methods
     public abstract bool CanMove(Board board, Move move);
-    
+    /*
     public virtual char ToUnicode()
     {
         return Symbol[0] switch
@@ -57,24 +56,18 @@ public abstract class Figure
             _ => '_'
         };
     }
+    */
 
     // Overrides
 
     // operators == and !=
     public static bool operator ==(Figure? a, Figure? b)
     {
-        return a?.Symbol == b?.Symbol && a?.Color == b?.Color;
+        return a?.Color == b?.Color;
     }
 
     public static bool operator !=(Figure? a, Figure? b)
     {
         return !(a == b);
-    }
-
-
-    // ToString
-    public override string ToString()
-    {
-        return Color == Color.White ? Symbol.ToUpper() : Symbol.ToLower();
     }
 }

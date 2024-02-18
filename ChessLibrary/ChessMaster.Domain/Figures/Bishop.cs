@@ -5,7 +5,6 @@ namespace ChessMaster.Domain.Figures;
 
 public class Bishop: Figure
 {
-    public override string Symbol { get; protected init; } = "B";
 
     public Bishop(Color color) : base(color)
     {
