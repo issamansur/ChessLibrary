@@ -44,7 +44,7 @@ public class King : Figure
         }
 
         // 3. King is not in check
-        if (board.IsCheck(board.ActiveColor))
+        if (board.IsCheck(move.Figure.Color))
         {
             return false;
         }
@@ -52,11 +52,12 @@ public class King : Figure
         // 4. King does not pass through a square that is attacked by an enemy piece
         Move newMove1 = new Move(move.Figure, move.From, move.From + move.Direction);
         Board newBoard1 = board.Move(newMove1);
-        if (newBoard1.IsCheck(board.ActiveColor))
+        if (newBoard1.IsCheck(move.Figure.Color))
         {
             return false;
         }
 
+        /*
         // 5. King does not end up in check
         Move newMove2 = new Move(
             move.Figure,
@@ -64,7 +65,11 @@ public class King : Figure
             move.To);
         newBoard1.ActiveColor = newBoard1.ActiveColor.ChangeColor();
         Board newBoard2 = newBoard1.Move(newMove2);
+
         return !newBoard2.IsCheck(board.ActiveColor);
+        */
+        
+        return true;
     }
 
     public override bool CanMove(Board board, Move move)

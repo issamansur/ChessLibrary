@@ -1,4 +1,5 @@
 using ChessMaster.Domain;
+using ChessMaster.Domain.Utils;
 
 namespace ChessMaster.Tests.FiguresTests;
 
@@ -10,7 +11,7 @@ public class BishopTests
     [SetUp]
     public void Setup()
     {
-        _chess = new Chess("k7/8/1r3r2/8/3B4/8/1r3r2/7K w KQkq - 0 1");
+        _chess = Builders.ChessBuild("k7/8/1r3r2/8/3B4/8/1r3r2/7K w KQkq - 0 1");
         /*
          * Initial position
          *

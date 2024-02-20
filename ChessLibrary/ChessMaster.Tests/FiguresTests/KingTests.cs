@@ -1,4 +1,5 @@
 using ChessMaster.Domain;
+using ChessMaster.Domain.Utils;
 
 namespace ChessMaster.Tests.FiguresTests;
 
@@ -10,7 +11,7 @@ public class KingTests
     [SetUp]
     public void Setup()
     {
-        _chess = new Chess("rn2k1nr/8/8/8/8/8/8/RN2K1NR w KQkq - 0 1");
+        _chess = Builders.ChessBuild("rn2k1nr/8/8/8/8/8/8/RN2K1NR w KQkq - 0 1");
         /*
          * Initial position
          *
@@ -189,7 +190,7 @@ public class KingTests
     [TestCase("rn2k1n1/8/8/8/8/8/8/RN2K1N1 w KQkq - 0 1")]
     public void CastleFault_NoRook(string chessFen)
     {
-        _chess = new Chess(chessFen);
+        _chess = Builders.ChessBuild(chessFen);
         /*
          * Position after 4 moves and Map of moves
          *
@@ -290,7 +291,7 @@ public class KingTests
     [TestCase("4k3/8/8/8/8/8/8/RN1QKBNR w KQkq - 0 1")]
     public void CastleFault_FiguresBetween(string boardFen)
     {
-        _chess = new Chess(boardFen);
+        _chess = Builders.ChessBuild(boardFen);
         /*
          * Position for fen
          *
@@ -315,7 +316,7 @@ public class KingTests
     [TestCase("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1")]
     public void CastleFault_KingInCheck(string boardFen)
     {
-        _chess = new Chess(boardFen);
+        _chess = Builders.ChessBuild(boardFen);
         /*
          * Position for fen
          *

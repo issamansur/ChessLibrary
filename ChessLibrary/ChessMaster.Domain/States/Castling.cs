@@ -1,37 +1,42 @@
 using System.Text.RegularExpressions;
 using ChessMaster.Domain.Boards;
 using ChessMaster.Domain.Figures;
+using ChessMaster.Domain.Utils;
 
 namespace ChessMaster.Domain.States;
 
 public class Castling
 {
     // Fields and Properties
-    public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
-
-    private bool CanCastleE1C1 { get; set; }
-    private bool CanCastleE1G1 { get; set; }
-    private bool CanCastleE8C8 { get; set; }
-    private bool CanCastleE8G8 { get; set; }
+    internal bool CanCastleE1C1 { get; private set; }
+    internal  bool CanCastleE1G1 { get; private set; }
+    internal  bool CanCastleE8C8 { get; private set; }
+    internal  bool CanCastleE8G8 { get; private set; }
     
     // Constructors
-    public Castling(string castlingFen)
+    public Castling()
     {
-        if (!CastlingPattern.IsMatch(castlingFen))
-        {
-            throw new ArgumentException("Invalid castling");
-        }
-        
-        CanCastleE1C1 = castlingFen.Contains('K');
-        CanCastleE1G1 = castlingFen.Contains('Q');
-        CanCastleE8C8 = castlingFen.Contains('k');
-        CanCastleE8G8 = castlingFen.Contains('q');
+        CanCastleE1C1 = true;
+        CanCastleE1G1 = true;
+        CanCastleE8C8 = true;
+        CanCastleE8G8 = true;
+    }
+    
+    public Castling(bool canCastleE1C1, bool canCastleE1G1, bool canCastleE8C8, bool canCastleE8G8)
+    {
+        CanCastleE1C1 = canCastleE1C1;
+        CanCastleE1G1 = canCastleE1G1;
+        CanCastleE8C8 = canCastleE8C8;
+        CanCastleE8G8 = canCastleE8G8;
     }
     
     // Methods
     public bool CanCastle(Move move) //?
     {
-        return (move.From.ToString(), move.To.ToString()) switch
+        return (
+                Parsers.FieldToString(move.From), 
+                Parsers.FieldToString(move.To)
+        ) switch
         {
             ("e1", "g1") => CanCastleE1G1,
             ("e1", "c1") => CanCastleE1C1,
@@ -43,12 +48,12 @@ public class Castling
 
     public static Field GetRockPosition(Field to)
     {
-        return to.ToString() switch
+        return Parsers.FieldToString(to) switch
         {
-            "g1" => Field.FromString("h1"),
-            "c1" => Field.FromString("a1"),
-            "g8" => Field.FromString("h8"),
-            "c8" => Field.FromString("a8"),
+            "g1" => Parsers.StringToField("h1"),
+            "c1" => Parsers.StringToField("a1"),
+            "g8" => Parsers.StringToField("h8"),
+            "c8" => Parsers.StringToField("a8"),
             _ => throw new NotImplementedException()
         };
     } 
@@ -71,7 +76,7 @@ public class Castling
         }
         else if (move.Figure is Rook)
         {
-            switch (move.From.ToString())
+            switch (Parsers.FieldToString(move.From))
             {
                 case "a1":
                     CanCastleE1C1 = false;
@@ -87,30 +92,5 @@ public class Castling
                     break;
             }
         }
-    }
-
-    // Overrides
-    public override string ToString()
-    {
-        string castlingFen = "";
-        
-        if (CanCastleE1C1)
-        {
-            castlingFen += "K";
-        }
-        if (CanCastleE1G1)
-        {
-            castlingFen += "Q";
-        }
-        if (CanCastleE8C8)
-        {
-            castlingFen += "k";
-        }
-        if (CanCastleE8G8)
-        {
-            castlingFen += "q";
-        }
-
-        return castlingFen;
     }
 }

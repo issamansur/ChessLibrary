@@ -1,3 +1,5 @@
+using ChessMaster.Domain.Utils;
+
 namespace ChessMaster.Domain;
 
 using Figures;
@@ -7,8 +9,15 @@ using States;
 public class Chess
 {
     // Fields and properties
-    public Figure? this[int x, int y] => _board[x, y];
-    private Board _board;
+    public Figure? this[int x, int y] => Board[x, y];
+    internal Board Board { get; private set; }
+    
+    // 1.Active color of the current player
+    // 2. Number of half moves since the last pawn advance or capture
+    // 3. Number of the full move. It starts at 1, and is incremented after Black's move
+    internal Color ActiveColor { get; set; }
+    internal int HalfMoveClock { get; private set; }
+    internal int FullMoveNumber { get; private set; }
     
     public GameState GameState { get; private set; }
     
@@ -19,16 +28,45 @@ public class Chess
     */
     
     // Constructor
-    public Chess(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    public Chess()
     {
         GameState = GameState.None;
-        _board = new Board(fen);
+        
+        Board = new Board();
+
+        ActiveColor = Color.White;
+        HalfMoveClock = 0;
+        FullMoveNumber = 1;
+    }
+    
+    public Chess(Board board, Color activeColor, int halfMoveClock, int fullMoveNumber)
+    {
+        GameState = GameState.None;
+        
+        Board = board;
+
+        ActiveColor = activeColor;
+        HalfMoveClock = halfMoveClock;
+        FullMoveNumber = fullMoveNumber;
     }
 
     // Methods
     public void Start()
     {
         GameState = GameState.Playing;
+    }
+
+    private bool CanMove(Move move)
+    {
+        if (move.From == move.To ||
+            move.Figure.Color != ActiveColor ||
+            Board[move.To]?.Color == ActiveColor
+            )
+        {
+            return false;
+        }
+
+        return true;
     }
     
     public void Move(string stringMove)
@@ -38,18 +76,39 @@ public class Chess
             return;
         }
         
-        var move = Boards.Move.FromString(stringMove);
-        _board = _board.Move(move);
-        if (_board.IsCheckmate(_board.ActiveColor))
+        Move move = Parsers.StringToMove(stringMove);
+        
+        // Check if the move is valid
+        if (!CanMove(move))
+        {
+            throw new ArgumentException("Invalid move");
+        }
+        
+        // Move
+        Board = Board.Move(move);
+        
+        // Update properties:
+        // 1. Update HalfMoveClock
+        // 2. Update FullMoveNumber
+        // 3. Update ActiveColor
+        HalfMoveClock = move.Figure is Pawn ? 0 : HalfMoveClock + 1;
+        if (ActiveColor == Color.White)
+        {
+            FullMoveNumber++;
+        }
+        ActiveColor = ActiveColor.ChangeColor();
+        
+        // Check for checkmate, stalemate, check and update GameState
+        if (Board.IsCheckmate(ActiveColor))
         {
             GameState = GameState.Checkmate;
         }
-        else if (_board.IsStalemate(_board.ActiveColor))
+        else if (Board.IsStalemate(ActiveColor))
         {
             GameState = GameState.Stalemate;
         }
         else
-        if (_board.IsCheck(_board.ActiveColor))
+        if (Board.IsCheck(ActiveColor))
         {
             GameState = GameState.Check;
         }

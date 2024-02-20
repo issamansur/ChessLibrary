@@ -7,10 +7,6 @@ namespace ChessMaster.Domain.Boards;
 public class Field
 {
     // Fields and Properties
-    private const string Alphabet = "abcdefgh";
-
-    private static Regex FieldPattern => new Regex("^[a-h][1-8]$");
-
     public readonly int X;
     public readonly int Y;
     
@@ -20,20 +16,6 @@ public class Field
         X = x;
         Y = y;
     }
-    
-    public static Field FromString(string field)
-    {
-        if (!FieldPattern.IsMatch(field.ToLower()))
-        {
-            throw new ArgumentException("Invalid field"); 
-        }
-        var x = Alphabet.IndexOf(field.ToLower()[0]);
-        var y = int.Parse(field[1].ToString()) - 1;
-        
-        return new Field(x, y);
-    }
-    
-    // Overrides
     
     // Equals (we no need to compare Figure)
     private bool Equals(Field other)
@@ -73,9 +55,6 @@ public class Field
         return !(a == b);
     }
     
-    // ToString
-    public override string ToString()
-    {
-        return $"{Alphabet[X]}{Y + 1}";
-    }
+    // Castling
+    
 }

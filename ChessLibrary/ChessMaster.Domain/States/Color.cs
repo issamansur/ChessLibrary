@@ -18,24 +18,4 @@ public static class Colors {
             _ => throw new InvalidOperationException("Invalid color"),
         };
     }
-    
-    public static Color FromChar(char c)
-    {
-        return c switch
-        {
-            'w' => Color.White,
-            'b' => Color.Black,
-            _ => throw new ArgumentException("Invalid color"),
-        };
-    }
-    
-    public static string ToStr(this Color color)
-    {
-        return color switch
-        {
-            Color.White => "w",
-            Color.Black => "b",
-            _ => throw new InvalidOperationException("Invalid color"),
-        };
-    }
 }

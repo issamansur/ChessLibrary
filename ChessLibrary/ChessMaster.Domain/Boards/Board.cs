@@ -1,85 +1,60 @@
 using System.Text;
 using ChessMaster.Domain.Figures;
 using ChessMaster.Domain.States;
+using ChessMaster.Domain.Utils;
 
 namespace ChessMaster.Domain.Boards;
 
 public class Board
 {
-    // FEN parts
-    private string _fen;
-    private readonly Figure?[,] _figures;
-
-    // Active color of the current player
-    public Color ActiveColor { get; set; }
+    // Properties
+    internal Figure?[,] Figures { get; init; } = new Figure?[8, 8];
 
     // Castling state of the current board
-    public Castling Castling { get; private set; }
+    internal Castling Castling { get; init; }
 
     // Field for en passant capture
-    public Field? EnPassantTargetSquare { get; private set; }
-
-    // Number of half moves since the last pawn advance or capture
-    private int _halfMoveClock;
-
-    // Number of the full move. It starts at 1, and is incremented after Black's move
-    public int FullMoveNumber { get; private set; }
+    internal Field? EnPassantTargetSquare { get; private set; }
 
     // Indexers to access figures on the board
-    public Figure? this[int x, int y] => _figures[x, y];
-    public Figure? this[Field field] => _figures[field.X, field.Y];
+    public Figure? this[int x, int y] => Figures[x, y];
+    public Figure? this[Field field] => Figures[field.X, field.Y];
 
-    // Constructor to initialize the board with a FEN string
-    public Board(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    // Constructor to initialize the board
+    public Board()
     {
-        _fen = fen;
-        _figures = new Figure?[8, 8];
+        SetDefaultFigures();
 
-        // Initialize the board with the FEN string
-        FenInit(fen);
+        Castling = new Castling();
+        EnPassantTargetSquare = null;
     }
-
-    // Method to initialize the board with a FEN string
-    private void FenInit(string fen)
+    
+    public Board(Figure?[,] figures, Castling castling, Field? enPassantTargetSquare)
     {
-        // Get fen parts and check
-        var parts = fen.Split();
-        if (parts.Length != 6)
+        for (int x = 0; x < 8; x++)
         {
-            throw new ArgumentException("Invalid fen: must contain 6 data parts");
+            for (int y = 0; y < 8; y++)
+            {
+                Figures[x, y] = figures[x, y];
+            }
         }
 
-        // 1. Set "Piece placement" part to "Board"
-        SetFigures(parts[0]);
+        Castling = new Castling(
+            castling.CanCastleE1C1,
+            castling.CanCastleE1G1,
+            castling.CanCastleE8C8,
+            castling.CanCastleE8G8
+            );
 
-        // 2. Set "Active color" part
-        ActiveColor = parts[1] switch
-        {
-            "w" => Color.White,
-            "b" => Color.Black,
-            _ => throw new ArgumentException("Invalid fen (Active Color): invalid color"),
-        };
-
-        // 3. Set "Castling Availability" part
-        Castling = new Castling(parts[2]);
-
-        // 4. Set "En passant target square" part
-        EnPassantTargetSquare = parts[3] switch
-        {
-            "-" => null,
-            _ => Field.FromString(parts[3]),
-        };
-
-        // 5. Set "HalfMove clock" part
-        _halfMoveClock = int.Parse(parts[4]);
-
-        // 6. Set "FullMove number" part
-        FullMoveNumber = int.Parse(parts[5]);
+        EnPassantTargetSquare = enPassantTargetSquare is not null ? 
+            new Field(enPassantTargetSquare.X, enPassantTargetSquare.Y) : null;
     }
-
-    // Method to set figures on the board from a FEN string
-    private void SetFigures(string boardFen)
+    
+    // Method to set figures on the board by default 
+    private void SetDefaultFigures()
     {
+        string boardFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        
         var rows = boardFen.Split('/');
         if (rows.Length != 8)
         {
@@ -98,16 +73,9 @@ public class Board
                 }
                 else
                 {
-                    _figures[x, 7 - y] = Figure.FromChar(c);
+                    Figures[x, 7 - y] = Parsers.CharToFigure(c);
                     x++;
                 }
-                if (x > 8)
-                    throw new ArgumentException($"Invalid fen (Piece Placement): ...{row}...");
-            }
-
-            if (x != 8)
-            {
-                throw new ArgumentException($"Invalid fen (Piece Placement): ...{row}...");
             }
         }
     }
@@ -121,20 +89,19 @@ public class Board
     public Field GetKingField(Color kingColor)
     {
         // Find the king's position
-        Field? kingField = null;
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 8; y++)
             {
                 if (this[x, y] is King king && king.Color == kingColor)
                 {
-                    kingField = new Field(x, y);
-                    break;
+                    var kingField = new Field(x, y);
+                    return kingField;
                 }
             }
         }
 
-        return kingField ?? throw new InvalidOperationException();
+        throw new InvalidOperationException();
     }
 
     // Method to get available moves for certain color
@@ -208,7 +175,7 @@ public class Board
     // Method to set a figure on a field
     private void SetFigure(Field field, Figure? figure)
     {
-        _figures[field.X, field.Y] = figure;
+        Figures[field.X, field.Y] = figure;
     }
 
     // Method to check if a figure can move from one field to another in a certain direction
@@ -239,7 +206,7 @@ public class Board
     private Board MoveFigure(Move move)
     {
         // Create new Board from FEN by copy.
-        Board board = new Board(_fen);
+        Board board = new Board(Figures, Castling, EnPassantTargetSquare);
 
         // Default move
         board.SetFigure(move.From, null);
@@ -268,11 +235,10 @@ public class Board
             }
         }
 
-        if (move.Figure is Pawn && move.To is { Y: 0 or 7 })
+        if (move is { Figure: Pawn, To.Y: 0 or 7 })
         {
             board.SetFigure(move.To, move.PromotedFigure);
         }
-
 
         // Update properties for FEN (and create new FEN)
         board.UpdateState(move);
@@ -284,25 +250,26 @@ public class Board
     // Method to check if a figure can make a certain move
     public bool CanMove(Move move)
     {
+        Figure? figure = this[move.From];
         // Validate the following conditions:
         // 1. There is a figure on the current field.
         // 2. The figure on the current field is of the active color.
-        // 3. The figure on the target field is not of the active color.
+        // 3. The figure on the target field is not of the active color (or moving Figure Color).
         // 4. The move is not to the same field where the figure currently is.
         // 5. If the figure is not a Pawn, it cannot have a captured figure in the move.
         // 6. The figure should be able to walk like that.
         // 7. There should be no check after the move
-        if (this[move.From] != move.Figure ||
-            move.Figure.Color != ActiveColor ||
-            (this[move.To] != null && this[move.To]?.Color == ActiveColor) ||
+        if (move.Figure != figure ||
             move.From == move.To ||
-            move.PromotedFigure is not null && move.Figure is not Pawn ||
-            !move.Figure.CanMove(this, move))
+            //move.Figure.Color != ActiveColor ||
+            this[move.To]?.Color == figure.Color ||
+            move.PromotedFigure is not null && figure is not Pawn ||
+            !figure.CanMove(this, move))
         {
             return false;
         }
 
-        return !MoveFigure(move).IsCheck(ActiveColor);
+        return !MoveFigure(move).IsCheck(move.Figure.Color);
     }
 
     // Method to make a move on the board
@@ -321,8 +288,6 @@ public class Board
     // Method to update the state of the board after a move
     private void UpdateState(Move move)
     {
-        // Update ActiveColor
-        ActiveColor = ActiveColor.ChangeColor();
 
         // Update Castling
         Castling.Update(move);
@@ -333,79 +298,5 @@ public class Board
         {
             EnPassantTargetSquare = move.From + move.Direction;
         }
-
-        // Update HalfMoveClock
-        _halfMoveClock = move.Figure is Pawn ? 0 : _halfMoveClock + 1;
-
-        // Update FullMoveNumber
-        if (ActiveColor == Color.White)
-        {
-            FullMoveNumber++;
-        }
-
-        // Update FEN
-        _fen = ToFen();
     }
-
-    // Method to convert the current state of the board to a FEN string
-    private string ToFen()
-    {
-        var fen = new StringBuilder();
-
-        // 1. "Piece placement" part
-        for (var y = 0; y < 8; y++)
-        {
-            var empty = 0;
-            for (var x = 0; x < 8; x++)
-            {
-                var figure = _figures[x, 7 - y];
-                if (figure == null)
-                {
-                    empty++;
-                }
-                else
-                {
-                    if (empty > 0)
-                    {
-                        fen.Append(empty);
-                        empty = 0;
-                    }
-                    fen.Append(figure);
-                }
-            }
-            if (empty > 0)
-            {
-                fen.Append(empty);
-            }
-            if (y < 7)
-            {
-                fen.Append('/');
-            }
-        }
-        fen.Append(' ');
-
-        // 2. "Active color" part
-        fen.Append(ActiveColor.ToStr());
-        fen.Append(' ');
-
-        // 3. "Castling Availability" part
-        fen.Append(Castling);
-        fen.Append(' ');
-
-        // 4. "En passant target square" part
-        fen.Append(EnPassantTargetSquare?.ToString() ?? "-");
-        fen.Append(' ');
-
-        // 5. "HalfMove clock" part
-        fen.Append(_halfMoveClock);
-        fen.Append(' ');
-
-        // 6. "FullMove number" part
-        fen.Append(FullMoveNumber);
-
-        return fen.ToString();
-    }
-
-    // Overrides
-    // TODO: override ToString
 }

@@ -1,4 +1,5 @@
 using ChessMaster.Domain;
+using ChessMaster.Domain.Utils;
 
 namespace ChessMaster.Tests.FiguresTests;
 
@@ -10,7 +11,7 @@ public class QueenTests
     [SetUp]
     public void Setup()
     {
-        _chess = new Chess("k7/8/2r2r2/8/8/2Q2rr1/8/7K w KQkq - 0 1");
+        _chess = Builders.ChessBuild("k7/8/2r2r2/8/8/2Q2rr1/8/7K w KQkq - 0 1");
         /*
          * Initial position
          *
