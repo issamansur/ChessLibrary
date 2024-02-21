@@ -5,9 +5,16 @@ namespace ChessMaster.Domain.Figures;
 
 public class King : Figure
 {
+    public bool IsJustMoved { get; private set; }
 
-    public King(Color color) : base(color)
+    public King(Color color, bool isJustMoved = false) : base(color)
     {
+        IsJustMoved = isJustMoved;
+    }
+    
+    public override void Move()
+    {
+        IsJustMoved = true;
     }
 
     private bool CanSimpleMove(Move move)
@@ -24,20 +31,22 @@ public class King : Figure
         }
 
         // Check on Castling:
-        // 1. Castling is available (King and Rook are on their initial squares)
-        if (!board.Castling.CanCastle(move))
+        // 1. Get Rook Position and check if exist
+        int rookX = move.DiffX > 1 ? 7 : 0;
+        int rookY = move.From.Y;
+        Field rookPos = new Field(rookX, rookY);
+        if (board[rookPos] is not Rook rook || rook.Color != move.Figure.Color)
         {
             return false;
         }
         
-        Field rookPos = Castling.GetRockPosition(move.To);
-        Figure? rook = board[rookPos];
-        if (rook is not Rook || rook.Color != move.Figure.Color)
+        // 2. Castling is available (King and Rook are on their initial squares)
+        if (IsJustMoved || rook.IsJustMoved)
         {
             return false;
         }
 
-        // 2. There are no pieces between the king and the rook
+        // 3. There are no pieces between the king and the rook
         if (!board.CanMoveFromTo(move.From, rookPos, move.Direction))
         {
             return false;
@@ -50,33 +59,16 @@ public class King : Figure
         }
 
         // 4. King does not pass through a square that is attacked by an enemy piece
-        Move newMove1 = new Move(move.Figure, move.From, move.From + move.Direction);
-        Board newBoard1 = board.Move(newMove1);
-        if (newBoard1.IsCheck(move.Figure.Color))
+        if (board.IsUnderAttack(move.From + move.Direction, move.Figure.Color.ChangeColor()))
         {
             return false;
         }
-
-        /*
-        // 5. King does not end up in check
-        Move newMove2 = new Move(
-            move.Figure,
-            move.From + move.Direction,
-            move.To);
-        newBoard1.ActiveColor = newBoard1.ActiveColor.ChangeColor();
-        Board newBoard2 = newBoard1.Move(newMove2);
-
-        return !newBoard2.IsCheck(board.ActiveColor);
-        */
         
         return true;
     }
 
     public override bool CanMove(Board board, Move move)
     {
-        // Can move if:
-        // 1. AbsDiffX and AbsDiffY are both <= 1
-        // 2. Castling
         return CanSimpleMove(move) || CanCastle(board, move);
     }
 }

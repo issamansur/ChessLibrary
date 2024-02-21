@@ -7,7 +7,7 @@ namespace ChessMaster.Domain.Boards;
 public class Move
 {
     // Fields and Properties
-    public readonly Figure Figure;
+    public Figure Figure { get; internal set; }
     public readonly Field From;
     public readonly Field To;
     public readonly Figure? PromotedFigure;

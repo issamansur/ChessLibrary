@@ -15,6 +15,7 @@ public abstract class Figure
     }
     
     // Methods
+    public virtual void Move() { }
     public abstract bool CanMove(Board board, Move move);
 
     // Overrides

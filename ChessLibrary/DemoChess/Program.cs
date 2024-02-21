@@ -1,6 +1,4 @@
-﻿using ChessLibrary;
-using ChessMaster.Domain;
-using System.Text;
+﻿using System.Text;
 using ChessMaster.Domain.States;
 using ChessMaster.Domain.Utils;
 using Chess = ChessMaster.Domain.Chess;

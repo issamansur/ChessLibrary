@@ -25,7 +25,7 @@ public class Builders
         string? enPassantString = parts[3];
         Field? enPassant = enPassantString == "-"? null : Parsers.StringToField(parts[3]);
         
-        return new Board(figures, castling, enPassant);
+        return new Board(figures, enPassant);
     }
 
     public static Chess ChessBuild(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
@@ -62,7 +62,6 @@ public class Builders
         // Create Board 
         Board board = new Board(
             figures,
-            castling,
             enPassantTargetSquare
         );
 
@@ -79,7 +78,6 @@ public class Builders
     {
         Figure?[,] figures = chess.Board.Figures;
         Color activeColor = chess.ActiveColor;
-        Castling castling = chess.Board.Castling;
         Field? enPassantTargetSquare = chess.Board.EnPassantTargetSquare;
         int halfMoveClock = chess.HalfMoveClock;
         int fullMoveNumber = chess.FullMoveNumber;
@@ -95,7 +93,8 @@ public class Builders
         fen.Append(' ');
 
         // 3. "Castling Availability" part
-        fen.Append(Parsers.CastlingToString(castling));
+        // TODO: Add castling availability
+        // fen.Append();
         fen.Append(' ');
 
         // 4. "En passant target square" part
