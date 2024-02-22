@@ -48,7 +48,7 @@ static void ChessToAscii(Chess chess)
                 Console.ForegroundColor = ConsoleColor.Gray;
             else 
                 Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(figure == null? "." : Parsers.FigureToUnicode(figure));
+            Console.Write(figure == null? "." : StringParser.FigureToUnicode(figure));
             Console.Write(' ');
         }
         Console.ForegroundColor = ConsoleColor.Cyan;

@@ -34,8 +34,8 @@ public class Castling
     public bool CanCastle(Move move) //?
     {
         return (
-                Parsers.FieldToString(move.From), 
-                Parsers.FieldToString(move.To)
+                StringParser.FieldToString(move.From), 
+                StringParser.FieldToString(move.To)
         ) switch
         {
             ("e1", "g1") => CanCastleE1G1,
@@ -48,12 +48,12 @@ public class Castling
 
     public static Field GetRockPosition(Field to)
     {
-        return Parsers.FieldToString(to) switch
+        return StringParser.FieldToString(to) switch
         {
-            "g1" => Parsers.StringToField("h1"),
-            "c1" => Parsers.StringToField("a1"),
-            "g8" => Parsers.StringToField("h8"),
-            "c8" => Parsers.StringToField("a8"),
+            "g1" => StringParser.StringToField("h1"),
+            "c1" => StringParser.StringToField("a1"),
+            "g8" => StringParser.StringToField("h8"),
+            "c8" => StringParser.StringToField("a8"),
             _ => throw new NotImplementedException()
         };
     } 
@@ -76,7 +76,7 @@ public class Castling
         }
         else if (move.Figure is Rook)
         {
-            switch (Parsers.FieldToString(move.From))
+            switch (StringParser.FieldToString(move.From))
             {
                 case "a1":
                     CanCastleE1C1 = false;

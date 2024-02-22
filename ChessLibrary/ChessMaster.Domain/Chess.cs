@@ -76,7 +76,7 @@ public class Chess
             return;
         }
         
-        Move move = Parsers.StringToMove(stringMove);
+        Move move = StringParser.StringToMove(stringMove);
         
         // Check if the move is valid
         if (!CanMove(move))
