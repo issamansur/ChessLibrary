@@ -86,14 +86,11 @@ public class Pawn : Figure
 
     public override bool CanMove(Board board, Move move)
     {
-        // Can move if:
-        // 1. AbsDiffX is 0 and AbsDiffY is 1 (if on empty field)
-        // 1. AND IF IT IS LAST LINE - CHECK IF CAPTURING CORRECT
-        // 2. AbsDiffX is 0 and AbsDiffY is 2 (if on starting position and the field in front is empty)
-        // 3. AbsDiffX is 1 and AbsDiffY is 1 (if on non-empty field)
-        return
-            CanSimpleMove(board, move) ||
-            CanDoubleMove(board, move) ||
-            CanCapture(board, move);
+        return CanSimpleMove(board, move) || CanDoubleMove(board, move) || CanCapture(board, move);
+    }
+
+    public override Pawn Clone()
+    {
+        return new Pawn(Color);
     }
 }

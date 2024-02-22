@@ -14,4 +14,9 @@ public class Bishop: Figure
     {
         return move.AbsDiffX == move.AbsDiffY && board.CanMoveFromTo(move);
     }
+
+    public override Bishop Clone()
+    {
+        return new Bishop(Color);
+    }
 }

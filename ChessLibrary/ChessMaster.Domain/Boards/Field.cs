@@ -17,6 +17,11 @@ public class Field
         Y = y;
     }
     
+    public Field Clone()
+    {
+        return new Field(X, Y);
+    }
+    
     // Equals (we no need to compare Figure)
     private bool Equals(Field other)
     {
@@ -54,7 +59,4 @@ public class Field
     {
         return !(a == b);
     }
-    
-    // Castling
-    
 }

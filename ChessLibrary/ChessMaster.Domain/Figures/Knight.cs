@@ -14,4 +14,9 @@ public class Knight: Figure
     {
         return move is { AbsDiffX: 1, AbsDiffY: 2 } or { AbsDiffX: 2, AbsDiffY: 1 };
     }
+    
+    public override Knight Clone()
+    {
+        return new Knight(Color);
+    }
 }

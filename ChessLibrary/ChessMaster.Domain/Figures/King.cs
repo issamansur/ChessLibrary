@@ -71,4 +71,9 @@ public class King : Figure
     {
         return CanSimpleMove(move) || CanCastle(board, move);
     }
+
+    public override King Clone()
+    {
+        return new King(Color);
+    }
 }

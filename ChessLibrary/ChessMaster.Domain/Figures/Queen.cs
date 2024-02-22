@@ -14,4 +14,9 @@ public class Queen: Figure
     {
         return board.CanMoveFromTo(move);
     }
+    
+    public override Queen Clone()
+    {
+        return new Queen(Color);
+    }
 }

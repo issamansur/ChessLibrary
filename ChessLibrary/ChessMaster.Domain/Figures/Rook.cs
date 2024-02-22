@@ -22,4 +22,9 @@ public class Rook: Figure
     {
         return (move.AbsDiffX == 0 || move.AbsDiffY == 0) && board.CanMoveFromTo(move);
     }
+
+    public override Rook Clone()
+    {
+        return new Rook(Color);
+    }
 }
