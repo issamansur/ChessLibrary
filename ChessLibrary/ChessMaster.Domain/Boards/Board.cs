@@ -21,7 +21,6 @@ public class Board
     public Board()
     {
         SetDefaultFigures();
-        
         EnPassantTargetSquare = null;
     }
     
@@ -31,12 +30,11 @@ public class Board
         {
             for (int y = 0; y < 8; y++)
             {
-                Figures[x, y] = figures[x, y];
+                Figures[x, y] = figures[x, y]?.Clone();
             }
         }
 
-        EnPassantTargetSquare = enPassantTargetSquare is not null ? 
-            new Field(enPassantTargetSquare.X, enPassantTargetSquare.Y) : null;
+        EnPassantTargetSquare = enPassantTargetSquare?.Clone();
     }
     
     // Method to set figures on the board by default 
@@ -62,7 +60,7 @@ public class Board
                 }
                 else
                 {
-                    Figures[x, 7 - y] = Parsers.CharToFigure(c);
+                    Figures[x, 7 - y] = StringParser.CharToFigure(c);
                     x++;
                 }
             }
@@ -114,7 +112,7 @@ public class Board
                     {
                         for (int j = 0; j < 8; j++)
                         {
-                            Move triedMove = new Move(ourFigure!, new Field(x, y), new Field(i, j));
+                            Move triedMove = new Move(ourFigure, new Field(x, y), new Field(i, j));
                             if (CanMove(triedMove))
                                 return true;
                         }
@@ -147,7 +145,7 @@ public class Board
         return false;
     }
 
-    // Method to check if the king of a certain color is in check
+    // Methods to check if the king of a certain color is in check, checkmate or stalemate
     public bool IsCheck(Color kingColor)
     {
         Field kingField = GetKingField(kingColor);
@@ -155,13 +153,11 @@ public class Board
         return IsUnderAttack(kingField, kingColor.ChangeColor());
     }
     
-    // Method to check if the king of a certain color is in checkmate
     public bool IsCheckmate(Color kingColor)
     {
         return IsCheck(kingColor) && !IsAvailableMove(kingColor);
     }
     
-    // Method to check if the king of a certain color is in stalemate
     public bool IsStalemate(Color kingColor)
     {
         return !IsCheck(kingColor) && !IsAvailableMove(kingColor);
@@ -193,11 +189,11 @@ public class Board
     // Method to make a hard move figure (for check a ... check?!)
     private Board MoveFigure(Move move)
     {
-        Figure moveFigure = this[move.From] ?? throw new InvalidOperationException();
-        moveFigure.Move();
-        
-        // Create new Board from FEN by copy.
+        // Create new Board by copy.
         Board board = new Board(Figures, EnPassantTargetSquare);
+        
+        Figure moveFigure = board[move.From] ?? throw new InvalidOperationException();
+        moveFigure.Move();
 
         // Default move
         board.SetFigure(move.From, null);
@@ -207,7 +203,6 @@ public class Board
         // 1. Castling (Move Rook)
         // 2. En Passant capture (Remove opponent's Pawn)
         // 3. Promotion (Replace Pawn with another piece when it reaches the end of the board)
-
         if (move is { Figure: King, AbsDiffX: 2 })
         {
             int rookX = move.DiffX > 1 ? 7 : 0;
@@ -232,10 +227,10 @@ public class Board
             board.SetFigure(move.To, move.PromotedFigure);
         }
 
-        // Update properties for FEN (and create new FEN)
+        // Update properties
         board.UpdateState(move);
 
-        // Return new Board with new FEN
+        // Return new Board
         return board;
     }
 
@@ -271,7 +266,7 @@ public class Board
             throw new ArgumentException("Invalid move");
         }
         
-        // Return new Board with new FEN
+        // Return new Board
         return MoveFigure(move);
     }
 
