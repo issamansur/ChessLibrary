@@ -6,7 +6,7 @@ using ChessMaster.Domain.States;
 
 namespace ChessMaster.Domain.Utils;
 
-public class Parsers
+public static class StringParser
 {
     // Color
     public static Color StringToColor(string color)

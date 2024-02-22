@@ -7,7 +7,7 @@ using Boards;
 using States;
 using Figures;
 
-public class Builders
+public static class Builders
 {
     public static Board BoardBuild(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     {
@@ -18,12 +18,12 @@ public class Builders
             throw new ArgumentException("Invalid fen: must contain 6 data parts");
         }
 
-        Figure?[,] figures = Parsers.StringToFigures(parts[0]);
+        Figure?[,] figures = StringParser.StringToFigures(parts[0]);
         
-        Castling castling = Parsers.StringToCastling(parts[2]);
+        Castling castling = StringParser.StringToCastling(parts[2]);
         
         string? enPassantString = parts[3];
-        Field? enPassant = enPassantString == "-"? null : Parsers.StringToField(parts[3]);
+        Field? enPassant = enPassantString == "-"? null : StringParser.StringToField(parts[3]);
         
         return new Board(figures, enPassant);
     }
@@ -38,19 +38,19 @@ public class Builders
         }
         
         // 1. Set "Piece placement" part to "Board"
-        Figure?[,] figures = Parsers.StringToFigures(parts[0]);
+        Figure?[,] figures = StringParser.StringToFigures(parts[0]);
         
         // 2. Set "Active color" part
-        Color activeColor = Parsers.StringToColor(parts[1]);
+        Color activeColor = StringParser.StringToColor(parts[1]);
         
         // 3. Set "Castling Availability" part
-        Castling castling = Parsers.StringToCastling(parts[2]);
+        Castling castling = StringParser.StringToCastling(parts[2]);
 
         // 4. Set "En passant target square" part
         Field enPassantTargetSquare = (parts[3] switch
         {
             "-" => null,
-            _ => Parsers.StringToField(parts[3]),
+            _ => StringParser.StringToField(parts[3]),
         })!;
         
         // 5. Set "HalfMove clock" part
@@ -85,11 +85,11 @@ public class Builders
         var fen = new StringBuilder();
 
         // 1. "Piece placement" part
-        fen.Append(Parsers.FiguresToString(figures));
+        fen.Append(StringParser.FiguresToString(figures));
         fen.Append(' ');
 
         // 2. "Active color" part
-        fen.Append(Parsers.ColorToString(activeColor));
+        fen.Append(StringParser.ColorToString(activeColor));
         fen.Append(' ');
 
         // 3. "Castling Availability" part
