@@ -228,7 +228,11 @@ public class Board
         }
 
         // Update properties
-        board.UpdateState(move);
+        EnPassantTargetSquare = null;
+        if (move is { Figure: Pawn, AbsDiffY: 2 })
+        {
+            EnPassantTargetSquare = move.From + move.Direction;
+        }
 
         // Return new Board
         return board;
@@ -268,22 +272,5 @@ public class Board
         
         // Return new Board
         return MoveFigure(move);
-    }
-
-    // Method to update the state of the board after a move
-    private void UpdateState(Move move)
-    {
-        // Update Castling
-        if (move.Figure is King or Rook)
-        {
-            // TODO: Implement Castling
-        }
-
-        // Update EnPassantTargetSquare
-        EnPassantTargetSquare = null;
-        if (move is { Figure: Pawn, AbsDiffY: 2 })
-        {
-            EnPassantTargetSquare = move.From + move.Direction;
-        }
     }
 }
