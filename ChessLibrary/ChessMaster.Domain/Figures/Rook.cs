@@ -25,6 +25,6 @@ public class Rook: Figure
 
     public override Rook Clone()
     {
-        return new Rook(Color);
+        return new Rook(Color, IsJustMoved);
     }
 }

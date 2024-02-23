@@ -74,6 +74,6 @@ public class King : Figure
 
     public override King Clone()
     {
-        return new King(Color);
+        return new King(Color, IsJustMoved);
     }
 }
