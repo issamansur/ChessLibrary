@@ -1,4 +1,3 @@
-using System.Text;
 using ChessMaster.Domain.Figures;
 using ChessMaster.Domain.States;
 using ChessMaster.Domain.Utils;
@@ -166,7 +165,7 @@ public class Board
     // Method to check if a figure can move from one field to another in a certain direction
     public bool CanMoveFromTo(Field from, Field to, Field direction)
     {
-        Field current = from;
+        Field current = from.Clone();
 
         do
         {
@@ -216,7 +215,7 @@ public class Board
 
         if (move.Figure is Pawn && 
             move is { AbsDiffX: 1, AbsDiffY: 1 } &&
-            move.To == EnPassantTargetSquare)
+            move.To == board.EnPassantTargetSquare)
         {
             Field field = EnPassantTargetSquare ?? throw new InvalidOperationException();
             board.SetFigure(field - new Field(0, move.Direction.Y), null);
@@ -228,10 +227,10 @@ public class Board
         }
 
         // Update properties
-        EnPassantTargetSquare = null;
+        board.EnPassantTargetSquare = null;
         if (move is { Figure: Pawn, AbsDiffY: 2 })
         {
-            EnPassantTargetSquare = move.From + move.Direction;
+            board.EnPassantTargetSquare = move.From + move.Direction;
         }
 
         // Return new Board
