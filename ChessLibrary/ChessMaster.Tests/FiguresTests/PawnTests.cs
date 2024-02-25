@@ -1,4 +1,5 @@
 using ChessMaster.Domain;
+using static NUnit.Framework.Assert;
 
 namespace ChessMaster.Tests.FiguresTests;
 
@@ -46,7 +47,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Pass();
+        Pass();
     }
 
     [Test]
@@ -70,14 +71,14 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException), 
             () => _chess.Move("Pe3e2")
         );
         
         _chess.Move("Pe3e4");
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException), 
             () => _chess.Move("pe6e7")
         );
@@ -106,7 +107,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException), 
             () => _chess.Move("Pe4e5")
         );
@@ -141,7 +142,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Pass();
+        Pass();
     }
 
     [Test]
@@ -164,14 +165,14 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe4e2")
         );
         
         _chess.Move("Pd2d4");
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("pe5e7")
         );
@@ -200,7 +201,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException), 
             () => _chess.Move("pe7e5")
         );
@@ -227,7 +228,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException), 
             () => _chess.Move("pe7e5")
         );
@@ -253,7 +254,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe4e6")
         );
@@ -275,7 +276,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe5e7")
         );
@@ -307,7 +308,7 @@ public class PawnTests
         _chess.Move("Pe4d5");
         _chess.Move("pe5d4");
         
-        Assert.Pass();
+        Pass();
     }
 
     [Test]
@@ -332,14 +333,14 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe5d4")
         );
         
         _chess.Move("Pa2a3");
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("pd4e5")
         );
@@ -362,11 +363,11 @@ public class PawnTests
          *
          *      a  b  c  d  e  f  g  h
          */
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe2d3")
         );
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe2f3")
         );
@@ -396,6 +397,7 @@ public class PawnTests
          */
         
         _chess.Move("Pe5d6");
+        That(_chess[3, 4], Is.Null);
         
         _chess.Move("pc5c4");
         _chess.Move("Pd2d3");
@@ -415,8 +417,9 @@ public class PawnTests
          */
         
         _chess.Move("pc4d3");
+        That(_chess[3, 3], Is.Null);
         
-        Assert.Pass();
+        Pass();
     }
 
     [Test]
@@ -444,11 +447,11 @@ public class PawnTests
          *
          *      a  b  c  d  e  f  g  h
          */
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe7f6")
         );
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe7d6")
         );
@@ -476,7 +479,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
         
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe5f6")
         );
@@ -551,13 +554,13 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move(lastMoveWhite)
         );
         
         _chess.Move("Ph7g8Q");
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move(lastMoveBlack)
         );
@@ -581,7 +584,7 @@ public class PawnTests
          *      a  b  c  d  e  f  g  h
          */
 
-        Assert.Throws(
+        Throws(
             typeof(ArgumentException),
             () => _chess.Move("Pe2e3Q")
         );
