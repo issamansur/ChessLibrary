@@ -20,12 +20,15 @@ public static class Builders
 
         Figure?[,] figures = StringParser.StringToFigures(parts[0]);
         
-        Castling castling = StringParser.StringToCastling(parts[2]);
+        StringParser.StringToCastling(figures, parts[2]);
         
-        string? enPassantString = parts[3];
-        Field? enPassant = enPassantString == "-"? null : StringParser.StringToField(parts[3]);
+        Field enPassantTargetSquare = (parts[3] switch
+        {
+            "-" => null,
+            _ => StringParser.StringToField(parts[3]),
+        })!;
         
-        return new Board(figures, enPassant);
+        return new Board(figures, enPassantTargetSquare);
     }
 
     public static Chess ChessBuild(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
@@ -44,7 +47,7 @@ public static class Builders
         Color activeColor = StringParser.StringToColor(parts[1]);
         
         // 3. Set "Castling Availability" part
-        Castling castling = StringParser.StringToCastling(parts[2]);
+        StringParser.StringToCastling(figures, parts[2]);
 
         // 4. Set "En passant target square" part
         Field enPassantTargetSquare = (parts[3] switch
@@ -74,6 +77,7 @@ public static class Builders
     }
 
     // Method to convert the current state of the board to a FEN string
+    /*
     private static string ToFen(Chess chess)
     {
         Figure?[,] figures = chess.Board.Figures;
@@ -110,4 +114,5 @@ public static class Builders
 
         return fen.ToString();
     }
+    */
 }

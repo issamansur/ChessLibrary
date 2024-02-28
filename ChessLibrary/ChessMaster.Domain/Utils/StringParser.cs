@@ -136,52 +136,21 @@ public static class StringParser
     // Castling
     public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
     
-    public static Castling StringToCastling(string castlingFen)
+    public static Figure?[,] StringToCastling(Figure?[,] figures, string castlingFen)
     {
         if (!CastlingPattern.IsMatch(castlingFen))
         {
             throw new ArgumentException("Invalid castling");
         }
-        
-        bool castleE1C1 = castlingFen.Contains('K');
-        bool castleE1G1 = castlingFen.Contains('Q');
-        bool castleE8C8 = castlingFen.Contains('k');
-        bool castleE8G8 = castlingFen.Contains('q');
 
-        return new Castling(
-            castleE1C1,
-            castleE1G1,
-            castleE8C8,
-            castleE8G8
-        );
+        // TODO
+        return figures;
     }
     
-    public static string CastlingToString(Castling castling)
+    public static string CastlingToString(Figure?[,] figures)
     {
-        var castlingFen = new StringBuilder();
-        
-        if (castling.CanCastleE1C1)
-        {
-            castlingFen.Append('K');
-        }
-        if (castling.CanCastleE1G1)
-        {
-            castlingFen.Append('Q');
-        }
-        if (castling.CanCastleE8C8)
-        {
-            castlingFen.Append('k');
-        }
-        if (castling.CanCastleE8G8)
-        {
-            castlingFen.Append('q');
-        }
-        if (castlingFen.Length == 0)
-        {
-            castlingFen.Append('-');
-        }
-
-        return castlingFen.ToString();
+        // TODO
+        return "-";
     }
     
     // Board
