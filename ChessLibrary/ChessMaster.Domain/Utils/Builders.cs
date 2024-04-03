@@ -77,7 +77,6 @@ public static class Builders
     }
 
     // Method to convert the current state of the board to a FEN string
-    /*
     private static string ToFen(Chess chess)
     {
         Figure?[,] figures = chess.Board.Figures;
@@ -114,5 +113,4 @@ public static class Builders
 
         return fen.ToString();
     }
-    */
 }
