@@ -136,21 +136,120 @@ public static class StringParser
     // Castling
     public static readonly Regex CastlingPattern = new Regex("^(K?Q?k?q?|-)$");
     
-    public static Figure?[,] StringToCastling(Figure?[,] figures, string castlingFen)
+    public static void StringToCastling(Figure?[,] figures, string castlingFen)
     {
         if (!CastlingPattern.IsMatch(castlingFen))
         {
             throw new ArgumentException("Invalid castling");
         }
-
-        // TODO
-        return figures;
+        
+        // We need to change "IsJustMoved" property of King and Rook
+        // only! if they are in the initial position, because
+        /*
+        File "King.cs":
+        ...
+        if (move.Figure.Color == Color.White && move.From is not {X: 4, Y: 0} ||
+            move.Figure.Color == Color.Black && move.From is not {X: 4, Y: 7})
+        {
+            return false;
+        }
+        ...
+         */
+        
+        // White King
+        if (figures[4, 0] is King { Color: Color.White } whiteKing)
+        {
+            if (!(castlingFen.Contains('K') || castlingFen.Contains('Q')))
+            {
+                figures[4, 0] = new King(whiteKing.Color, true);
+            }
+            else
+            {
+                // Left White Rook
+                if (!castlingFen.Contains('Q') &&
+                    figures[0, 0] is Rook { Color: Color.White } leftWhiteRook
+                    )
+                {
+                    figures[0, 0] = new Rook(leftWhiteRook.Color, true);
+                }
+                // Right White Rook
+                if (!castlingFen.Contains('K') &&
+                    figures[7, 0] is Rook { Color: Color.White } rightWhiteRook
+                    )
+                {
+                    figures[7, 0] = new Rook(rightWhiteRook.Color, true);
+                }
+            }
+        }
+        
+        // Black King
+        if (figures[4, 7] is King { Color: Color.Black } blackKing)
+        {
+            if (!(castlingFen.Contains('k') || castlingFen.Contains('q')))
+            {
+                figures[4, 7] = new King(blackKing.Color, true);
+            }
+            else
+            {
+                // Left Black Rook
+                if (!castlingFen.Contains('q') &&
+                    figures[0, 7] is Rook { Color: Color.Black } leftBlackRook
+                    )
+                {
+                    figures[0, 7] = new Rook(leftBlackRook.Color, true);
+                }
+                // Right Black Rook
+                if (!castlingFen.Contains('k') &&
+                    figures[7, 7] is Rook { Color: Color.Black } rightBlackRook
+                    )
+                {
+                    figures[7, 7] = new Rook(rightBlackRook.Color, true);
+                }
+            }
+        }
     }
     
     public static string CastlingToString(Figure?[,] figures)
     {
-        // TODO
-        return "-";
+        string castling = "";
+        
+        // Check on White King
+        if (figures[4, 0] is King { Color: Color.White, IsJustMoved: false })
+        {
+            // Check on right (King)
+            if (figures[7, 0] is Rook { Color: Color.White, IsJustMoved: false })
+            {
+                castling += "K";
+            }
+            // Check on left (Queen)
+            if (figures[0, 0] is Rook { Color: Color.White, IsJustMoved: false })
+            {
+                castling += "Q";
+            }
+        }
+        
+        // Check on Black King
+        if (figures[4, 7] is King { Color: Color.Black, IsJustMoved: false })
+        {
+            // Check on right (King)
+            if (figures[7, 7] is Rook { Color: Color.Black, IsJustMoved: false })
+            {
+                castling += "k";
+            }
+            // Check on left (Queen)
+            if (figures[0, 7] is Rook { Color: Color.Black, IsJustMoved: false })
+            {
+                castling += "q";
+            }
+        }
+        
+        // If no castling
+        if (string.IsNullOrEmpty(castling))
+        {
+            castling = "-";
+        }
+        
+        return castling;
     }
     
     // Board
