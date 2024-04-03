@@ -29,6 +29,12 @@ public class King : Figure
         {
             return false;
         }
+        
+        if (move.Figure.Color == Color.White && move.From is not {X: 4, Y: 0} ||
+            move.Figure.Color == Color.Black && move.From is not {X: 4, Y: 7})
+        {
+            return false;
+        }
 
         // Check on Castling:
         // 1. Get Rook Position and check if exist
