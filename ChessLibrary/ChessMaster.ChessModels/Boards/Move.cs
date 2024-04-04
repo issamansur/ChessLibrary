@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using ChessMaster.Domain.Figures;
-using ChessMaster.Domain.Utils;
+using ChessMaster.ChessModels.Figures;
+using ChessMaster.ChessModels.Utils;
 
-namespace ChessMaster.Domain.Boards;
+namespace ChessMaster.ChessModels.Boards;
 
 public class Move
 {

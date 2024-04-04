@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using ChessMaster.Domain.Figures;
+using ChessMaster.ChessModels.Figures;
 
-namespace ChessMaster.Domain.Boards;
+namespace ChessMaster.ChessModels.Boards;
 
 
 public class Field

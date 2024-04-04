@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ChessMaster.Domain.Utils;
+namespace ChessMaster.ChessModels.Utils;
 
 using Boards;
 using States;

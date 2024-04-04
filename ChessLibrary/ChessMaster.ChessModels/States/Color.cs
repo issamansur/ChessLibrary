@@ -1,4 +1,4 @@
-namespace ChessMaster.Domain.States;
+namespace ChessMaster.ChessModels.States;
 
 public enum Color
 {

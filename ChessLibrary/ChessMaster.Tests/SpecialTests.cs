@@ -1,5 +1,5 @@
-using ChessMaster.Domain;
-using ChessMaster.Domain.Utils;
+using ChessMaster.ChessModels;
+using ChessMaster.ChessModels.Utils;
 
 namespace ChessMaster.Tests;
 

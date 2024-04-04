@@ -1,7 +1,7 @@
-using ChessMaster.Domain.Boards;
-using ChessMaster.Domain.States;
+using ChessMaster.ChessModels.Boards;
+using ChessMaster.ChessModels.States;
 
-namespace ChessMaster.Domain.Figures;
+namespace ChessMaster.ChessModels.Figures;
 
 public class Knight: Figure
 {

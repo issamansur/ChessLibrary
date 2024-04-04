@@ -1,6 +1,6 @@
-using ChessMaster.Domain.Utils;
+using ChessMaster.ChessModels.Utils;
 
-namespace ChessMaster.Domain;
+namespace ChessMaster.ChessModels;
 
 using Figures;
 using Boards;

@@ -1,8 +1,8 @@
-using ChessMaster.Domain.Figures;
-using ChessMaster.Domain.States;
-using ChessMaster.Domain.Utils;
+using ChessMaster.ChessModels.Figures;
+using ChessMaster.ChessModels.States;
+using ChessMaster.ChessModels.Utils;
 
-namespace ChessMaster.Domain.Boards;
+namespace ChessMaster.ChessModels.Boards;
 
 public class Board
 {

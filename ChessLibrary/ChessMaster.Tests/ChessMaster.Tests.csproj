@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ChessMaster.Domain\ChessMaster.Domain.csproj" />
+      <ProjectReference Include="..\ChessMaster.ChessModels\ChessMaster.ChessModels.csproj" />
     </ItemGroup>
 
 </Project>
