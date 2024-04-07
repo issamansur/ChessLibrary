@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessLibrary", "ChessLibrary\ChessLibrary.csproj", "{41700859-4362-490F-8803-9E216C8ECD69}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoChess", "DemoChess\DemoChess.csproj", "{90513C9D-C0AD-455E-BAEE-87FD758F7F9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.ChessModels", "ChessMaster.ChessModels\ChessMaster.ChessModels.csproj", "{2C7F50B1-F2D6-4C12-812B-31C36E6EB8FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Tests", "ChessMaster.Tests\ChessMaster.Tests.csproj", "{06863613-089F-4B4F-97E7-C6C2A959ABED}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster", "ChessMaster\ChessMaster.csproj", "{9352F7A6-0B13-4AA9-9922-8AFD3F62A0BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Domain", "ChessMaster.Domain\ChessMaster.Domain.csproj", "{775D3BAA-49F8-4FE0-A665-C20C8086F0A5}"
 EndProject
@@ -23,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{41700859-4362-490F-8803-9E216C8ECD69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41700859-4362-490F-8803-9E216C8ECD69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41700859-4362-490F-8803-9E216C8ECD69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41700859-4362-490F-8803-9E216C8ECD69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90513C9D-C0AD-455E-BAEE-87FD758F7F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{90513C9D-C0AD-455E-BAEE-87FD758F7F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90513C9D-C0AD-455E-BAEE-87FD758F7F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,10 +31,6 @@ Global
 		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06863613-089F-4B4F-97E7-C6C2A959ABED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9352F7A6-0B13-4AA9-9922-8AFD3F62A0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9352F7A6-0B13-4AA9-9922-8AFD3F62A0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9352F7A6-0B13-4AA9-9922-8AFD3F62A0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9352F7A6-0B13-4AA9-9922-8AFD3F62A0BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{775D3BAA-49F8-4FE0-A665-C20C8086F0A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{775D3BAA-49F8-4FE0-A665-C20C8086F0A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{775D3BAA-49F8-4FE0-A665-C20C8086F0A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
