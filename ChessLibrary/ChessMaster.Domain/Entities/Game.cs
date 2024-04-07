@@ -1,7 +1,6 @@
 using ChessMaster.ChessModels;
 using ChessMaster.ChessModels.States;
 using ChessMaster.ChessModels.Utils;
-using ChessMaster.Domain.States;
 
 namespace ChessMaster.Domain.Entities;
 
@@ -52,7 +51,7 @@ public class Game
         WhitePlayerId = whitePlayerId;
         BlackPlayerId = blackPlayerId;
         FEN = fen;
-        State = State;
+        State = State.Created;
         StartTime = startTime;
     }
     

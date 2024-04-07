@@ -1,4 +1,4 @@
-namespace ChessMaster.Domain.Events;
+namespace ChessMaster.Domain.Common;
 
 public abstract class DomainEvent
 {

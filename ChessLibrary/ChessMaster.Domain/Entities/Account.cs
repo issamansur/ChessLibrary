@@ -1,10 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
-using ChessMaster.Domain.Events;
-using ChessMaster.Domain.Exceptions;
 
 namespace ChessMaster.Domain.Entities;
-
 
 public sealed class Account : EntityWithEvents
 {
