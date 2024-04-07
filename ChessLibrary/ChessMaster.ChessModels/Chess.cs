@@ -15,7 +15,7 @@ public class Chess
     // 1.Active color of the current player
     // 2. Number of half moves since the last pawn advance or capture
     // 3. Number of the full move. It starts at 1, and is incremented after Black's move
-    internal Color ActiveColor { get; set; }
+    public Color ActiveColor { get; private set; }
     internal int HalfMoveClock { get; private set; }
     internal int FullMoveNumber { get; private set; }
     
