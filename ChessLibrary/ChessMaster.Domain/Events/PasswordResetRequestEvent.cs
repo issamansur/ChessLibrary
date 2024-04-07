@@ -1,4 +1,4 @@
-namespace ClassMaster.Domain.Requests;
+namespace ChessMaster.Domain.Events;
 
 public class PasswordResetRequestEvent : DomainEvent
 {

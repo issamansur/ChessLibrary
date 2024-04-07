@@ -1,4 +1,4 @@
-namespace ClassMaster.Domain.Exceptions;
+namespace ChessMaster.Domain.Exceptions;
 
 public enum ErrorCodes
 {

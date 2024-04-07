@@ -1,15 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
-using System.ComponentModel;
-using ClassMaster.Domain.Exceptions;
-using ClassMaster.Domain.Requests;
+using ChessMaster.Domain.Events;
+using ChessMaster.Domain.Exceptions;
 
-namespace ClassMaster.Domain;
+namespace ChessMaster.Domain.Entities;
 
 
 public sealed class Account : EntityWithEvents
 {
-    public Account(string email, string password, License? license)
+    public Account(string email, string password)
     {
         if (string.IsNullOrEmpty(email))
         {
@@ -24,7 +23,6 @@ public sealed class Account : EntityWithEvents
         Id = Guid.NewGuid();
         SetEmail(email);
         SetPassword(password);
-        License = license;
 
         CreatedDate = UpdatedDate = DateTime.UtcNow;
         RaiseEvent(new CreatedEvent(Id, DateTime.UtcNow));
@@ -44,7 +42,6 @@ public sealed class Account : EntityWithEvents
     public DateTime UpdatedDate { get; private set; }
     public IReadOnlyCollection<byte>? Salt { get; private set; }
     public IReadOnlyCollection<byte>? PasswordHash { get; private set; }
-    public License? License { get; private set; }
 
     [MemberNotNullWhen(true, nameof(NormalizedEmail))]
     [MemberNotNullWhen(true, nameof(Salt))]

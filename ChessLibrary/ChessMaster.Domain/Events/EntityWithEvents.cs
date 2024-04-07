@@ -1,4 +1,4 @@
-namespace ClassMaster.Domain;
+namespace ChessMaster.Domain.Events;
 
 public abstract class EntityWithEvents
 {
