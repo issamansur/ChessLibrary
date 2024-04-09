@@ -1,7 +1,3 @@
-using System.Text.RegularExpressions;
-using ChessMaster.ChessModels.Figures;
-using ChessMaster.ChessModels.Utils;
-
 namespace ChessMaster.ChessModels.Boards;
 
 public class Move

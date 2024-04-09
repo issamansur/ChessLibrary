@@ -1,7 +1,3 @@
-using ChessMaster.ChessModels.Figures;
-using ChessMaster.ChessModels.States;
-using ChessMaster.ChessModels.Utils;
-
 namespace ChessMaster.ChessModels.Boards;
 
 public class Board

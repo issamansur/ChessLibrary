@@ -1,10 +1,4 @@
-using ChessMaster.ChessModels.Utils;
-
 namespace ChessMaster.ChessModels;
-
-using Figures;
-using Boards;
-using States;
 
 public class Chess
 {

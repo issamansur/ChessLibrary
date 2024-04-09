@@ -1,6 +1,3 @@
-using ChessMaster.ChessModels.Boards;
-using ChessMaster.ChessModels.States;
-
 namespace ChessMaster.ChessModels.Figures;
 
 public class Knight: Figure
