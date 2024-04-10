@@ -21,9 +21,9 @@ public class User
         Username = username;
     }
     
-    public static User Create(string username)
+    public static User Create(User user, string username)
     {
-        var id = Guid.NewGuid();
+        var id = user.UserId;
         username = username.Trim();
         
         return new User(id, username);
