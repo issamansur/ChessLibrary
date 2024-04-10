@@ -4,7 +4,7 @@ namespace ChessMaster.ChessModels.Utils;
 
 public static class Builders
 {
-    public static Board BoardBuild(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    public static Board BoardBuild(string fen = ChessExt.DefaultFen)
     {
         // Get fen parts and check
         var parts = fen.Split();
@@ -26,7 +26,7 @@ public static class Builders
         return new Board(figures, enPassantTargetSquare);
     }
 
-    public static Chess ChessBuild(string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    public static Chess ChessBuild(string fen = ChessExt.DefaultFen)
     {
         // Get fen parts and check
         var parts = fen.Split();

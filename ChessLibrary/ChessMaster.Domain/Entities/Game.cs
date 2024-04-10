@@ -59,7 +59,7 @@ public class Game
     {
         var id = Guid.NewGuid();
         var creationTime = DateTime.UtcNow;
-        var fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        var fen = ChessExt.DefaultFen;
         var gameState = State.Created;
         
         return new Game(
