@@ -3,36 +3,11 @@ using System.Security.Cryptography;
 
 namespace ChessMaster.Domain.Entities;
 
-public sealed class Account : EntityWithEvents
+public sealed class Account
 {
-    public Account(string email, string password)
-    {
-        if (string.IsNullOrEmpty(email))
-        {
-            throw new ArgumentException("Value cannot be null or empty.", nameof(email));
-        }
-
-        if (string.IsNullOrEmpty(password))
-        {
-            throw new ArgumentException("Value cannot be null or empty.", nameof(password));
-        }
-
-        Id = Guid.NewGuid();
-        SetEmail(email);
-        SetPassword(password);
-
-        CreatedDate = UpdatedDate = DateTime.UtcNow;
-        RaiseEvent(new CreatedEvent(Id, DateTime.UtcNow));
-    }
-
-    // ReSharper disable once UnusedMember.Local
-    private Account()
-    {
-    }
-
-    public Guid Id { get; private init; }
-    public string? Email { get; private set; }
-    public string? NormalizedEmail { get; private set; }
+    public Guid UserId { get; private init; }
+    public string Email { get; private set; }
+    public string NormalizedEmail { get; private set; }
     public string? PasswordResetToken { get; private set; }
     public DateTime? PasswordResetTokenExpirationDate { get; private set; }
     public DateTime CreatedDate { get; private init; }
@@ -40,43 +15,58 @@ public sealed class Account : EntityWithEvents
     public IReadOnlyCollection<byte>? Salt { get; private set; }
     public IReadOnlyCollection<byte>? PasswordHash { get; private set; }
 
-    [MemberNotNullWhen(true, nameof(NormalizedEmail))]
-    [MemberNotNullWhen(true, nameof(Salt))]
-    [MemberNotNullWhen(true, nameof(PasswordHash))]
-    public bool IsEmailAuthorization()
+    public Account(
+        Guid userId,
+        string email, string normalizedEmail,
+        string? passwordResetToken, DateTime? passwordResetTokenExpirationDate, 
+        DateTime createdDate, DateTime updatedDate, 
+        IReadOnlyCollection<byte> salt, IReadOnlyCollection<byte> passwordHash)
     {
-        return NormalizedEmail is not null && Salt is not null && PasswordHash is not null;
+        if (userId == Guid.Empty)
+        {
+            throw new ArgumentException("Value cannot be null or empty.", nameof(userId));
+        }
+        ThrowIfEmailIsNotValid(email);
+        ThrowIfEmailIsNotValid(normalizedEmail);
+        
+        UserId = userId;
+        Email = email;
+        NormalizedEmail = normalizedEmail;
+        
+        PasswordResetToken = passwordResetToken;
+        PasswordResetTokenExpirationDate = passwordResetTokenExpirationDate;
+        
+        CreatedDate = createdDate;
+        UpdatedDate = updatedDate;
+        
+        Salt = salt;
+        PasswordHash = passwordHash;
     }
-
-    [MemberNotNull(nameof(NormalizedEmail))]
-    [MemberNotNull(nameof(Salt))]
-    [MemberNotNull(nameof(PasswordHash))]
-    public void AddEmailAuthorization(string email, string password)
+    
+    public static Account Create(User user, string email, string password)
     {
-        if (string.IsNullOrEmpty(email))
+        if (user is null)
         {
-            throw new ArgumentException("Value cannot be null or empty.", nameof(email));
+            throw new ArgumentNullException(nameof(user));
+        }
+        
+        email = email.Trim();
+        string formattedEmail = email.ToLowerInvariant();
+        
+        byte[] salt, passwordHash;
+        using (var hmac = new HMACSHA512())
+        {
+            salt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
-        if (!string.IsNullOrEmpty(NormalizedEmail) && NormalizedEmail != email.ToUpperInvariant())
-        {
-            throw new ArgumentException("Email does not match.", nameof(email));
-        }
-
-        if (string.IsNullOrEmpty(password))
-        {
-            throw new ArgumentException("Value cannot be null or empty.", nameof(password));
-        }
-
-        ThrowIfNotEmailAuthorization();
-
-        if (NormalizedEmail is null)
-        {
-            SetEmail(email);
-        }
-
-        SetPassword(password);
-        SetUpdatedDate();
+        return new Account(
+            user.Id,
+            email, email.ToUpperInvariant(),
+            null, null,
+            DateTime.UtcNow, DateTime.UtcNow,
+            salt, passwordHash
+        );
     }
 
     public bool VerifyByPassword(string password)
@@ -85,8 +75,6 @@ public sealed class Account : EntityWithEvents
         {
             throw new ArgumentException("Value cannot be null or empty.", nameof(password));
         }
-
-        ThrowIfNotEmailAuthorization();
 
         using (var hmac = new HMACSHA512((byte[])Salt))
         {
@@ -110,8 +98,7 @@ public sealed class Account : EntityWithEvents
         }
 
         PasswordResetTokenExpirationDate = now.AddDays(1);
-
-        RaiseEvent(new PasswordResetRequestEvent(Id, now));
+        
         SetUpdatedDate();
     }
 
@@ -121,8 +108,6 @@ public sealed class Account : EntityWithEvents
         {
             throw new ArgumentException("Value cannot be null or empty.", nameof(newPassword));
         }
-
-        ThrowIfNotEmailAuthorization();
 
         if (resetPasswordKey != PasswordResetToken || DateTime.UtcNow >= PasswordResetTokenExpirationDate)
         {
@@ -159,26 +144,6 @@ public sealed class Account : EntityWithEvents
         {
             Salt = hmac.Key;
             PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(newPassword));
-        }
-    }
-
-    [MemberNotNull(nameof(NormalizedEmail))]
-    private void SetEmail(string email)
-    {
-        ThrowIfEmailIsNotValid(email);
-
-        Email = email;
-        NormalizedEmail = email.ToUpperInvariant();
-    }
-
-    [MemberNotNull(nameof(NormalizedEmail))]
-    [MemberNotNull(nameof(Salt))]
-    [MemberNotNull(nameof(PasswordHash))]
-    private void ThrowIfNotEmailAuthorization()
-    {
-        if (!IsEmailAuthorization())
-        {
-            throw new InvalidOperationException("Not supported email authorization.");
         }
     }
 

@@ -3,7 +3,7 @@ namespace ChessMaster.Domain.Entities;
 // Class for user's data
 public class User
 {
-    public Guid UserId { get; private set; }
+    public Guid Id { get; private set; }
     public string Username { get; private set; }
     
     public User(Guid userId, string username)
@@ -17,13 +17,13 @@ public class User
             throw new ArgumentException("Username cannot be empty", nameof(username));
         }
         
-        UserId = userId;
+        Id = userId;
         Username = username;
     }
     
-    public static User Create(User user, string username)
+    public static User Create(string username)
     {
-        var id = user.UserId;
+        Guid id = Guid.NewGuid();
         username = username.Trim();
         
         return new User(id, username);
