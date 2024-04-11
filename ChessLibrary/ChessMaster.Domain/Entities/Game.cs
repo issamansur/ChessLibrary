@@ -111,6 +111,11 @@ public class Game
     
     private GameResult Finish(Guid winnerId)
     {
+        if (State != State.Started)
+        {
+            throw new InvalidOperationException("Game is not started");
+        }
+        
         if (winnerId != WhitePlayerId && winnerId != BlackPlayerId)
         {
             throw new ArgumentException("WinnerId is not a player in this game", nameof(winnerId));
