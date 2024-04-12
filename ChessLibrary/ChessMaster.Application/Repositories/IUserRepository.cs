@@ -1,6 +1,5 @@
 namespace ChessMaster.Application.Repositories;
 
-public interface IUserRepository
+public interface IUserRepository: IGettableRepository<User>
 {
-    
 }
