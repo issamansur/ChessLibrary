@@ -14,7 +14,7 @@ public class Game
     public Guid? WhitePlayerId { get; private set; }
     public Guid? BlackPlayerId { get; private set; }
     
-    public string FEN { get; private set; }
+    public string? FEN { get; private set; }
     public State State { get; private set; }
     
     public Game(
@@ -23,7 +23,7 @@ public class Game
         DateTime creationTime,
         Guid? whitePlayerId,
         Guid? blackPlayerId,
-        string fen,
+        string? fen,
         State gameState,
         DateTime? startTime
         )
@@ -51,7 +51,7 @@ public class Game
         WhitePlayerId = whitePlayerId;
         BlackPlayerId = blackPlayerId;
         FEN = fen;
-        State = State.Created;
+        State = gameState;
         StartTime = startTime;
     }
     
@@ -59,7 +59,6 @@ public class Game
     {
         var id = Guid.NewGuid();
         var creationTime = DateTime.UtcNow;
-        var fen = ChessExt.DefaultFen;
         var gameState = State.Created;
         
         return new Game(
@@ -68,7 +67,7 @@ public class Game
             creationTime,
             null,
             null,
-            fen,
+            null,
             gameState,
             null
         );
@@ -88,6 +87,7 @@ public class Game
             BlackPlayerId = CreatorUserId;
         }
         
+        FEN = ChessExt.DefaultFen;
         State = State.Started;
         StartTime = DateTime.UtcNow;
     }
