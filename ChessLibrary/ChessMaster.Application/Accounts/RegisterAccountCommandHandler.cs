@@ -1,8 +1,8 @@
 namespace ChessMaster.Application.Accounts;
 
-public class CreateAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<RegisterAccountCommand, Unit>
+public class RegisterAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<RegisterAccountCommand, Unit>
 {
-    public CreateAccountCommandHandler(ITenantFactory tenantFactory) : 
+    public RegisterAccountCommandHandler(ITenantFactory tenantFactory) : 
         base(tenantFactory)
     {
         
@@ -40,6 +40,7 @@ public class CreateAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<Re
         var account = Account.Create(user, request.Email, request.Password);
 
         await tenantRepository.Users.Create(user, cancellationToken);
+        await tenantRepository.Accounts.Create(account, cancellationToken);
         await tenantRepository.CommitAsync(cancellationToken);
         
         return Unit.Value;
