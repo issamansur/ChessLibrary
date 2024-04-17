@@ -75,6 +75,16 @@ public class Game
     
     public void Join(Guid userId)
     {
+        if (State != State.Created)
+        {
+            throw new InvalidOperationException("Game cannot be joined");
+        }
+        
+        if (userId == CreatorUserId)
+        {
+            throw new InvalidOperationException("Creator cannot join the game");
+        }
+        
         Random random = new Random();
         if (random.Next(0, 2) == 0)
         {

@@ -1,12 +1,12 @@
 namespace ChessMaster.Application.Accounts;
 
-public class CreateAccountCommand : IRequest<Account>
+public class RegisterAccountCommand : IRequest<Unit>
 {
     public string Username { get; }
     public string Email { get; }
     public string Password { get; }
 
-    public CreateAccountCommand(string username, string email, string password)
+    public RegisterAccountCommand(string username, string email, string password)
     {
         Username = username;
         Email = email;

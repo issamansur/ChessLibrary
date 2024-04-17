@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Common;
 
-public interface ITenantRepositoryFactory
+public interface ITenantFactory
 {
     ITenantRepository GetRepository();
 }

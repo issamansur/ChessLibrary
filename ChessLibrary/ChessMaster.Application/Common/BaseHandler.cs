@@ -1,13 +1,20 @@
 namespace ChessMaster.Application.Common;
 
-public abstract class Handler<T>
+public abstract class BaseHandler<T>
 {
-    private ITenantRepository TenantRepository { get; init; }
+    private ITenantFactory TenantFactory { get; init; }
+    protected ITenantRepository TenantRepository => TenantFactory.GetRepository();
     
-    public Handler(ITenantRepository tenantRepository)
+    protected BaseHandler(ITenantFactory tenantFactory)
     {
-        TenantRepository = tenantRepository;
+        TenantFactory = tenantFactory;
     }
 
-    public abstract Task Handle(IRequest<T> request, CancellationToken cancellationToken = default);
+    protected void ValidateRequest(IRequest<T> request)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+    }
 }
