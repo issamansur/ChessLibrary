@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Games;
 
-public class CreateGameCommandHandler: BaseHandler<Game>, IRequestHandler<CreateGameCommand, Game>
+public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCommand, Game>
 {
     public CreateGameCommandHandler(ITenantFactory tenantFactory): 
         base(tenantFactory)
@@ -11,7 +11,10 @@ public class CreateGameCommandHandler: BaseHandler<Game>, IRequestHandler<Create
     public async Task<Game> Handle(CreateGameCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        ValidateRequest(request);
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         
         if (request.CreatorUserId == Guid.Empty)
         {

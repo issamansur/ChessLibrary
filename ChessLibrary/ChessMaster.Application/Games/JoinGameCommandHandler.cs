@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Games;
 
-public class JoinGameCommandHandler: BaseHandler<Game>, IRequestHandler<JoinGameCommand, Game>
+public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameCommand, Game>
 {
     public JoinGameCommandHandler(ITenantFactory tenantFactory) : 
         base(tenantFactory)
@@ -10,7 +10,10 @@ public class JoinGameCommandHandler: BaseHandler<Game>, IRequestHandler<JoinGame
     public async Task<Game> Handle(JoinGameCommand request, CancellationToken cancellationToken)
     {
         // Validate the request
-        ValidateRequest(request);
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         
         // Business logic
         var tenantRepository = TenantRepository;

@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Games;
 
-public class MoveGameCommandHandler: BaseHandler<Game>, IRequestHandler<MoveGameCommand, Game>
+public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameCommand, Game>
 {
     public MoveGameCommandHandler(ITenantFactory tenantFactory) : 
         base(tenantFactory)
@@ -11,7 +11,10 @@ public class MoveGameCommandHandler: BaseHandler<Game>, IRequestHandler<MoveGame
     public async Task<Game> Handle(MoveGameCommand request, CancellationToken cancellationToken)
     {
         // Validate the request
-        ValidateRequest(request);
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         
         // Business logic
         var tenantRepository = TenantRepository;

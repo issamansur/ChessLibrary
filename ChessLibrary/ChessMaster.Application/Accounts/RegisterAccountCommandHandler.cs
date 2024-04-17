@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Accounts;
 
-public class RegisterAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<RegisterAccountCommand, Unit>
+public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand>
 {
     public RegisterAccountCommandHandler(ITenantFactory tenantFactory) : 
         base(tenantFactory)
@@ -8,10 +8,13 @@ public class RegisterAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<
         
     }
 
-    public async Task<Unit> Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        ValidateRequest(request);
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         
         if (string.IsNullOrWhiteSpace(request.Username))
         {
@@ -42,7 +45,5 @@ public class RegisterAccountCommandHandler : BaseHandler<Unit>, IRequestHandler<
         await tenantRepository.Users.Create(user, cancellationToken);
         await tenantRepository.Accounts.Create(account, cancellationToken);
         await tenantRepository.CommitAsync(cancellationToken);
-        
-        return Unit.Value;
     }
 }

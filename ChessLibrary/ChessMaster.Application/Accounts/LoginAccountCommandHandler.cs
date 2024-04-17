@@ -1,17 +1,20 @@
 namespace ChessMaster.Application.Accounts;
 
-public class LoginAccountQueryHandler: BaseHandler<Unit>, IRequestHandler<LoginAccountQuery, Unit>
+public class LoginAccountCommandHandler: BaseHandler, IRequestHandler<LoginAccountCommand>
 {
-    public LoginAccountQueryHandler(ITenantFactory tenantFactory)
+    public LoginAccountCommandHandler(ITenantFactory tenantFactory)
         : base(tenantFactory)
     {
         
     }
     
-    public async Task<Unit> Handle(LoginAccountQuery request, CancellationToken cancellationToken)
+    public async Task Handle(LoginAccountCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        ValidateRequest(request);
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         
         if (string.IsNullOrWhiteSpace(request.Login))
         {
@@ -37,7 +40,5 @@ public class LoginAccountQueryHandler: BaseHandler<Unit>, IRequestHandler<LoginA
         {
             throw new InvalidOperationException("Invalid password.");
         }
-        
-        return Unit.Value;
     }
 }
