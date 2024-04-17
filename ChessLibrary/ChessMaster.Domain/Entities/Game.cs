@@ -6,26 +6,34 @@ namespace ChessMaster.Domain.Entities;
 
 public class Game
 {
+    // For created game
     public Guid Id { get; private set; }
     public Guid CreatorUserId { get; private set; }
     public DateTime CreationTime { get; private set; }
-    public DateTime? StartTime { get; private set; }
     
+    public string FEN { get; private set; }
+    public State State { get; private set; }
+    
+    // For games in progress
     public Guid? WhitePlayerId { get; private set; }
     public Guid? BlackPlayerId { get; private set; }
     
-    public string? FEN { get; private set; }
-    public State State { get; private set; }
+    // For finished games
+    public DateTime? StartTime { get; private set; }
+    public DateTime? EndTime { get; private set; }
+    public Guid? WinnerId { get; private set; }
     
     public Game(
         Guid id,
         Guid creatorUserId,
         DateTime creationTime,
+        string fen,
+        State gameState,
         Guid? whitePlayerId,
         Guid? blackPlayerId,
-        string? fen,
-        State gameState,
-        DateTime? startTime
+        DateTime? startTime,
+        DateTime? endTime,
+        Guid? winnerId
         )
     {
         if (id == Guid.Empty)
@@ -53,22 +61,27 @@ public class Game
         FEN = fen;
         State = gameState;
         StartTime = startTime;
+        EndTime = endTime;
+        WinnerId = winnerId;
     }
     
     public static Game Create(Guid creatorUserId)
     {
         var id = Guid.NewGuid();
         var creationTime = DateTime.UtcNow;
+        var fen = ChessExt.DefaultFen;
         var gameState = State.Created;
         
         return new Game(
             id,
             creatorUserId,
             creationTime,
-            null,
-            null,
-            null,
+            fen,
             gameState,
+            null,
+            null,
+            null,
+            null,
             null
         );
     }
@@ -98,7 +111,7 @@ public class Game
         }
         
         FEN = ChessExt.DefaultFen;
-        State = State.Started;
+        State = State.InProgress;
         StartTime = DateTime.UtcNow;
     }
     
@@ -119,26 +132,20 @@ public class Game
         }
     }
     
-    private GameResult Finish(Guid winnerId)
+    private void Finish(Guid winnerId)
     {
-        if (State != State.Started)
+        if (State != State.InProgress)
         {
-            throw new InvalidOperationException("Game is not started");
+            throw new InvalidOperationException("Game is not in progress");
         }
         
         if (winnerId != WhitePlayerId && winnerId != BlackPlayerId)
         {
             throw new ArgumentException("WinnerId is not a player in this game", nameof(winnerId));
         }
-
+        
         State = State.Finished;
-
-        GameResult gameResult = GameResult.Create(
-            this,
-            winnerId,
-            DateTime.UtcNow
-        );
-
-        return gameResult;
+        EndTime = DateTime.UtcNow;
+        WinnerId = winnerId;
     }
 }

@@ -4,6 +4,6 @@ namespace ChessMaster.Domain.States;
 public enum State
 {
     Created = 0,
-    Started = 1,
+    InProgress = 1,
     Finished = 2
 }
