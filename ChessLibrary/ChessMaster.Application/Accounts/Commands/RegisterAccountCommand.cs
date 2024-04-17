@@ -1,4 +1,4 @@
-namespace ChessMaster.Application.Accounts;
+namespace ChessMaster.Application.Accounts.Commands;
 
 public class RegisterAccountCommand : IRequest
 {

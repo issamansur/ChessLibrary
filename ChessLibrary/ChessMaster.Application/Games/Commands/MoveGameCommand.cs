@@ -1,4 +1,4 @@
-namespace ChessMaster.Application.Games;
+namespace ChessMaster.Application.Games.Commands;
 
 public class MoveGameCommand: IRequest<Game>
 {
