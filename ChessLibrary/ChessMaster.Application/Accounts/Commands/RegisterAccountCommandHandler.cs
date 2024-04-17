@@ -16,16 +16,6 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
             throw new ArgumentNullException(nameof(request));
         }
         
-        if (string.IsNullOrWhiteSpace(request.Username))
-        {
-            throw new ArgumentNullException(nameof(request.Username));
-        }
-        
-        if (string.IsNullOrWhiteSpace(request.Email))
-        {
-            throw new ArgumentNullException(nameof(request.Email));
-        }
-        
         // Business logic
         var tenantRepository = TenantRepository;
 

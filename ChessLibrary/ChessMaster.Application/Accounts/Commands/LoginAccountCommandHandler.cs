@@ -16,16 +16,6 @@ public class LoginAccountCommandHandler: BaseHandler, IRequestHandler<LoginAccou
             throw new ArgumentNullException(nameof(request));
         }
         
-        if (string.IsNullOrWhiteSpace(request.Login))
-        {
-            throw new ArgumentNullException(nameof(request.Login));
-        }
-        
-        if (string.IsNullOrWhiteSpace(request.Password))
-        {
-            throw new ArgumentNullException(nameof(request.Password));
-        }
-        
         // Business logic
         var tenantRepository = TenantRepository;
         

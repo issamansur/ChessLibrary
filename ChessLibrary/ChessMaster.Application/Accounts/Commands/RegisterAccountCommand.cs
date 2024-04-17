@@ -11,5 +11,8 @@ public class RegisterAccountCommand : IRequest
         Username = username;
         Email = email;
         Password = password;
+        
+        var validator = new RegisterAccountCommandValidator();
+        validator.ValidateAndThrow(this);
     }
 }

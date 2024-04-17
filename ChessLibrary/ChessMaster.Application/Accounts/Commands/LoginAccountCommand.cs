@@ -9,5 +9,8 @@ public class LoginAccountCommand: IRequest
     {
         Login = login;
         Password = password;
+        
+        var validator = new LoginAccountCommandValidator();
+        validator.ValidateAndThrow(this);
     }
 }
