@@ -19,12 +19,12 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         // Business logic
         var tenantRepository = TenantRepository;
 
-        if (await tenantRepository.Accounts.Exists(request.Email, cancellationToken))
+        if (await tenantRepository.Accounts.TryGetByEmail(request.Email, cancellationToken) != null)
         {
             throw new InvalidOperationException("Email already exists.");
         }
         
-        if (await tenantRepository.Users.Exists(request.Username, cancellationToken))
+        if (await tenantRepository.Users.TryGetByUsername(request.Username, cancellationToken) != null)
         {
             throw new InvalidOperationException("Username already exists.");
         }
