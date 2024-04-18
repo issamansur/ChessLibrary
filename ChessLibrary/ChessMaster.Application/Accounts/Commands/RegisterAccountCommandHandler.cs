@@ -17,7 +17,7 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         }
         
         // Business logic
-        var tenantRepository = TenantRepository;
+        var tenantRepository = GetTenant();
 
         if (await tenantRepository.Accounts.TryGetByEmail(request.Email, cancellationToken) != null)
         {
