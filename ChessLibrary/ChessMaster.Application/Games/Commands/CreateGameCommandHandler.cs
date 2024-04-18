@@ -16,11 +16,6 @@ public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCo
             throw new ArgumentNullException(nameof(request));
         }
         
-        if (request.CreatorUserId == Guid.Empty)
-        {
-            throw new ArgumentNullException(nameof(request.CreatorUserId));
-        }
-        
         // Business logic
         var tenantRepository = TenantRepository;
         
