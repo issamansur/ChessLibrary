@@ -16,7 +16,7 @@ public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameComman
         }
         
         // Business logic
-        var tenantRepository = TenantRepository;
+        var tenantRepository = GetTenant();
         
         var game = await tenantRepository.Games.GetById(request.GameId, cancellationToken);
         if (game == null)

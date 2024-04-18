@@ -17,7 +17,7 @@ public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCo
         }
         
         // Business logic
-        var tenantRepository = TenantRepository;
+        var tenantRepository = GetTenant();
         
         if (await tenantRepository.Users.GetById(request.CreatorUserId, cancellationToken) == null)
         {

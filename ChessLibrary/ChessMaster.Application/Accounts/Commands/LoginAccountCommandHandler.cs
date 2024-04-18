@@ -17,7 +17,7 @@ public class LoginAccountCommandHandler: BaseHandler, IRequestHandler<LoginAccou
         }
         
         // Business logic
-        var tenantRepository = TenantRepository;
+        var tenantRepository = GetTenant();
         
         var account = await tenantRepository.Accounts.GetByEmail(request.Login, cancellationToken);
         

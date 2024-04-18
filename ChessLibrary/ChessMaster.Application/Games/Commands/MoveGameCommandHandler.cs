@@ -17,7 +17,7 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
         }
         
         // Business logic
-        var tenantRepository = TenantRepository;
+        var tenantRepository = GetTenant();
         
         var game = await tenantRepository.Games.GetById(request.GameId, cancellationToken);
         if (game == null)
