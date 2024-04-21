@@ -1,3 +1,5 @@
+using ChessMaster.Application.Games.Filters;
+
 namespace ChessMaster.Application.Repositories;
 
 public interface IGameRepository : ICRUDRepository<Game>
@@ -6,9 +8,5 @@ public interface IGameRepository : ICRUDRepository<Game>
 
     Task<IReadOnlyCollection<Game>> GetCreatedGames(CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<Game>> GetAll(
-        int count = 100,
-        int offset = 0,
-        CancellationToken cancellationToken = default
-    );
+    Task<IReadOnlyCollection<Game>> Search(GameFilter filter, CancellationToken cancellationToken);
 }
