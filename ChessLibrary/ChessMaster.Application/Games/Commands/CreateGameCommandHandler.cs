@@ -18,11 +18,8 @@ public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCo
         
         // Business logic
         var tenantRepository = GetTenant();
-        
-        if (await tenantRepository.Users.GetById(request.CreatorUserId, cancellationToken) == null)
-        {
-            throw new InvalidOperationException("User does not exist.");
-        }
+
+        await tenantRepository.Users.GetById(request.CreatorUserId, cancellationToken);
         
         var game = Game.Create(request.CreatorUserId);
         

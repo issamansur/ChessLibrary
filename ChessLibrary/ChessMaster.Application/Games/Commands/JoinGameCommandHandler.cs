@@ -19,10 +19,6 @@ public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameComman
         var tenantRepository = GetTenant();
         
         var game = await tenantRepository.Games.GetById(request.GameId, cancellationToken);
-        if (game == null)
-        {
-            throw new InvalidOperationException("Game does not exist.");
-        }
         
         game.Join(request.PlayerId);
         
