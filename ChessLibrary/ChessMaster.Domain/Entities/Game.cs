@@ -125,23 +125,22 @@ public class Game
         FEN = fen;
         Chess chess = Builders.ChessBuild(fen);
         
-        if (chess.GameState is GameState.Checkmate or GameState.Stalemate)
+        if (chess.GameState == GameState.Checkmate)
         {
             Guid winnerId = (Guid)(chess.ActiveColor == Color.White ? BlackPlayerId! : WhitePlayerId!);
             Finish(winnerId);
         }
+        else if (chess.GameState == GameState.Stalemate)
+        {
+            Finish(null);
+        }
     }
     
-    private void Finish(Guid winnerId)
+    private void Finish(Guid? winnerId)
     {
         if (State != State.InProgress)
         {
             throw new InvalidOperationException("Game is not in progress");
-        }
-        
-        if (winnerId != WhitePlayerId && winnerId != BlackPlayerId)
-        {
-            throw new ArgumentException("WinnerId is not a player in this game", nameof(winnerId));
         }
         
         State = State.Finished;
