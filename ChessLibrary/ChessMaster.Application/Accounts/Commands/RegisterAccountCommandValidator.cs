@@ -6,7 +6,7 @@ public class RegisterAccountCommandValidator: AbstractValidator<RegisterAccountC
     {
         RuleFor(x => x.Username)
             .NotEmpty().WithMessage("Username is required.")
-            .MinimumLength(8).MaximumLength(20).WithMessage("Username must be between 8 and 20 characters.")
+            .MinimumLength(6).MaximumLength(20).WithMessage("Username must be between 6 and 20 characters.")
             .Matches("^[a-zA-Z]+$").WithMessage("Username must contain only English letters");
         
         RuleFor(x => x.Email)
