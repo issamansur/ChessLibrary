@@ -10,26 +10,32 @@ public class AccountRepository: IAccountRepository
     
     public async Task Create(Account entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+
+        await _context.Accounts.AddAsync(entity, cancellationToken);
     }
 
-    public async Task Update(Account entity, CancellationToken cancellationToken)
+    public Task Update(Account entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+        
+        _context.Accounts.Update(entity);
+        
+        return Task.CompletedTask;
     }
 
     public async Task<Account> GetById(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Accounts.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
     }
 
     public async Task<Account?> TryGetByEmail(string email, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
     }
 
     public async Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email, cancellationToken) ?? throw new ArgumentNullException();
     }
 }

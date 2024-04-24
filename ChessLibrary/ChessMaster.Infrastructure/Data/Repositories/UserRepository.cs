@@ -9,27 +9,33 @@ public class UserRepository: IUserRepository
     }
     
     public async Task Create(User entity, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+    { 
+        ArgumentNullException.ThrowIfNull(entity);
+
+        await _context.Users.AddAsync(entity, cancellationToken);
     }
 
-    public async Task Update(User entity, CancellationToken cancellationToken)
+    public Task Update(User entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+        
+        _context.Users.Update(entity);
+
+        return Task.CompletedTask;
     }
 
     public async Task<User> GetById(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
     }
 
     public async Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(x => x.Username == userName, cancellationToken);
     }
 
     public async Task<User> GetByUsername(string userName, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(x => x.Username == userName, cancellationToken) ?? throw new ArgumentNullException();
     }
 }

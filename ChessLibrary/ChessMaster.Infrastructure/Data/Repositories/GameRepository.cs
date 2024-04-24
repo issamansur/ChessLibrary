@@ -12,31 +12,46 @@ public class GameRepository: IGameRepository
 
     public async Task Create(Game entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+
+        await _context.Games.AddAsync(entity, cancellationToken);
     }
 
-    public async Task Update(Game entity, CancellationToken cancellationToken)
+    public Task Update(Game entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+        
+        _context.Games.Update(entity);
+        
+        return Task.CompletedTask;
     }
 
     public async Task<Game> GetById(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IReadOnlyCollection<Game>> GetByUser(Guid playerId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IReadOnlyCollection<Game>> GetCreatedGames(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        return await _context.Games.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
     }
 
     public async Task<IReadOnlyCollection<Game>> Search(GameFilter filter, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(filter);
+
+        IQueryable<Game> query = _context.Games;
+    
+        if (filter.PlayerId.HasValue)
+        {
+            query = query
+                .Where(x => x.WhitePlayerId == filter.PlayerId || x.BlackPlayerId == filter.PlayerId);
+        }
+
+        if (filter.GameState.HasValue)
+        {
+            query = query
+                .Where(x => x.State == filter.GameState);
+        }
+
+        return await query
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync(cancellationToken);
     }
 }

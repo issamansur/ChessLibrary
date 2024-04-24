@@ -5,15 +5,15 @@ namespace ChessMaster.Application.Games.Filters;
 public class GameFilter
 {
     public Guid? PlayerId { get; }
-    public State? PlayerState { get; }
+    public State? GameState { get; }
     
     public int PageNumber { get; }
     public int PageSize { get; }
     
-    public GameFilter(Guid? playerId = null, State? playerState = null, int pageNumber = 1, int pageSize = 100)
+    public GameFilter(Guid? playerId = null, State? gameState = null, int pageNumber = 1, int pageSize = 100)
     {
         PlayerId = playerId;
-        PlayerState = playerState;
+        GameState = gameState;
         PageNumber = pageNumber;
         PageSize = pageSize;
         
