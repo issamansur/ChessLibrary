@@ -24,7 +24,22 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
         {
             throw new InvalidOperationException("Game does not exist.");
         }
-        
-        game.UpdateFEN();
+
+        return game;
+
+        /*
+         * The Move method is a part of the Game class.
+         * It is a method that takes a player ID and a move string as arguments and returns a GameMoveResult.
+         * The GameMoveResult is an enum with the following values: InvalidMove, InvalidPlayer, GameOver, and Success.
+         */
+        /*
+        return game.Move(request.PlayerId, request.Move) switch
+        {
+            GameMoveResult.InvalidMove => throw new InvalidOperationException("Invalid move."),
+            GameMoveResult.InvalidPlayer => throw new InvalidOperationException("Invalid player."),
+            GameMoveResult.GameOver => throw new InvalidOperationException("Game is over."),
+            GameMoveResult.Success => game
+        };
+        */
     }
 }
