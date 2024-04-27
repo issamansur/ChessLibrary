@@ -8,11 +8,13 @@ public class AccountRepository: IAccountRepository
         _context = dbContext;
     }
     
-    public async Task Create(Account entity, CancellationToken cancellationToken)
+    public Task Create(Account entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        await _context.Accounts.AddAsync(entity, cancellationToken);
+        _context.Accounts.Add(entity);
+        
+        return Task.CompletedTask;
     }
 
     public Task Update(Account entity, CancellationToken cancellationToken)
@@ -24,18 +26,20 @@ public class AccountRepository: IAccountRepository
         return Task.CompletedTask;
     }
 
-    public async Task<Account> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<Account> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Accounts.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
+        return Task.FromResult(_context.Accounts.Find(new object?[] { id })
+                               ?? throw new ArgumentNullException(nameof(Account)));
     }
 
-    public async Task<Account?> TryGetByEmail(string email, CancellationToken cancellationToken)
+    public Task<Account?> TryGetByEmail(string email, CancellationToken cancellationToken)
     {
-        return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email));
     }
 
-    public async Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
+    public Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
     {
-        return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email, cancellationToken) ?? throw new ArgumentNullException();
+        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email)
+                               ?? throw new ArgumentNullException(nameof(Account)));
     }
 }

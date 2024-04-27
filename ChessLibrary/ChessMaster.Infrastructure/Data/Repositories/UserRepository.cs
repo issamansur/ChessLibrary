@@ -8,11 +8,13 @@ public class UserRepository: IUserRepository
         _context = dbContext;
     }
     
-    public async Task Create(User entity, CancellationToken cancellationToken)
+    public Task Create(User entity, CancellationToken cancellationToken)
     { 
         ArgumentNullException.ThrowIfNull(entity);
-
-        await _context.Users.AddAsync(entity, cancellationToken);
+        
+        _context.Users.Add(entity);
+        
+        return Task.CompletedTask;
     }
 
     public Task Update(User entity, CancellationToken cancellationToken)
@@ -24,18 +26,20 @@ public class UserRepository: IUserRepository
         return Task.CompletedTask;
     }
 
-    public async Task<User> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<User> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Users.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
+        return Task.FromResult(_context.Users.Find(new object?[] { id }) 
+                               ?? throw new ArgumentNullException(nameof(User)));
     }
 
-    public async Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken)
+    public Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken)
     {
-        return await _context.Users.FirstOrDefaultAsync(x => x.Username == userName, cancellationToken);
+        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == userName));
     }
 
-    public async Task<User> GetByUsername(string userName, CancellationToken cancellationToken)
+    public Task<User> GetByUsername(string userName, CancellationToken cancellationToken)
     {
-        return await _context.Users.FirstOrDefaultAsync(x => x.Username == userName, cancellationToken) ?? throw new ArgumentNullException();
+        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == userName)
+                               ?? throw new ArgumentNullException(nameof(User)));
     }
 }

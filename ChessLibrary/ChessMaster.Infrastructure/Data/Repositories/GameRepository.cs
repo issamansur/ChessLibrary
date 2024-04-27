@@ -10,11 +10,13 @@ public class GameRepository: IGameRepository
         _context = dbContext;
     }
 
-    public async Task Create(Game entity, CancellationToken cancellationToken)
+    public Task Create(Game entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        await _context.Games.AddAsync(entity, cancellationToken);
+        _context.Games.Add(entity);
+        
+        return Task.CompletedTask;
     }
 
     public Task Update(Game entity, CancellationToken cancellationToken)
@@ -26,12 +28,13 @@ public class GameRepository: IGameRepository
         return Task.CompletedTask;
     }
 
-    public async Task<Game> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<Game> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Games.FindAsync(new object?[] { id }, cancellationToken: cancellationToken) ?? throw new ArgumentNullException();
+        return Task.FromResult(_context.Games.Find(new object?[] { id }) 
+                               ?? throw new ArgumentNullException(nameof(Game)));
     }
 
-    public async Task<IReadOnlyCollection<Game>> Search(GameFilter filter, CancellationToken cancellationToken)
+    public Task<IReadOnlyCollection<Game>> Search(GameFilter filter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
@@ -49,9 +52,9 @@ public class GameRepository: IGameRepository
                 .Where(x => x.State == filter.GameState);
         }
 
-        return await query
+        return Task.FromResult(query
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
-            .ToListAsync(cancellationToken);
+            .ToList() as IReadOnlyCollection<Game>);
     }
 }
