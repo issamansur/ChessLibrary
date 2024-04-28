@@ -49,7 +49,7 @@ public class GameRepository: IGameRepository
         if (filter.GameState.HasValue)
         {
             query = query
-                .Where(x => x.State == filter.GameState);
+                .Where(x => x.GameState == filter.GameState);
         }
 
         return Task.FromResult(query
