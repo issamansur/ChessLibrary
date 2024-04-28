@@ -11,8 +11,8 @@ public class Game
     public Guid CreatorUserId { get; private set; }
     public DateTime CreationTime { get; private set; }
     
-    public string FEN { get; private set; }
-    public State State { get; private set; }
+    public string Fen { get; private set; }
+    public State GameState { get; private set; }
     
     // For games in progress
     public Guid? WhitePlayerId { get; private set; }
@@ -58,8 +58,8 @@ public class Game
         CreationTime = creationTime;
         WhitePlayerId = whitePlayerId;
         BlackPlayerId = blackPlayerId;
-        FEN = fen;
-        State = gameState;
+        Fen = fen;
+        GameState = gameState;
         StartTime = startTime;
         EndTime = endTime;
         WinnerId = winnerId;
@@ -88,7 +88,7 @@ public class Game
     
     public void Join(Guid userId)
     {
-        if (State != State.Created)
+        if (GameState != State.Created)
         {
             throw new InvalidOperationException("Game cannot be joined");
         }
@@ -110,8 +110,8 @@ public class Game
             BlackPlayerId = CreatorUserId;
         }
         
-        FEN = ChessExt.DefaultFen;
-        State = State.InProgress;
+        Fen = ChessExt.DefaultFen;
+        GameState = State.InProgress;
         StartTime = DateTime.UtcNow;
     }
     
@@ -122,15 +122,15 @@ public class Game
             throw new ArgumentException("FEN cannot be empty", nameof(fen));
         }
         
-        FEN = fen;
+        Fen = fen;
         Chess chess = Builders.ChessBuild(fen);
         
-        if (chess.GameState == GameState.Checkmate)
+        if (chess.GameState == ChessModels.States.GameState.Checkmate)
         {
             Guid winnerId = (Guid)(chess.ActiveColor == Color.White ? BlackPlayerId! : WhitePlayerId!);
             Finish(winnerId);
         }
-        else if (chess.GameState == GameState.Stalemate)
+        else if (chess.GameState == ChessModels.States.GameState.Stalemate)
         {
             Finish(null);
         }
@@ -138,12 +138,12 @@ public class Game
     
     private void Finish(Guid? winnerId)
     {
-        if (State != State.InProgress)
+        if (GameState != State.InProgress)
         {
             throw new InvalidOperationException("Game is not in progress");
         }
         
-        State = State.Finished;
+        GameState = State.Finished;
         EndTime = DateTime.UtcNow;
         WinnerId = winnerId;
     }

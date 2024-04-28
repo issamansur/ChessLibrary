@@ -6,18 +6,18 @@ public class User
     public Guid Id { get; private set; }
     public string Username { get; private set; }
     
-    public User(Guid userId, string username)
+    public User(Guid id, string username)
     {
-        if (userId == Guid.Empty)
+        if (id == Guid.Empty)
         {
-            throw new ArgumentException("Id cannot be empty", nameof(userId));
+            throw new ArgumentException("Id cannot be empty", nameof(id));
         }
         if (string.IsNullOrWhiteSpace(username))
         {
             throw new ArgumentException("Username cannot be empty", nameof(username));
         }
         
-        Id = userId;
+        Id = id;
         Username = username;
     }
     
