@@ -13,11 +13,11 @@ public class GameConfiguration: IEntityTypeConfiguration<Game>
             .HasColumnName("Id")
             .IsRequired();
         
-        builder.Property(x => x.State)
+        builder.Property(x => x.GameState)
             .HasColumnName("State")
             .IsRequired();
         
-        builder.Property(x => x.FEN)
+        builder.Property(x => x.Fen)
             .HasColumnName("FEN")
             .HasMaxLength(100)
             .IsRequired();
