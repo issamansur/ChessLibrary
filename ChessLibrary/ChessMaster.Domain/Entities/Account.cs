@@ -7,37 +7,33 @@ public sealed class Account
 {
     public Guid UserId { get; private init; }
     public string Email { get; private set; }
-    public string NormalizedEmail { get; private set; }
-    public string? PasswordResetToken { get; private set; }
-    public DateTime? PasswordResetTokenExpirationDate { get; private set; }
+    //public string? PasswordResetToken { get; private set; }
+    //public DateTime? PasswordResetTokenExpirationDate { get; private set; }
     public DateTime CreatedDate { get; private init; }
-    public DateTime UpdatedDate { get; private set; }
-    public IReadOnlyCollection<byte>? Salt { get; private set; }
-    public IReadOnlyCollection<byte>? PasswordHash { get; private set; }
+    
+    public string Salt { get; private set; }
+    public string PasswordHash { get; private set; }
 
     public Account(
         Guid userId,
-        string email, string normalizedEmail,
-        string? passwordResetToken, DateTime? passwordResetTokenExpirationDate, 
-        DateTime createdDate, DateTime updatedDate, 
-        IReadOnlyCollection<byte> salt, IReadOnlyCollection<byte> passwordHash)
+        string email,
+        //string? passwordResetToken, DateTime? passwordResetTokenExpirationDate, 
+        DateTime createdDate, 
+        string salt, string passwordHash)
     {
         if (userId == Guid.Empty)
         {
             throw new ArgumentException("Value cannot be null or empty.", nameof(userId));
         }
         ThrowIfEmailIsNotValid(email);
-        ThrowIfEmailIsNotValid(normalizedEmail);
         
         UserId = userId;
         Email = email;
-        NormalizedEmail = normalizedEmail;
         
-        PasswordResetToken = passwordResetToken;
-        PasswordResetTokenExpirationDate = passwordResetTokenExpirationDate;
+        //PasswordResetToken = passwordResetToken;
+        //PasswordResetTokenExpirationDate = passwordResetTokenExpirationDate;
         
         CreatedDate = createdDate;
-        UpdatedDate = updatedDate;
         
         Salt = salt;
         PasswordHash = passwordHash;
@@ -59,13 +55,15 @@ public sealed class Account
             salt = hmac.Key;
             passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
+        
+        string saltString = Convert.ToBase64String(salt);
+        string passwordHashString = Convert.ToBase64String(passwordHash);
 
         return new Account(
             user.Id,
-            email, email.ToUpperInvariant(),
-            null, null,
-            DateTime.UtcNow, DateTime.UtcNow,
-            salt, passwordHash
+            formattedEmail,
+            DateTime.UtcNow, 
+            saltString, passwordHashString
         );
     }
 
@@ -76,17 +74,43 @@ public sealed class Account
             throw new ArgumentException("Value cannot be null or empty.", nameof(password));
         }
 
-        using (var hmac = new HMACSHA512((byte[])Salt))
+        byte[] saltBytes = Convert.FromBase64String(Salt);
+        byte[] passwordHashBytes = Convert.FromBase64String(PasswordHash);
+        
+        using (var hmac = new HMACSHA512(saltBytes))
         {
             var passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             var a = hmac.ComputeHash(passwordHash);
 
-            var passwordHashArray = (byte[])PasswordHash;
+            var passwordHashArray = passwordHashBytes;
             var b = hmac.ComputeHash(passwordHashArray);
             return Xor(a, b) && Xor(passwordHash, passwordHashArray);
         }
     }
 
+    private static void ThrowIfEmailIsNotValid(string email)
+    {
+        if (!email.Contains('@', StringComparison.InvariantCultureIgnoreCase)
+            || email[^1] == '@'
+            || email[0] == '@')
+        {
+            throw new InvalidOperationException("Invalid email.");
+        }
+    }
+
+    private static bool Xor(byte[] a, byte[] b)
+    {
+        var x = a.Length ^ b.Length;
+
+        for (var i = 0; i < a.Length && i < b.Length; ++i)
+        {
+            x |= a[i] ^ b[i];
+        }
+
+        return x == 0;
+    }
+
+    /*
     [MemberNotNull(nameof(PasswordResetToken))]
     [MemberNotNull(nameof(PasswordResetTokenExpirationDate))]
     public void PasswordResetRequest()
@@ -98,8 +122,6 @@ public sealed class Account
         }
 
         PasswordResetTokenExpirationDate = now.AddDays(1);
-        
-        SetUpdatedDate();
     }
 
     public void PasswordReset(string resetPasswordKey, string newPassword)
@@ -117,7 +139,6 @@ public sealed class Account
         SetPassword(newPassword);
         PasswordResetToken = null;
         PasswordResetTokenExpirationDate = null;
-        SetUpdatedDate();
     }
 
     public void ChangePassword(string currentPassword, string newPassword)
@@ -133,7 +154,6 @@ public sealed class Account
         }
 
         SetPassword(newPassword);
-        SetUpdatedDate();
     }
 
     [MemberNotNull(nameof(Salt))]
@@ -146,31 +166,5 @@ public sealed class Account
             PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(newPassword));
         }
     }
-
-    private static void ThrowIfEmailIsNotValid(string email)
-    {
-        if (!email.Contains('@', StringComparison.InvariantCultureIgnoreCase)
-            || email[^1] == '@'
-            || email[0] == '@')
-        {
-            throw new InvalidOperationException("Invalid email.");
-        }
-    }
-
-    private void SetUpdatedDate()
-    {
-        UpdatedDate = DateTime.UtcNow;
-    }
-
-    private static bool Xor(byte[] a, byte[] b)
-    {
-        var x = a.Length ^ b.Length;
-
-        for (var i = 0; i < a.Length && i < b.Length; ++i)
-        {
-            x |= a[i] ^ b[i];
-        }
-
-        return x == 0;
-    }
+    */
 }

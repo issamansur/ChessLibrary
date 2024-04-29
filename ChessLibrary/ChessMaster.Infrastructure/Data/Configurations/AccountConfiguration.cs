@@ -13,10 +13,12 @@ public class AccountConfiguration: IEntityTypeConfiguration<Account>
             .HasColumnName("User_Id")
             .IsRequired();
 
-        builder.Property(x => x.NormalizedEmail)
+        builder.Property(x => x.Email)
             .HasColumnName("Email")
             .HasMaxLength(50)
             .IsRequired();
+        
+        
 
         builder.Property(x => x.PasswordHash)
             .HasMaxLength(50)

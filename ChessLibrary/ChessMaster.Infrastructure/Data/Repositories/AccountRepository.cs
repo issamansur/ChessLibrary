@@ -39,7 +39,7 @@ public class AccountRepository: IAccountRepository
 
     public Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email)
+        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email.ToLower())
                                ?? throw new ArgumentNullException(nameof(Account)));
     }
 }
