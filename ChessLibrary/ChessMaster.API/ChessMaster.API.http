@@ -1,0 +1,6 @@
+@ChessMaster.API_HostAddress = http://localhost:5201
+
+GET {{ChessMaster.API_HostAddress}}/
+Accept: application/json
+
+###
