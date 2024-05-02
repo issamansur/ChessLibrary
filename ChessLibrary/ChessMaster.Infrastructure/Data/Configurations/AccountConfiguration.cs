@@ -18,9 +18,13 @@ public class AccountConfiguration: IEntityTypeConfiguration<Account>
             .HasMaxLength(50)
             .IsRequired();
         
-        
+        builder.Property(x => x.Salt)
+            .HasColumnName("Salt")
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder.Property(x => x.PasswordHash)
+            .HasColumnName("Password_Hash")
             .HasMaxLength(50)
             .IsRequired();
 

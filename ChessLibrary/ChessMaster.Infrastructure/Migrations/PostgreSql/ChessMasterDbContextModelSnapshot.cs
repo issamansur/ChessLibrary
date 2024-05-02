@@ -40,11 +40,14 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("Password_Hash");
 
                     b.Property<string>("Salt")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("Salt");
 
                     b.HasKey("UserId")
                         .HasName("PK_Accounts_UserId");
