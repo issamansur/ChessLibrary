@@ -29,7 +29,7 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                 {
                     User_Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Created_Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Salt = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Password_Hash = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
@@ -49,14 +49,14 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatorUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FEN = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Creator_User_Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Creation_Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Fen = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     State = table.Column<int>(type: "integer", nullable: false),
                     White_Player_Id = table.Column<Guid>(type: "uuid", nullable: true),
                     Black_Player_Id = table.Column<Guid>(type: "uuid", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Start_Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    End_Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Winner_Id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>

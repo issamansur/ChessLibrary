@@ -19,6 +19,7 @@
     <ItemGroup>
       <Folder Include="API\" />
       <Folder Include="Databases\SQLite\" />
+      <Folder Include="Migrations\PostgreSql\" />
       <Folder Include="Migrations\SQLite\" />
     </ItemGroup>
 

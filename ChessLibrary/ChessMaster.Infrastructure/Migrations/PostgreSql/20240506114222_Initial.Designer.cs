@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChessMaster.Infrastructure.Migrations.PostgreSql
 {
     [DbContext(typeof(ChessMasterDbContext))]
-    [Migration("20240502145554_Initial")]
+    [Migration("20240506114222_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -32,7 +32,8 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                         .HasColumnName("User_Id");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Created_Date");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -69,26 +70,30 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                         .HasColumnName("Black_Player_Id");
 
                     b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Creation_Time");
 
                     b.Property<Guid>("CreatorUserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("Creator_User_Id");
 
                     b.Property<DateTime?>("EndTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("End_Time");
 
                     b.Property<string>("Fen")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("FEN");
+                        .HasColumnName("Fen");
 
                     b.Property<int>("GameState")
                         .HasColumnType("integer")
                         .HasColumnName("State");
 
                     b.Property<DateTime?>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Start_Time");
 
                     b.Property<Guid?>("WhitePlayerId")
                         .HasColumnType("uuid")
