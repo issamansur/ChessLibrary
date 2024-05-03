@@ -13,13 +13,21 @@ public class GameConfiguration: IEntityTypeConfiguration<Game>
             .HasColumnName("Id")
             .IsRequired();
         
-        builder.Property(x => x.GameState)
-            .HasColumnName("State")
+        builder.Property(x => x.CreatorUserId)
+            .HasColumnName("Creator_User_Id")
+            .IsRequired();
+        
+        builder.Property(x => x.CreationTime)
+            .HasColumnName("Creation_Time")
             .IsRequired();
         
         builder.Property(x => x.Fen)
-            .HasColumnName("FEN")
+            .HasColumnName("Fen")
             .HasMaxLength(100)
+            .IsRequired();
+        
+        builder.Property(x => x.GameState)
+            .HasColumnName("State")
             .IsRequired();
         
         builder.Property(x => x.WhitePlayerId)
@@ -27,6 +35,12 @@ public class GameConfiguration: IEntityTypeConfiguration<Game>
         
         builder.Property(x => x.BlackPlayerId)
             .HasColumnName("Black_Player_Id");
+        
+        builder.Property(x => x.StartTime)
+            .HasColumnName("Start_Time");
+        
+        builder.Property(x => x.EndTime)
+            .HasColumnName("End_Time");
         
         builder.Property(x => x.WinnerId)
             .HasColumnName("Winner_Id");

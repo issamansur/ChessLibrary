@@ -27,6 +27,10 @@ public class AccountConfiguration: IEntityTypeConfiguration<Account>
             .HasColumnName("Password_Hash")
             .HasMaxLength(50)
             .IsRequired();
+        
+        builder.Property(x => x.CreatedDate).
+            HasColumnName("Created_Date")
+            .IsRequired();
 
         builder.HasOne<User>()
             .WithOne()
