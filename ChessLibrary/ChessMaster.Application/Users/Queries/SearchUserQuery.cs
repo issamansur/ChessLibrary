@@ -1,11 +1,11 @@
 namespace ChessMaster.Application.Users.Queries;
 
-public class SearchUserQuery: IRequest<User>
+public class SearchUserQuery: IRequest<IReadOnlyCollection<User>>
 {
-    public string Username { get; set; }
+    public string Query { get; set; }
     
-    public SearchUserQuery(string username)
+    public SearchUserQuery(string query)
     {
-        Username = username;
+        Query = query;
     }
 }

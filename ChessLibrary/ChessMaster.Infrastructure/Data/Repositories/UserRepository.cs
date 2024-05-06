@@ -37,9 +37,14 @@ public class UserRepository: IUserRepository
         return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == userName));
     }
 
-    public Task<User> GetByUsername(string userName, CancellationToken cancellationToken)
+    public Task<User> GetByUsername(string username, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == userName)
+        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == username)
                                ?? throw new ArgumentNullException(nameof(User)));
+    }
+
+    public Task<IReadOnlyCollection<User>> Search(string query, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_context.Users.Where(x => x.Username.Contains(query)).ToList() as IReadOnlyCollection<User>);
     }
 }

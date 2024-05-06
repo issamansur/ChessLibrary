@@ -1,19 +1,19 @@
 namespace ChessMaster.Application.Users.Queries;
 
-public class SearchUserQueryHandler: BaseHandler, IRequestHandler<SearchUserQuery, User>
+public class SearchUserQueryHandler: BaseHandler, IRequestHandler<SearchUserQuery, IReadOnlyCollection<User>>
 {
     public SearchUserQueryHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
     }
     
-    public async Task<User> Handle(SearchUserQuery request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<User>> Handle(SearchUserQuery request, CancellationToken cancellationToken)
     {
         if (request == null)
         {
             throw new ArgumentNullException(nameof(request));
         }
         
-        var user = await GetTenant().Users.GetByUsername(request.Username, cancellationToken);
-        return user;
+        var users = await GetTenant().Users.Search(request.Query, cancellationToken);
+        return users;
     }
 }
