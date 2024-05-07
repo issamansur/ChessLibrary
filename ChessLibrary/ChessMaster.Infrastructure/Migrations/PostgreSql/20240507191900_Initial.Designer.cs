@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChessMaster.Infrastructure.Migrations.PostgreSql
 {
     [DbContext(typeof(ChessMasterDbContext))]
-    [Migration("20240506114222_Initial")]
+    [Migration("20240507191900_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -62,6 +62,7 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
             modelBuilder.Entity("ChessMaster.Domain.Entities.Game", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("Id");
 
@@ -106,6 +107,12 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK_Games_Id");
 
+                    b.HasIndex("BlackPlayerId");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("WhitePlayerId");
+
                     b.ToTable("Games", (string)null);
                 });
 
@@ -141,10 +148,22 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                 {
                     b.HasOne("ChessMaster.Domain.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("BlackPlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Games_Users_BlackPlayerId");
+
+                    b.HasOne("ChessMaster.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_Games_Users_UserId");
+                        .HasConstraintName("FK_Games_Users_CreatorUserId");
+
+                    b.HasOne("ChessMaster.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("WhitePlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Games_Users_WhitePlayerId");
                 });
 #pragma warning restore 612, 618
         }

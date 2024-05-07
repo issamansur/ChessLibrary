@@ -47,8 +47,20 @@ public class GameConfiguration: IEntityTypeConfiguration<Game>
         
         builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(x => x.Id)
-            .HasConstraintName("FK_Games_Users_UserId")
+            .HasForeignKey(x => x.CreatorUserId)
+            .HasConstraintName("FK_Games_Users_CreatorUserId")
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.WhitePlayerId)
+            .HasConstraintName("FK_Games_Users_WhitePlayerId")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.BlackPlayerId)
+            .HasConstraintName("FK_Games_Users_BlackPlayerId")
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

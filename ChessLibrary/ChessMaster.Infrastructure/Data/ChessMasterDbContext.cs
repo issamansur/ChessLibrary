@@ -5,7 +5,7 @@ public sealed class ChessMasterDbContext : DbContext
     public ChessMasterDbContext(DbContextOptions<ChessMasterDbContext> options)
         : base(options)
     {
-        Database.EnsureCreated();
+        //Database.EnsureCreated();
     }
 
     public DbSet<User> Users => Set<User>();

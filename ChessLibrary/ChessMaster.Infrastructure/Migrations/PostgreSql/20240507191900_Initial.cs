@@ -63,12 +63,39 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
                 {
                     table.PrimaryKey("PK_Games_Id", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Games_Users_UserId",
-                        column: x => x.Id,
+                        name: "FK_Games_Users_BlackPlayerId",
+                        column: x => x.Black_Player_Id,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Games_Users_CreatorUserId",
+                        column: x => x.Creator_User_Id,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Games_Users_WhitePlayerId",
+                        column: x => x.White_Player_Id,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Black_Player_Id",
+                table: "Games",
+                column: "Black_Player_Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Creator_User_Id",
+                table: "Games",
+                column: "Creator_User_Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_White_Player_Id",
+                table: "Games",
+                column: "White_Player_Id");
         }
 
         /// <inheritdoc />
