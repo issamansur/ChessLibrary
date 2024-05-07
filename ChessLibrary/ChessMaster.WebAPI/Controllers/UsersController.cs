@@ -1,4 +1,4 @@
-namespace WebApi.Controllers;
+namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
