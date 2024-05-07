@@ -28,18 +28,18 @@ public class AccountRepository: IAccountRepository
 
     public Task<Account> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.Find(new object?[] { id })
+        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.UserId == id)
                                ?? throw new ArgumentNullException(nameof(Account)));
     }
 
     public Task<Account?> TryGetByEmail(string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email));
+        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.Email == email));
     }
 
     public Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.FirstOrDefault(x => x.Email == email.ToLower())
+        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.Email == email.ToLower())
                                ?? throw new ArgumentNullException(nameof(Account)));
     }
 }

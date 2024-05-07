@@ -30,7 +30,7 @@ public class GameRepository: IGameRepository
 
     public Task<Game> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Games.Find(new object?[] { id }) 
+        return Task.FromResult(_context.Games.AsNoTracking().FirstOrDefault(x => x.Id == id) 
                                ?? throw new ArgumentNullException(nameof(Game)));
     }
 
@@ -38,7 +38,7 @@ public class GameRepository: IGameRepository
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        IQueryable<Game> query = _context.Games;
+        IQueryable<Game> query = _context.Games.AsNoTracking();
     
         if (filter.PlayerId.HasValue)
         {

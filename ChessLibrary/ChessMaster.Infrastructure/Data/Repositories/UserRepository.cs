@@ -34,17 +34,17 @@ public class UserRepository: IUserRepository
 
     public Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == userName));
+        return Task.FromResult(_context.Users.AsNoTracking().FirstOrDefault(x => x.Username == userName));
     }
 
     public Task<User> GetByUsername(string username, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.FirstOrDefault(x => x.Username == username)
+        return Task.FromResult(_context.Users.AsNoTracking().FirstOrDefault(x => x.Username == username)
                                ?? throw new ArgumentNullException(nameof(User)));
     }
 
     public Task<IReadOnlyCollection<User>> Search(string query, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.Where(x => x.Username.Contains(query)).ToList() as IReadOnlyCollection<User>);
+        return Task.FromResult(_context.Users.AsNoTracking().Where(x => x.Username.Contains(query)).ToList() as IReadOnlyCollection<User>);
     }
 }
