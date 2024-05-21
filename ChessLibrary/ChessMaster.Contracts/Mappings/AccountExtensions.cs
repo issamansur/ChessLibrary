@@ -1,5 +1,7 @@
-using ChessMaster.Contracts.DTOs.Accounts.Requests;
-using ChessMaster.Contracts.DTOs.Accounts.Responses;
+using ChessMaster.Application.Accounts.Commands;
+using ChessMaster.Application.Accounts.Queries;
+
+using ChessMaster.Contracts.DTOs.Accounts;
 
 namespace ChessMaster.Contracts.Mappings;
 
@@ -14,21 +16,21 @@ public static class AccountExtensions
         );
     }
     
-    public static LoginAccountCommand ToCommand(this LoginAccountRequest request)
+    public static LoginAccountQuery ToQuery(this LoginAccountRequest request)
     {
-        return new LoginAccountCommand(
+        return new LoginAccountQuery(
             request.Login,
             request.Password
         );
     }
     
-    public static RegisterAccountResponse ToRegisterResponse (this string token)
+    public static RegisterAccountResponse ToRegisterResponse (this Account account)
     {
-        return new RegisterAccountResponse(token);
+        return new RegisterAccountResponse(account);
     }
     
-    public static LoginAccountResponse ToLoginResponse(this string token)
+    public static LoginAccountResponse ToLoginResponse(this Account account)
     {
-        return new LoginAccountResponse(token);
+        return new LoginAccountResponse(account);
     }
 }

@@ -1,10 +1,11 @@
-using ChessMaster.Application.Accounts.Commands;
+using ChessMaster.Contracts.DTOs.Accounts;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountsController
+public class AccountsController : ControllerBase
 {
     private readonly IMediator _mediator;
     
@@ -13,5 +14,27 @@ public class AccountsController
         ArgumentNullException.ThrowIfNull(mediator, nameof(mediator));
         
         _mediator = mediator;
+    }
+    
+    [HttpPost("register", Name = "RegisterAccount")]
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterAccountRequest request, 
+        CancellationToken cancellationToken = default
+        )
+    {
+        var command = request.ToCommand(); 
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPost("login", Name = "LoginAccount")]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginAccountRequest request, 
+        CancellationToken cancellationToken = default
+        )
+    {
+        var command = request.ToQuery();
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
     }
 }

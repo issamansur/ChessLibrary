@@ -1,8 +1,8 @@
-namespace ChessMaster.Application.Accounts.Commands;
+namespace ChessMaster.Application.Accounts.Queries;
 
-public class LoginAccountCommandValidator: AbstractValidator<LoginAccountCommand>
+public class LoginAccountQueryValidator: AbstractValidator<LoginAccountQuery>
 {
-    public LoginAccountCommandValidator()
+    public LoginAccountQueryValidator()
     {
         RuleFor(x => x.Login)
             .NotEmpty().WithMessage("Login is required.")

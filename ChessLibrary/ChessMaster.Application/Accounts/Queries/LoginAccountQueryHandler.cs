@@ -1,14 +1,14 @@
-namespace ChessMaster.Application.Accounts.Commands;
+namespace ChessMaster.Application.Accounts.Queries;
 
-public class LoginAccountCommandHandler: BaseHandler, IRequestHandler<LoginAccountCommand>
+public class LoginAccountQueryHandler: BaseHandler, IRequestHandler<LoginAccountQuery>
 {
-    public LoginAccountCommandHandler(ITenantFactory tenantFactory)
+    public LoginAccountQueryHandler(ITenantFactory tenantFactory)
         : base(tenantFactory)
     {
         
     }
     
-    public async Task Handle(LoginAccountCommand request, CancellationToken cancellationToken)
+    public async Task Handle(LoginAccountQuery request, CancellationToken cancellationToken)
     {
         // Validation
         if (request == null)
