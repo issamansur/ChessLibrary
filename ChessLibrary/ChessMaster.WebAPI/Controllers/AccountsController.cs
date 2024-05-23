@@ -1,10 +1,9 @@
 using ChessMaster.Contracts.DTOs.Accounts;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/accounts")]
 public class AccountsController : ControllerBase
 {
     private readonly IMediator _mediator;

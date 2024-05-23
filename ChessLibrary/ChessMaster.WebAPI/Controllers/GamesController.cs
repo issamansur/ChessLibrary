@@ -1,10 +1,9 @@
 using ChessMaster.Contracts.DTOs.Games;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/games")]
 public class GamesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -49,7 +48,7 @@ public class GamesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var command = request.ToQuery();
-        IEnumerable<Game> games = await _mediator.Send(command, cancellationToken);
+        IReadOnlyCollection<Game> games = await _mediator.Send(command, cancellationToken);
         var response = games.ToSearchResponse();
         
         return Ok(response);

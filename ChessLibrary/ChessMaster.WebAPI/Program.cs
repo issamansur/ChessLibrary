@@ -1,7 +1,7 @@
 using ChessMaster.Application.Common;
-using ChessMaster.Application.Repositories;
+
 using ChessMaster.Infrastructure.Data.Common;
-using ChessMaster.Infrastructure.Data.Repositories;
+
 using ChessMaster.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

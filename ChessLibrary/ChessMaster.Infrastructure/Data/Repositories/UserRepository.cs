@@ -28,13 +28,22 @@ public class UserRepository: IUserRepository
 
     public Task<User> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.Find(new object?[] { id }) 
-                               ?? throw new ArgumentNullException(nameof(User)));
+        ArgumentNullException.ThrowIfNull(id);
+        
+        var result = _context.Users
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Id == id);
+        
+        return Task.FromResult(result ?? throw new ArgumentNullException(nameof(User)));
     }
 
-    public Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken)
+    public Task<User?> TryGetByUsername(string username, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.AsNoTracking().FirstOrDefault(x => x.Username == userName));
+        var result = _context.Users
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Username == username);
+        
+        return Task.FromResult(result);
     }
 
     public Task<User> GetByUsername(string username, CancellationToken cancellationToken)
@@ -45,6 +54,11 @@ public class UserRepository: IUserRepository
 
     public Task<IReadOnlyCollection<User>> Search(string query, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.AsNoTracking().Where(x => x.Username.Contains(query)).ToList() as IReadOnlyCollection<User>);
+        var result = _context.Users
+            .AsNoTracking()
+            .Where(x => EF.Functions.Like(x.Username, $"%{query}%"))
+            .ToList() as IReadOnlyCollection<User>;
+
+        return Task.FromResult(result);
     }
 }

@@ -1,6 +1,3 @@
-using ChessMaster.Application.Common;
-using ChessMaster.Infrastructure.Data.Repositories;
-
 namespace ChessMaster.Infrastructure.Data.Common;
 
 public class TenantFactory: ITenantFactory

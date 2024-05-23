@@ -7,14 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Users\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="13.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ChessMaster.Application\ChessMaster.Application.csproj" />
     </ItemGroup>
 

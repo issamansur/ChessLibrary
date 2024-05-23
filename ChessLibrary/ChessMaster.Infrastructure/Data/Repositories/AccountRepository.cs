@@ -28,18 +28,34 @@ public class AccountRepository: IAccountRepository
 
     public Task<Account> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.UserId == id)
-                               ?? throw new ArgumentNullException(nameof(Account)));
+        ArgumentNullException.ThrowIfNull(id);
+        
+        var result = _context.Accounts
+            .AsNoTracking()
+            .FirstOrDefault(x => x.UserId == id);
+        
+        return Task.FromResult(result ?? throw new ArgumentNullException(nameof(Account)));
     }
 
     public Task<Account?> TryGetByEmail(string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.Email == email));
+        ArgumentNullException.ThrowIfNull(email);
+        
+        var result = _context.Accounts
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+        
+        return Task.FromResult(result);
     }
 
     public Task<Account> GetByEmail(string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Accounts.AsNoTracking().FirstOrDefault(x => x.Email == email.ToLower())
-                               ?? throw new ArgumentNullException(nameof(Account)));
+        ArgumentNullException.ThrowIfNull(email);
+        
+        var result = _context.Accounts
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+        
+        return Task.FromResult(result ?? throw new ArgumentNullException(nameof(Account)));
     }
 }

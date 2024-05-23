@@ -6,5 +6,6 @@ public record SearchGameRequest(
     Guid? PlayerId,
     State? State,
     int Page,
-    int PageSize = 10);
+    int PageSize = 10
+);
     

@@ -1,3 +1,3 @@
 namespace ChessMaster.Contracts.DTOs.Games;
 
-public record SearchGameResponse(IEnumerable<GetGameResponse> Games);
+public record SearchGameResponse(IReadOnlyCollection<GetGameResponse> Games);

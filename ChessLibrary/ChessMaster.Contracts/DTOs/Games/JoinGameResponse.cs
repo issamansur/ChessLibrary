@@ -1,3 +1,5 @@
+using ChessMaster.Domain.States;
+
 namespace ChessMaster.Contracts.DTOs.Games;
 
-public record JoinGameResponse(bool IsSuccess);
+public record JoinGameResponse(Guid GameId);

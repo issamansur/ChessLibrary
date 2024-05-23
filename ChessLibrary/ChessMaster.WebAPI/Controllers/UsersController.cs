@@ -1,9 +1,9 @@
-using ChessMaster.Application.Users.Queries;
+using ChessMaster.Contracts.DTOs.Users;
 
 namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -15,26 +15,43 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
     
+    [HttpGet("/search",Name = "SearchUsers")]
+    public async Task<IActionResult> Search(
+        [FromQuery] SearchUserRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = request.ToQuery();
+        var users = await _mediator.Send(command, cancellationToken);
+        var response = users.ToSearchResponse();
+        
+        return Ok(response);
+    }
+    
     [HttpGet("{id:guid}", Name = "GetUser")]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var request = new GetUserQuery(id);
-            var command = request.ToCommand();
-            User user = await _mediator.Send(command, cancellationToken);
-            var response = user.ToResponse();
-            return Ok(user);
-        }
-        catch (ArgumentNullException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        var request = new GetUserRequest(id);
+        
+        var command = request.ToQuery();
+        var user = await _mediator.Send(command, cancellationToken);
+        var response = user.ToGetResponse();
+        
+        return Ok(user);
+    }
+    
+    [HttpGet("{username}", Name = "GetUserByUsername")]
+    public async Task<IActionResult> GetByUsername(
+        [FromRoute] string username,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new GetUserByUsernameRequest(username);
+
+        var command = request.ToQuery();
+        var user = await _mediator.Send(command, cancellationToken);
+        var response = user.ToGetResponse();
+
+        return Ok(response);
     }
 }

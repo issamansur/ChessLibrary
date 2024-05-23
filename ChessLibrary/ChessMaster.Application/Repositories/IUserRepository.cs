@@ -1,8 +1,8 @@
 namespace ChessMaster.Application.Repositories;
 
-public interface IUserRepository: ICRUDRepository<User>
+public interface IUserRepository: ICrudRepository<User>
 {
-    Task<User?> TryGetByUsername(string userName, CancellationToken cancellationToken);
+    Task<User?> TryGetByUsername(string username, CancellationToken cancellationToken);
     Task<User> GetByUsername(string username, CancellationToken cancellationToken);
     Task<IReadOnlyCollection<User>> Search(string query, CancellationToken cancellationToken);
 }
