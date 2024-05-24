@@ -15,7 +15,7 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
     
-    [HttpGet("/search",Name = "SearchUsers")]
+    [HttpGet(Name = "SearchUsers")]
     public async Task<IActionResult> Search(
         [FromQuery] SearchUserRequest request,
         CancellationToken cancellationToken = default)
