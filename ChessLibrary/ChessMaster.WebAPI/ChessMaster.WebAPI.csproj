@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ChessMaster.Application.DI\ChessMaster.Application.DI.csproj" />
       <ProjectReference Include="..\ChessMaster.Contracts\ChessMaster.Contracts.csproj" />
       <ProjectReference Include="..\ChessMaster.Infrastructure\ChessMaster.Infrastructure.csproj" />
     </ItemGroup>

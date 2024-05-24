@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.WebAPI", "Chess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Contracts", "ChessMaster.Contracts\ChessMaster.Contracts.csproj", "{E27F2EF2-E4D2-4DB5-8325-44A1D7845C7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessMaster.Application.DI", "ChessMaster.Application.DI\ChessMaster.Application.DI.csproj", "{03929A04-E40E-453E-9951-48549867C651}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{E27F2EF2-E4D2-4DB5-8325-44A1D7845C7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E27F2EF2-E4D2-4DB5-8325-44A1D7845C7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E27F2EF2-E4D2-4DB5-8325-44A1D7845C7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03929A04-E40E-453E-9951-48549867C651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03929A04-E40E-453E-9951-48549867C651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03929A04-E40E-453E-9951-48549867C651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03929A04-E40E-453E-9951-48549867C651}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
