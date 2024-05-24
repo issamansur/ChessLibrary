@@ -18,14 +18,18 @@ public class AccountConfiguration: IEntityTypeConfiguration<Account>
             .HasMaxLength(50)
             .IsRequired();
         
+        builder.HasIndex(x => x.Email)
+            .IsUnique()
+            .HasDatabaseName("IX_Accounts_Email");
+        
         builder.Property(x => x.Salt)
             .HasColumnName("Salt")
-            .HasMaxLength(50)
+            .HasMaxLength(200)
             .IsRequired();
 
         builder.Property(x => x.PasswordHash)
             .HasColumnName("Password_Hash")
-            .HasMaxLength(50)
+            .HasMaxLength(200)
             .IsRequired();
         
         builder.Property(x => x.CreatedDate).

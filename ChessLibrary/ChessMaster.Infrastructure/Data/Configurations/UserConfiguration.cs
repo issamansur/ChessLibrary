@@ -16,5 +16,9 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
         builder.Property(x => x.Username)
             .HasMaxLength(20)
             .IsRequired();
+        
+        builder.HasIndex(x => x.Username)
+            .IsUnique()
+            .HasDatabaseName("IX_Users_Username");
     }
 }

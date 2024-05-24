@@ -17,7 +17,7 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0-preview.3.24172.4")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -40,18 +40,22 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("Password_Hash");
 
                     b.Property<string>("Salt")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("Salt");
 
                     b.HasKey("UserId")
                         .HasName("PK_Accounts_UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Accounts_Email");
 
                     b.ToTable("Accounts", (string)null);
                 });
@@ -127,6 +131,10 @@ namespace ChessMaster.Infrastructure.Migrations.PostgreSql
 
                     b.HasKey("Id")
                         .HasName("PK_Users_Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Users_Username");
 
                     b.ToTable("Users", (string)null);
                 });
