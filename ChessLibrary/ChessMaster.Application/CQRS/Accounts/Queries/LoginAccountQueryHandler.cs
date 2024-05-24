@@ -11,10 +11,7 @@ public class LoginAccountQueryHandler: BaseHandler, IRequestHandler<LoginAccount
     public async Task Handle(LoginAccountQuery request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();

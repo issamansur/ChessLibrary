@@ -9,11 +9,8 @@ public class GetUserByUsernameQueryHandler: BaseHandler, IRequestHandler<GetUser
     public async Task<User> Handle(GetUserByUsernameQuery request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
-        
+        ArgumentNullException.ThrowIfNull(request);
+
         // Business logic
         var tenant = GetTenant();
         

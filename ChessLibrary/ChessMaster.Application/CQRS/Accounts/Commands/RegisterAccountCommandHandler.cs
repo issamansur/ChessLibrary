@@ -11,10 +11,7 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
     public async Task Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();

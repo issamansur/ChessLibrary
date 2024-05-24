@@ -11,10 +11,7 @@ public class GetGameQueryHandler: BaseHandler, IRequestHandler<GetGameQuery, Gam
     public async Task<Game> Handle(GetGameQuery request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();

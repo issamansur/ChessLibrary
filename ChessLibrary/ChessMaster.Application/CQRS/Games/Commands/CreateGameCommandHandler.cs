@@ -11,10 +11,7 @@ public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCo
     public async Task<Game> Handle(CreateGameCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();

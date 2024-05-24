@@ -11,10 +11,7 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
     public async Task<Game> Handle(MoveGameCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();

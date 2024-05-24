@@ -10,10 +10,7 @@ public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameComman
     public async Task<Game> Handle(JoinGameCommand request, CancellationToken cancellationToken)
     {
         // Validation
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
         
         // Business logic
         var tenant = GetTenant();
