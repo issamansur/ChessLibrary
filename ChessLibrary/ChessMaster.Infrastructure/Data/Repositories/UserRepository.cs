@@ -41,22 +41,26 @@ public class UserRepository: IUserRepository
     {
         var result = _context.Users
             .AsNoTracking()
-            .FirstOrDefault(x => x.Username == username);
+            .FirstOrDefault(x => x.Username.ToLower() == username.ToLower());
         
         return Task.FromResult(result);
     }
 
     public Task<User> GetByUsername(string username, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_context.Users.AsNoTracking().FirstOrDefault(x => x.Username == username)
-                               ?? throw new ArgumentNullException(nameof(User)));
+        var result = _context.Users
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Username.ToLower() == username.ToLower());
+        
+        return Task.FromResult(result ?? throw new ArgumentNullException(nameof(User)));
     }
 
     public Task<IReadOnlyCollection<User>> Search(string query, CancellationToken cancellationToken)
     {
         var result = _context.Users
             .AsNoTracking()
-            .Where(x => EF.Functions.Like(x.Username, $"%{query}%"))
+            // TODO: Check 
+            .Where(x => EF.Functions.Like(x.Username.ToLower(), $"%{query.ToLower()}%"))
             .ToList() as IReadOnlyCollection<User>;
 
         return Task.FromResult(result);

@@ -43,7 +43,8 @@ public class AccountRepository: IAccountRepository
         
         var result = _context.Accounts
             .AsNoTracking()
-            .FirstOrDefault(x => x.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+            // NO USE OF StringComparison.CurrentCultureIgnoreCase (EF does not support it)
+            .FirstOrDefault(x => x.Email == email.ToLower());
         
         return Task.FromResult(result);
     }
@@ -54,7 +55,8 @@ public class AccountRepository: IAccountRepository
         
         var result = _context.Accounts
             .AsNoTracking()
-            .FirstOrDefault(x => x.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+            // NO USE OF StringComparison.CurrentCultureIgnoreCase (EF does not support it)
+            .FirstOrDefault(x => x.Email == email.ToLower());
         
         return Task.FromResult(result ?? throw new ArgumentNullException(nameof(Account)));
     }
