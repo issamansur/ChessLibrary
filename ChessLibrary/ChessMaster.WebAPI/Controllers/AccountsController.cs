@@ -1,4 +1,5 @@
 using ChessMaster.Contracts.DTOs.Accounts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChessMaster.WebAPI.Controllers;
 
@@ -16,24 +17,30 @@ public class AccountsController : ControllerBase
     }
     
     [HttpPost("register", Name = "RegisterAccount")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register(
         [FromBody] RegisterAccountRequest request, 
         CancellationToken cancellationToken = default
         )
     {
         var command = request.ToCommand(); 
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        var token = await _mediator.Send(command, cancellationToken);
+        var response = token.ToRegisterResponse();
+        
+        return Ok(response);
     }
     
     [HttpPost("login", Name = "LoginAccount")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login(
         [FromBody] LoginAccountRequest request, 
         CancellationToken cancellationToken = default
         )
     {
         var command = request.ToQuery();
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        var token = await _mediator.Send(command, cancellationToken);
+        var response = token.ToLoginResponse();
+        
+        return Ok(response);
     }
 }

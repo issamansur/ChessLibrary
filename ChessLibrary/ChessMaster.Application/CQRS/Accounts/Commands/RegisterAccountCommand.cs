@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.CQRS.Accounts.Commands;
 
-public class RegisterAccountCommand : IRequest
+public class RegisterAccountCommand : IRequest<string>
 {
     public string Username { get; }
     public string Email { get; }

@@ -1,13 +1,14 @@
+
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ChessMaster.WebAPI.Services;
+namespace ChessMaster.Infrastructure.Services;
 
-public class JwtGenerator
+public class JwtService: IJwtService
 {
-    public static string GenerateJwtToken(Account account)
+    public string GenerateToken(Account account)
     {
         var claims = new List<Claim>
         {
@@ -16,12 +17,18 @@ public class JwtGenerator
         };
 
         var signingKey = JwtSettings.GetSymmetricSecurityKey();
-        var jwtToken = new JwtSecurityToken(
+        
+        var jwtToken = new JwtSecurityToken
+        (
             issuer: JwtSettings.ISSUER,
             audience: JwtSettings.AUDIENCE,
             claims: claims,
             expires: DateTime.Now.AddMinutes(JwtSettings.EXPIRY_MINUTES),
-            signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials
+            (
+                key: signingKey, 
+                algorithm: SecurityAlgorithms.HmacSha256
+            )
         );
 
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);

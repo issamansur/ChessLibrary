@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.CQRS.Accounts.Queries;
 
-public class LoginAccountQuery: IRequest
+public class LoginAccountQuery: IRequest<string>
 {
     public string Login { get; }
     public string Password { get; }

@@ -1,4 +1,5 @@
 using ChessMaster.Contracts.DTOs.Games;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChessMaster.WebAPI.Controllers;
 
@@ -16,19 +17,21 @@ public class GamesController : ControllerBase
     }
     
     [HttpPost("create", Name = "CreateGame")]
+    [Authorize]
     public async Task<IActionResult> Create(
         [FromBody] CreateGameRequest request, 
         CancellationToken cancellationToken = default
         )
     {
         var command = request.ToCommand();
-        Game game = await _mediator.Send(command, cancellationToken);
+        var game = await _mediator.Send(command, cancellationToken);
         var response = game.ToCreateResponse();
         
         return Ok(response);
     }
     
     [HttpGet("{id:guid}", Name = "GetGame")]
+    [Authorize]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
@@ -36,32 +39,34 @@ public class GamesController : ControllerBase
         var request = new GetGameRequest(id);
         
         var command = request.ToQuery();
-        Game game = await _mediator.Send(command, cancellationToken);
+        var game = await _mediator.Send(command, cancellationToken);
         var response = game.ToGetResponse();
         
         return Ok(response);
     }
     
     [HttpGet(Name = "SearchGames")]
+    [Authorize]
     public async Task<IActionResult> Search(
         [FromQuery] SearchGameRequest request,
         CancellationToken cancellationToken = default)
     {
         var command = request.ToQuery();
-        IReadOnlyCollection<Game> games = await _mediator.Send(command, cancellationToken);
+        var games = await _mediator.Send(command, cancellationToken);
         var response = games.ToSearchResponse();
         
         return Ok(response);
     }
     
     [HttpPost("join", Name = "JoinGame")]
+    [Authorize]
     public async Task<IActionResult> Join(
         [FromBody] JoinGameRequest request, 
         CancellationToken cancellationToken = default
         )
     {
         var command = request.ToCommand();
-        Game game = await _mediator.Send(command, cancellationToken);
+        var game = await _mediator.Send(command, cancellationToken);
         var response = game.ToCreateResponse();
         
         return Ok(response);
@@ -69,6 +74,7 @@ public class GamesController : ControllerBase
     
     /*
     [HttpPost("move", Name = "MoveGame")]
+    [Authorize]
     public async Task<IActionResult> Move(
         [FromBody] MoveGameRequest request, 
         CancellationToken cancellationToken = default

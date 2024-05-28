@@ -1,14 +1,14 @@
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ChessMaster.WebAPI.Services;
+namespace ChessMaster.Infrastructure.Services;
 
 public class JwtSettings
 {
     public const string ISSUER = "ChessMaster";
     public const string AUDIENCE = "ChessMasterClient";
     
-    public const int EXPIRY_MINUTES = 60;
+    public const int EXPIRY_MINUTES = 24400;
 
     // 32+ characters
     private const string KEY = "e4e5Kf3Kc6d4!edKd4Cc5Ce3Kf6?Kc6!";

@@ -1,4 +1,5 @@
 using ChessMaster.Contracts.DTOs.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChessMaster.WebAPI.Controllers;
 
@@ -16,6 +17,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet(Name = "SearchUsers")]
+    [Authorize]
     public async Task<IActionResult> Search(
         [FromQuery] SearchUserRequest request,
         CancellationToken cancellationToken = default)
@@ -28,6 +30,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{id:guid}", Name = "GetUser")]
+    [Authorize]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
@@ -38,10 +41,11 @@ public class UsersController : ControllerBase
         var user = await _mediator.Send(command, cancellationToken);
         var response = user.ToGetResponse();
         
-        return Ok(user);
+        return Ok(response);
     }
     
     [HttpGet("{username}", Name = "GetUserByUsername")]
+    [Authorize]
     public async Task<IActionResult> GetByUsername(
         [FromRoute] string username,
         CancellationToken cancellationToken = default)

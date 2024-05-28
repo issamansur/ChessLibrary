@@ -1,14 +1,22 @@
+using ChessMaster.Application.Services;
+
 namespace ChessMaster.Application.CQRS.Accounts.Commands;
 
-public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand>
+public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand, string>
 {
-    public RegisterAccountCommandHandler(ITenantFactory tenantFactory) : 
+    private IJwtService _jwtService;
+    
+    public RegisterAccountCommandHandler
+    (
+        ITenantFactory tenantFactory,
+        IJwtService jwtService
+    ): 
         base(tenantFactory)
     {
-        
+        _jwtService = jwtService;
     }
 
-    public async Task Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
     {
         // Validation
         ArgumentNullException.ThrowIfNull(request);
@@ -32,5 +40,9 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         await tenant.Users.Create(user, cancellationToken);
         await tenant.Accounts.Create(account, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
+        
+        var token = _jwtService.GenerateToken(account);
+
+        return token;
     }
 }

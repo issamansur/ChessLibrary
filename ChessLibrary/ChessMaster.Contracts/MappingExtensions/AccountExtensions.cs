@@ -23,13 +23,13 @@ public static class AccountExtensions
         );
     }
     
-    public static RegisterAccountResponse ToRegisterResponse (this Account account)
+    public static RegisterAccountResponse ToRegisterResponse(this string token)
     {
-        return new RegisterAccountResponse(account);
+        return new RegisterAccountResponse(token);
     }
     
-    public static LoginAccountResponse ToLoginResponse(this Account account)
+    public static LoginAccountResponse ToLoginResponse(this string token)
     {
-        return new LoginAccountResponse(account);
+        return new LoginAccountResponse(token);
     }
 }

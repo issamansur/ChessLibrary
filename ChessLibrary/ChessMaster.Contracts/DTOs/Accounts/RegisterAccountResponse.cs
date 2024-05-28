@@ -1,5 +1,3 @@
 namespace ChessMaster.Contracts.DTOs.Accounts;
 
-public record RegisterAccountResponse(
-    Account Account
-);
+public record RegisterAccountResponse(string Token);

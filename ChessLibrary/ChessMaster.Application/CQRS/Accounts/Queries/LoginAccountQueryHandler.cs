@@ -1,14 +1,21 @@
+using ChessMaster.Application.Services;
+
 namespace ChessMaster.Application.CQRS.Accounts.Queries;
 
-public class LoginAccountQueryHandler: BaseHandler, IRequestHandler<LoginAccountQuery>
+public class LoginAccountQueryHandler: BaseHandler, IRequestHandler<LoginAccountQuery, string>
 {
-    public LoginAccountQueryHandler(ITenantFactory tenantFactory)
-        : base(tenantFactory)
+    private IJwtService _jwtService;
+    
+    public LoginAccountQueryHandler(
+        ITenantFactory tenantFactory,
+        IJwtService jwtService
+    ): 
+        base(tenantFactory)
     {
-        
+        _jwtService = jwtService;
     }
     
-    public async Task Handle(LoginAccountQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(LoginAccountQuery request, CancellationToken cancellationToken)
     {
         // Validation
         ArgumentNullException.ThrowIfNull(request);
@@ -27,5 +34,9 @@ public class LoginAccountQueryHandler: BaseHandler, IRequestHandler<LoginAccount
         {
             throw new InvalidOperationException("Invalid password.");
         }
+        
+        var token = _jwtService.GenerateToken(account);
+
+        return token;
     }
 }

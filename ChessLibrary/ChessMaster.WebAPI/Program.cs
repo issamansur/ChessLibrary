@@ -1,12 +1,11 @@
-using ChessMaster.Application.Common;
 using ChessMaster.Application.DI;
-using ChessMaster.Infrastructure;
-using ChessMaster.Infrastructure.Data.Common;
 
-using ChessMaster.WebAPI.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ChessMaster.Infrastructure;
+using ChessMaster.Infrastructure.Services;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 // BUILDER
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +31,9 @@ builder.Services.AddSwaggerGen();
 //builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer
+(
+    options =>
     {
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters
