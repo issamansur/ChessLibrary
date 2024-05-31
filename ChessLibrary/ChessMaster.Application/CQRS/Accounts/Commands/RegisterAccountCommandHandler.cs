@@ -4,16 +4,16 @@ namespace ChessMaster.Application.CQRS.Accounts.Commands;
 
 public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand, string>
 {
-    private IJwtService _jwtService;
+    private IAuthService _authService;
     
     public RegisterAccountCommandHandler
     (
         ITenantFactory tenantFactory,
-        IJwtService jwtService
+        IAuthService authService
     ): 
         base(tenantFactory)
     {
-        _jwtService = jwtService;
+        _authService = authService;
     }
 
     public async Task<string> Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         await tenant.Accounts.Create(account, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
         
-        var token = _jwtService.GenerateToken(account);
+        var token = _authService.GenerateToken(account);
 
         return token;
     }

@@ -7,9 +7,9 @@ namespace ChessMaster.Contracts.MappingExtensions;
 
 public static class GameExtensions
 {
-    public static CreateGameCommand ToCommand(this CreateGameRequest request)
+    public static CreateGameCommand ToCommand(this CreateGameRequest request, Guid playerId)
     {
-        return new CreateGameCommand(request.PlayerId);
+        return new CreateGameCommand(playerId);
     }
     
     public static CreateGameResponse ToCreateResponse(this Game game)
@@ -17,9 +17,9 @@ public static class GameExtensions
         return new CreateGameResponse(game.Id);
     }
     
-    public static JoinGameCommand ToCommand(this JoinGameRequest request)
+    public static JoinGameCommand ToCommand(this JoinGameRequest request, Guid playerId)
     {
-        return new JoinGameCommand(request.GameId, request.PlayerId);
+        return new JoinGameCommand(request.GameId, playerId);
     }
 
     public static JoinGameResponse ToJoinResponse(this Game game)
@@ -27,9 +27,9 @@ public static class GameExtensions
         return new JoinGameResponse(game.Id);
     }
 
-    public static MoveGameCommand ToCommand(this MoveGameRequest request)
+    public static MoveGameCommand ToCommand(this MoveGameRequest request, Guid playerId)
     {
-        return new MoveGameCommand(request.GameId, Guid.Empty, request.Move);
+        return new MoveGameCommand(request.GameId, playerId, request.Move);
     }
     
     public static MoveGameResponse ToMoveResponse(this Game game)

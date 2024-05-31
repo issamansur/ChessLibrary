@@ -1,3 +1,3 @@
 namespace ChessMaster.Contracts.DTOs.Games;
 
-public record CreateGameRequest(Guid PlayerId);
+public record CreateGameRequest();

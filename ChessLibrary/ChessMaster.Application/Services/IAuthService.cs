@@ -1,6 +1,6 @@
 namespace ChessMaster.Application.Services;
 
-public interface IJwtService
+public interface IAuthService
 {
     string GenerateToken(Account account);
 }

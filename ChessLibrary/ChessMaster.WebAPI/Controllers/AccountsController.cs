@@ -5,6 +5,7 @@ namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/accounts")]
+[Authorize]
 public class AccountsController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -1,10 +1,13 @@
+using System.Security.Claims;
 using ChessMaster.Contracts.DTOs.Games;
+using ChessMaster.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/games")]
+[Authorize]
 public class GamesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,13 +20,14 @@ public class GamesController : ControllerBase
     }
     
     [HttpPost("create", Name = "CreateGame")]
-    [Authorize]
     public async Task<IActionResult> Create(
         [FromBody] CreateGameRequest request, 
         CancellationToken cancellationToken = default
         )
     {
-        var command = request.ToCommand();
+        var userId = new Guid(User.FindFirstValue(CustomClaimTypes.UserId));
+        
+        var command = request.ToCommand(userId);
         var game = await _mediator.Send(command, cancellationToken);
         var response = game.ToCreateResponse();
         
@@ -31,7 +35,7 @@ public class GamesController : ControllerBase
     }
     
     [HttpGet("{id:guid}", Name = "GetGame")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
@@ -46,7 +50,7 @@ public class GamesController : ControllerBase
     }
     
     [HttpGet(Name = "SearchGames")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> Search(
         [FromQuery] SearchGameRequest request,
         CancellationToken cancellationToken = default)
@@ -59,13 +63,14 @@ public class GamesController : ControllerBase
     }
     
     [HttpPost("join", Name = "JoinGame")]
-    [Authorize]
     public async Task<IActionResult> Join(
         [FromBody] JoinGameRequest request, 
         CancellationToken cancellationToken = default
         )
     {
-        var command = request.ToCommand();
+        var userId = new Guid(User.FindFirstValue(CustomClaimTypes.UserId));
+        
+        var command = request.ToCommand(userId);
         var game = await _mediator.Send(command, cancellationToken);
         var response = game.ToCreateResponse();
         

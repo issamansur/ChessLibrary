@@ -5,6 +5,7 @@ namespace ChessMaster.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/users")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,7 +18,6 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet(Name = "SearchUsers")]
-    [Authorize]
     public async Task<IActionResult> Search(
         [FromQuery] SearchUserRequest request,
         CancellationToken cancellationToken = default)
@@ -30,7 +30,6 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{id:guid}", Name = "GetUser")]
-    [Authorize]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
@@ -45,7 +44,6 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{username}", Name = "GetUserByUsername")]
-    [Authorize]
     public async Task<IActionResult> GetByUsername(
         [FromRoute] string username,
         CancellationToken cancellationToken = default)
