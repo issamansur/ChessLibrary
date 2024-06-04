@@ -4,3 +4,23 @@ GET {{WebApi_HostAddress}}/api/
 Accept: application/json
 
 ###
+
+POST {{WebApi_HostAddress}}/api/accounts/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "login": "private@world",
+  "password": "password"
+}
+
+###
+
+POST {{WebApi_HostAddress}}/api/accounts/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "login": "private2@world",
+  "password": "password"
+}

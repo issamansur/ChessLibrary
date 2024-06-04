@@ -77,7 +77,6 @@ public class GamesController : ControllerBase
         return Ok(response);
     }
     
-    /*
     [HttpPost("move", Name = "MoveGame")]
     [Authorize]
     public async Task<IActionResult> Move(
@@ -85,11 +84,12 @@ public class GamesController : ControllerBase
         CancellationToken cancellationToken = default
         )
     {
-        var command = request.ToCommand();
+        var userId = new Guid(User.FindFirstValue(CustomClaimTypes.UserId));
+        
+        var command = request.ToCommand(userId);
         Game game = await _mediator.Send(command, cancellationToken);
-        var response = game.ToResponse();
+        var response = game.ToMoveResponse();
         
         return Ok(response);
     }
-    */
 }

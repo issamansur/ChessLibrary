@@ -1,10 +1,15 @@
+using ChessMaster.Application.Services;
+
 namespace ChessMaster.Application.CQRS.Games.Commands;
 
 public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameCommand, Game>
 {
-    public JoinGameCommandHandler(ITenantFactory tenantFactory) : 
+    IActorService _actorService;
+    
+    public JoinGameCommandHandler(ITenantFactory tenantFactory, IActorService actorService) : 
         base(tenantFactory)
     {
+        _actorService = actorService;
     }
     
     public async Task<Game> Handle(JoinGameCommand request, CancellationToken cancellationToken)
@@ -21,6 +26,9 @@ public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameComman
         
         await tenant.Games.Update(game, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
+        
+        // If all goes well, tell the actor service to join the game
+        _actorService.Tell(request);
         
         return game;
     }

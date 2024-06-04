@@ -1,11 +1,14 @@
+using ChessMaster.Application.Services;
+
 namespace ChessMaster.Application.CQRS.Games.Commands;
 
 public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameCommand, Game>
 {
-    public MoveGameCommandHandler(ITenantFactory tenantFactory) : 
+    IActorService _actorService;
+    public MoveGameCommandHandler(ITenantFactory tenantFactory, IActorService actorService) : 
         base(tenantFactory)
     {
-        
+        _actorService = actorService;
     }
     
     public async Task<Game> Handle(MoveGameCommand request, CancellationToken cancellationToken)
@@ -21,6 +24,13 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
         {
             throw new InvalidOperationException("Game does not exist.");
         }
+        
+        string newFen = await _actorService.Ask<string>(request);
+        Console.WriteLine($"New FEN: {newFen}");
+        game.UpdateFEN(newFen);
+        
+        await tenant.Games.Update(game, cancellationToken);
+        await tenant.CommitAsync(cancellationToken);
 
         return game;
 
