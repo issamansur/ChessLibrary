@@ -72,7 +72,7 @@ public static class Builders
     }
 
     // Method to convert the current state of the board to a FEN string
-    private static string ToFen(Chess chess)
+    public static string ToFen(Chess chess)
     {
         Figure?[,] figures = chess.Board.Figures;
         Color activeColor = chess.ActiveColor;
@@ -91,12 +91,11 @@ public static class Builders
         fen.Append(' ');
 
         // 3. "Castling Availability" part
-        // TODO: Add castling availability
-        // fen.Append();
+        fen.Append(StringParser.CastlingToString(figures));
         fen.Append(' ');
 
         // 4. "En passant target square" part
-        fen.Append(enPassantTargetSquare == null ? "-": enPassantTargetSquare);
+        fen.Append(enPassantTargetSquare == null ? "-": StringParser.FieldToString(enPassantTargetSquare));
         fen.Append(' ');
 
         // 5. "HalfMove clock" part

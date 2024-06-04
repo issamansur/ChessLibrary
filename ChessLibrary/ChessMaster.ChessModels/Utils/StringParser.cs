@@ -309,7 +309,7 @@ public static class StringParser
                         fenFigures.Append(empty);
                         empty = 0;
                     }
-                    fenFigures.Append(figure);
+                    fenFigures.Append(FigureToString(figure));
                 }
             }
             if (empty > 0)
