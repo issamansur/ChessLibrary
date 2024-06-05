@@ -6,7 +6,7 @@ public class JwtOptions
     public string Audience { get; set; }
     
     
-    public int ExpiryHours { get; set; }
+    public int ExpireHours { get; set; }
 
     // 32+ characters
     public string Key { get; set; }

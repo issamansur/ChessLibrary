@@ -28,7 +28,7 @@ public class JwtService: IAuthService
             issuer: _options.Issuer,
             audience: _options.Audience,
             claims: claims,
-            expires: DateTime.Now.AddHours(_options.ExpiryHours),
+            expires: DateTime.UtcNow.AddHours(_options.ExpireHours),
             signingCredentials: new SigningCredentials
             (
                 key: new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_options.Key)), 
