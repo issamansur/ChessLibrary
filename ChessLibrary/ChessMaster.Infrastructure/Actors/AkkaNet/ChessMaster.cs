@@ -1,16 +1,19 @@
 using Akka.Actor;
 using Akka.Event;
 using ChessMaster.Application.CQRS.Games.Commands;
-using ChessMaster.Infrastructure.Actors.ActorsMessages;
+using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
+using ChessMaster.Infrastructure.Actors.Common;
+using ChessMaster.Infrastructure.Data.Common;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
-public class ChessMaster: UntypedActor
+public class ChessMaster: UntypedActor //ActorWithTenant
 {
     private Dictionary<Guid, IActorRef> GameMasters { get; } = new();
     private Dictionary<IActorRef, Guid> Guids { get; } = new();
     
-    public ChessMaster()
+    public ChessMaster() 
+        : base(/*tenantFactory*/)
     {
     }
     

@@ -2,6 +2,7 @@ using ChessMaster.Application.Services;
 
 namespace ChessMaster.Application.CQRS.Games.Commands;
 
+
 public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameCommand, Game>
 {
     IActorService _actorService;

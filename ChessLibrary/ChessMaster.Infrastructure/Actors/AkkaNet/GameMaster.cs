@@ -3,16 +3,21 @@ using Akka.Event;
 using ChessMaster.ChessModels;
 using ChessMaster.ChessModels.States;
 using ChessMaster.ChessModels.Utils;
-using ChessMaster.Infrastructure.Actors.ActorsMessages;
+using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
+using ChessMaster.Infrastructure.Actors.Common;
+using ChessMaster.Infrastructure.Data.Common;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
-public class GameMaster: UntypedActor
+public class GameMaster: UntypedActor //ActorWithTenant
 {
     public Guid GameId { get; init; }
     public Chess Game { get; init; }
     
-    public GameMaster(Guid gameId, string fen = ChessExt.DefaultFen)
+    public GameMaster(
+        /*TenantFactory tenantFactory,*/
+        Guid gameId, string fen = ChessExt.DefaultFen) 
+        : base(/*tenantFactory*/)
     {
         GameId = gameId;
         Game = Builders.ChessBuild(fen);

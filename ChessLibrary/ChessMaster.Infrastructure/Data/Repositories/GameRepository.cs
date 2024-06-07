@@ -38,6 +38,17 @@ public class GameRepository: IGameRepository
         
         return Task.FromResult(result ?? throw new ArgumentNullException(nameof(Game)));
     }
+    
+    public Task<Game?> TryGet(Guid id, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        
+        var result = _context.Games
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Id == id);
+        
+        return Task.FromResult(result);
+    }
 
     public Task<IReadOnlyCollection<Game>> Search(GameFilter filter, CancellationToken cancellationToken)
     {

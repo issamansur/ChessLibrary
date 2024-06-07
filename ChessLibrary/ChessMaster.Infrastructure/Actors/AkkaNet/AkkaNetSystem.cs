@@ -8,13 +8,6 @@ public class AkkaNetSystem: IActorService
     
     public AkkaNetSystem()
     {
-        // Not working with using statement
-        /*
-        using (var system = ActorSystem.Create("chess-system"))
-        {
-            _chessMaster = system.ActorOf(ChessMaster.Props(), "chess-master");
-        }
-        */
         var system = ActorSystem.Create("chess-system");
         _chessMaster = system.ActorOf(ChessMaster.Props(), "chess-master");
     }
