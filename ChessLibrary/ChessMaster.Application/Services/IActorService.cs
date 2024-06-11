@@ -2,6 +2,6 @@ namespace ChessMaster.Application.Services;
 
 public interface IActorService
 {
-    void Tell(object message);
-    Task<T> Ask<T>(object message);
+    Task Tell<T>(T message, CancellationToken cancellationToken);
+    Task<TResult> Ask<TRequest, TResult>(TRequest message, CancellationToken cancellationToken);
 }

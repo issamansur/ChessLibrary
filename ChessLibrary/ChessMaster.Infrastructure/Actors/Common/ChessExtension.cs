@@ -15,7 +15,7 @@ public static class ChessExtension
         return Builders.ChessBuild(fen);
     }
     
-    public static async Task SafeMove(this Chess chess, string move)
+    public static void SafeMove(this Chess chess, string move)
     {
         try
         {

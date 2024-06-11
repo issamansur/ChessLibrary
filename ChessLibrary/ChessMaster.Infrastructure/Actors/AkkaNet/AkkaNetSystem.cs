@@ -1,26 +1,34 @@
 using Akka.Actor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
 public class AkkaNetSystem: IActorService
 {
-    readonly IActorRef _chessMaster;
+    private readonly IActorRef _chessMaster;
     
-    public AkkaNetSystem()
+    public AkkaNetSystem(IServiceScopeFactory scopeFactory)
     {
         var system = ActorSystem.Create("chess-system");
-        _chessMaster = system.ActorOf(ChessMaster.Props(), "chess-master");
+        _chessMaster = system.ActorOf(
+            ChessMaster.Props(scopeFactory), 
+            "chess-master"
+        );
     }
     
-    public void Tell(object message)
+    
+    
+    public Task Tell<T>(T message, CancellationToken cancellationToken)
     {
         Console.WriteLine($"Received message by AkkaNetSystem: {message}");
-        _chessMaster.Tell(message);
+        _chessMaster.Tell((message, cancellationToken));
+        
+        return Task.CompletedTask;
     }
 
-    public async Task<T> Ask<T>(object message)
+    public async Task<TResult> Ask<TRequest, TResult>(TRequest message, CancellationToken cancellationToken)
     {
         Console.WriteLine($"Received message by AkkaNetSystem: {message}");
-        return await _chessMaster.Ask<T>(message);
+        return await _chessMaster.Ask<TResult>(message, cancellationToken);
     }
 }

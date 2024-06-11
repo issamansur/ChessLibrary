@@ -3,22 +3,22 @@ using Akka.Event;
 using ChessMaster.Application.CQRS.Games.Commands;
 using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using ChessMaster.Infrastructure.Actors.Common;
-using ChessMaster.Infrastructure.Data.Common;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
-public class ChessMaster: UntypedActor //ActorWithTenant
+public class ChessMaster: MyUntypedActor
 {
     private Dictionary<Guid, IActorRef> GameMasters { get; } = new();
     private Dictionary<IActorRef, Guid> Guids { get; } = new();
     
-    public ChessMaster() 
-        : base(/*tenantFactory*/)
+    public ChessMaster(IServiceScopeFactory serviceScopeFactory)
+    : base(serviceScopeFactory)
     {
     }
     
-    public static Props Props() =>
-        Akka.Actor.Props.Create(() => new ChessMaster());
+    public static Props Props(IServiceScopeFactory scopeFactory) =>
+        Akka.Actor.Props.Create(() => new ChessMaster(scopeFactory));
 
     private ILoggingAdapter Log { get; } = Context.GetLogger();
     
@@ -31,9 +31,12 @@ public class ChessMaster: UntypedActor //ActorWithTenant
     {
         Log.Info($"ChessMaster stopped");
     }
-
-    protected override void OnReceive(object message)
+    
+    protected override void OnReceive(object messageWithCt)
     {
+        Log.Info($"Received message by ChessMaster: {messageWithCt}");
+        var message = messageWithCt;
+        var cancellationToken = ((ValueTuple<object, CancellationToken>)messageWithCt).Item2;
         Log.Info($"Received message by ChessMaster: {message}");
         
         switch (message)
@@ -44,18 +47,46 @@ public class ChessMaster: UntypedActor //ActorWithTenant
                 // Main logic
                 if (!GameMasters.ContainsKey(joinGameMessage.GameId))
                 {
-                    var gameMaster = Context.ActorOf(GameMaster.Props(joinGameMessage.GameId), $"game-{joinGameMessage.GameId}");
+                    // Update game state in database
+                    using (var scope = _serviceScopeFactory.CreateScope())
+                    {
+                        var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
+                        var tenant = tenantFactory.GetRepository();
+                        var game = tenant.Games.TryGet(joinGameMessage.GameId, cancellationToken).Result;
+
+                        if (game is null)
+                        {
+                            throw new InvalidOperationException($"Game: {joinGameMessage.GameId} not found");
+                        }
+
+                        game.Join(joinGameMessage.PlayerId);
+
+                        tenant.Games.Update(game, cancellationToken);
+                        tenant.CommitAsync(cancellationToken);
+                    }
+
+                    // Added actor for game
+                    var gameMaster = Context.ActorOf(
+                        GameMaster.Props(
+                            _serviceScopeFactory, 
+                            joinGameMessage.GameId
+                        ), 
+                        $"game-{joinGameMessage.GameId}"
+                    );
+                    
+                    // Added actor's info to dictionaries
                     GameMasters.Add(joinGameMessage.GameId, gameMaster);
                     Guids.Add(gameMaster, joinGameMessage.GameId);
                     
                     // Subscribe to gameMaster on Stop/Error
                     Context.Watch(gameMaster);
                     //GameMasters[joinGameMessage.GameId].Forward(joinGameMessage);
+                    
+                    Sender.Tell(joinGameMessage.GameId);
                 }
-                // Unexpected behavior
                 else
                 {
-                    
+                    throw new InvalidOperationException($"Game: {joinGameMessage.GameId} already exists");
                 }
                 
                 break;
@@ -66,7 +97,10 @@ public class ChessMaster: UntypedActor //ActorWithTenant
                 // Unexpected behavior (Only if server restarts)
                 if (!GameMasters.ContainsKey(moveGameMessage.GameId))
                 {
-                    var gameMaster = Context.ActorOf(GameMaster.Props(moveGameMessage.GameId), $"game-{moveGameMessage.GameId}");
+                    var gameMaster = Context.ActorOf(
+                        GameMaster.Props(_serviceScopeFactory, moveGameMessage.GameId), 
+                        $"game-{moveGameMessage.GameId}"
+                    );
                     GameMasters.Add(moveGameMessage.GameId, gameMaster);
                     Guids.Add(gameMaster, moveGameMessage.GameId);
                     

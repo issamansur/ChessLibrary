@@ -6,41 +6,64 @@ using ChessMaster.ChessModels.Utils;
 using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using ChessMaster.Infrastructure.Actors.Common;
 using ChessMaster.Infrastructure.Data.Common;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
-public class GameMaster: UntypedActor //ActorWithTenant
+public class GameMaster: MyUntypedActor
 {
     public Guid GameId { get; init; }
-    public Chess Game { get; init; }
+    public Chess Game { get; private set; }
     
     public GameMaster(
-        /*TenantFactory tenantFactory,*/
-        Guid gameId, string fen = ChessExt.DefaultFen) 
-        : base(/*tenantFactory*/)
+        IServiceScopeFactory serviceScopeFactory,
+        Guid gameId) 
+        : base(serviceScopeFactory)
     {
         GameId = gameId;
-        Game = Builders.ChessBuild(fen);
+        Game = Builders.ChessBuild();
     }
     
-    public static Props Props(Guid gameId, string fen = ChessExt.DefaultFen) =>
-        Akka.Actor.Props.Create(() => new GameMaster(gameId, fen));
+    public static Props Props(IServiceScopeFactory serviceScopeFactory, Guid gameId) =>
+        Akka.Actor.Props.Create(() => new GameMaster(serviceScopeFactory, gameId));
 
     private ILoggingAdapter Log { get; } = Context.GetLogger();
     
-    protected override void PreStart()
+    protected override async void PreStart()
     {
-        Log.Info($"ChessMaster for game: {GameId} started");
+        Log.Info($"GameMaster for game: {GameId} started");
+        
+        var cancellationToken = new CancellationToken();
+
+        // is needed to using {} or just var scope = ServiceScopeFactory.CreateScope()
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
+            var tenant = tenantFactory.GetRepository();
+            
+            var game = await tenant.Games.TryGet(GameId, cancellationToken);
+            if (game is null)
+            {
+                Log.Info($"Game: {GameId} not found in database");
+                return;
+            }
+            
+            Game = Builders.ChessBuild(game.Fen);
+            
+            Log.Info($"Game: {GameId} state loaded from database");
+        }
     }
     
-    protected override void PostStop()
+    protected override async void PostStop()
     {
         Log.Info($"ChessMaster for game: {GameId} stopped");
+        await SaveGameState();
     }
     
-    protected override void OnReceive(object message)
+    protected override void OnReceive(object messageWithCt)
     {
-        Log.Info($"Received message by ChessMaster for game: {GameId}: {message}");
+        var (message, cancellationToken) = messageWithCt as Tuple<object, CancellationToken> ?? throw new InvalidOperationException();
+        Log.Info($"Received message by GameMaster for game: {GameId}: {message}");
         
         switch (message)
         {
@@ -55,7 +78,7 @@ public class GameMaster: UntypedActor //ActorWithTenant
                 }
                 
                 // Main logic
-                Move(moveGameMessage.Move);
+                Game.SafeMove(moveGameMessage.Move);
                 Sender.Tell(Builders.ToFen(Game));
                 
                 if (Game.GameState is GameState.Checkmate or GameState.Stalemate)
@@ -72,15 +95,22 @@ public class GameMaster: UntypedActor //ActorWithTenant
         }
     }
     
-    private void Move(string move)
+    private async Task SaveGameState()
     {
-        try
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+        
+        // Save game state to database
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
-            Game.Move(move);
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, $"Error while moving in game: {GameId}");
+            var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
+            var tenant = tenantFactory.GetRepository();
+            
+            var game = await tenant.Games.GetById(GameId, cancellationToken);
+            game.UpdateFEN(Game.GetFen());
+            await tenant.Games.Update(game, cancellationToken);
+            
+            Log.Info($"Game: {GameId} state saved to database");
         }
     }
 }
