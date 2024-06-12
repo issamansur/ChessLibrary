@@ -3,7 +3,8 @@ namespace ChessMaster.Domain.States;
 // Enum for the game state
 public enum State
 {
-    Created = 0,
-    InProgress = 1,
-    Finished = 2
+    None = 0,
+    Created = 1,
+    InProgress = 2,
+    Finished = 3
 }
