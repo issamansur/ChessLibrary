@@ -8,7 +8,7 @@ public class UserRepository: IUserRepository
         _context = dbContext;
     }
     
-    public Task Create(User entity, CancellationToken cancellationToken)
+    public Task CreateAsync(User entity, CancellationToken cancellationToken)
     { 
         ArgumentNullException.ThrowIfNull(entity);
         
@@ -17,7 +17,7 @@ public class UserRepository: IUserRepository
         return Task.CompletedTask;
     }
 
-    public Task Update(User entity, CancellationToken cancellationToken)
+    public Task UpdateAsync(User entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
         
@@ -26,7 +26,7 @@ public class UserRepository: IUserRepository
         return Task.CompletedTask;
     }
 
-    public Task<User> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(id);
         

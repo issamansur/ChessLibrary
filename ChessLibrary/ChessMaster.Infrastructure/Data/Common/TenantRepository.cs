@@ -17,6 +17,12 @@ public class TenantRepository: ITenantRepository
         Accounts = new AccountRepository(dbContext);
         Games = new GameRepository(dbContext);
     }
+    
+    public void Commit()
+    {
+        _context.SaveChanges();
+    }
+    
     public async Task CommitAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);

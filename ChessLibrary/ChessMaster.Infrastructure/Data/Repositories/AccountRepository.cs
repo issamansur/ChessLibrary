@@ -8,7 +8,7 @@ public class AccountRepository: IAccountRepository
         _context = dbContext;
     }
     
-    public Task Create(Account entity, CancellationToken cancellationToken)
+    public Task CreateAsync(Account entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -17,7 +17,7 @@ public class AccountRepository: IAccountRepository
         return Task.CompletedTask;
     }
 
-    public Task Update(Account entity, CancellationToken cancellationToken)
+    public Task UpdateAsync(Account entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
         
@@ -26,7 +26,7 @@ public class AccountRepository: IAccountRepository
         return Task.CompletedTask;
     }
 
-    public Task<Account> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(id);
         

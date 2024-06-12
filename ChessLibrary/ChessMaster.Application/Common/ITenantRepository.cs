@@ -6,5 +6,6 @@ public interface ITenantRepository
     IAccountRepository Accounts { get; }
     IGameRepository Games { get; }
     
+    void Commit();
     Task CommitAsync(CancellationToken cancellationToken);
 }

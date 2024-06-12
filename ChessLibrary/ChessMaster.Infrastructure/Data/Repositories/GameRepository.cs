@@ -9,8 +9,44 @@ public class GameRepository: IGameRepository
     {
         _context = dbContext;
     }
+    
+    public void Create(Game entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
 
-    public Task Create(Game entity, CancellationToken cancellationToken)
+        _context.Games.Add(entity);
+    }
+    
+    public void Update(Game entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        
+        _context.Games.Update(entity);
+    }
+    
+    public Game GetById(Guid id)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        
+        var result = _context.Games
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Id == id);
+        
+        return result ?? throw new ArgumentNullException(nameof(Game));
+    }
+    
+    public Game? TryGetById(Guid id)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        
+        var result = _context.Games
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Id == id);
+        
+        return result;
+    }
+
+    public Task CreateAsync(Game entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -19,7 +55,7 @@ public class GameRepository: IGameRepository
         return Task.CompletedTask;
     }
 
-    public Task Update(Game entity, CancellationToken cancellationToken)
+    public Task UpdateAsync(Game entity, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entity);
         
@@ -28,7 +64,7 @@ public class GameRepository: IGameRepository
         return Task.CompletedTask;
     }
 
-    public Task<Game> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<Game> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(id);
         
@@ -39,7 +75,7 @@ public class GameRepository: IGameRepository
         return Task.FromResult(result ?? throw new ArgumentNullException(nameof(Game)));
     }
     
-    public Task<Game?> TryGet(Guid id, CancellationToken cancellationToken)
+    public Task<Game?> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(id);
         
