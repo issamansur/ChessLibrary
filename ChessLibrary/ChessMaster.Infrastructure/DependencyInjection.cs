@@ -1,4 +1,5 @@
 using System.Text;
+using ChessMaster.Infrastructure.Actors.Common;
 using ChessMaster.Infrastructure.Data;
 using ChessMaster.Infrastructure.Data.Common;
 using ChessMaster.Infrastructure.Options;
@@ -27,7 +28,7 @@ public static class DependencyInjection
     
     private static void AddActors(this IServiceCollection services)
     {
-        services.AddSingleton<IActorService, Actors.AkkaNet.AkkaNetSystem>();
+        services.AddSingleton<IChessActorService, Actors.AkkaNet.AkkaNetSystem>();
     }
     
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

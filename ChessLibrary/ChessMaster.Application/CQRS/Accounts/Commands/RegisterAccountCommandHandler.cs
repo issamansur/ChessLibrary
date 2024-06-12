@@ -37,8 +37,8 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         var user = User.Create(request.Username);
         var account = Account.Create(user, request.Email, request.Password);
 
-        await tenant.Users.Create(user, cancellationToken);
-        await tenant.Accounts.Create(account, cancellationToken);
+        await tenant.Users.CreateAsync(user, cancellationToken);
+        await tenant.Accounts.CreateAsync(account, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
         
         var token = _authService.GenerateToken(account);

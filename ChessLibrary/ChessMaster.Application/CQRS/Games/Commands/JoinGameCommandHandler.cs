@@ -6,9 +6,9 @@ namespace ChessMaster.Application.CQRS.Games.Commands;
 /*
 public class JoinGameCommandHandler: BaseHandler, IRequestHandler<JoinGameCommand, Game>
 {
-    IActorService _actorService;
+    IChessActorService _actorService;
     
-    public JoinGameCommandHandler(ITenantFactory tenantFactory, IActorService actorService) : 
+    public JoinGameCommandHandler(ITenantFactory tenantFactory, IChessActorService actorService) : 
         base(tenantFactory)
     {
         _actorService = actorService;

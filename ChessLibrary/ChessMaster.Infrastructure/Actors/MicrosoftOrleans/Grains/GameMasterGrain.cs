@@ -34,7 +34,7 @@ public class GameMasterGrain: Grain, IGameMasterGrain
             {
                 var tenant = scope.ServiceProvider.GetRequiredService<ITenantFactory>().GetRepository();
                 // Load FEN from DB if exists
-                GameFromDB = await tenant.Games.GetById(GameId, cancellationToken);
+                GameFromDB = await tenant.Games.GetByIdAsync(GameId, cancellationToken);
                 Game = Builders.ChessBuild(GameFromDB.Fen);
                 
                 // Set flag to false
@@ -51,10 +51,10 @@ public class GameMasterGrain: Grain, IGameMasterGrain
         {
             var tenant = scope.ServiceProvider.GetRequiredService<ITenantFactory>().GetRepository();
             
-            // Update FEN in DB
+            // UpdateAsync FEN in DB
             var currentFen = Game.GetFen();
             GameFromDB.UpdateFEN(currentFen);
-            await tenant.Games.Update(GameFromDB, cancellationToken);
+            await tenant.Games.UpdateAsync(GameFromDB, cancellationToken);
             await tenant.CommitAsync(cancellationToken);
         }
 

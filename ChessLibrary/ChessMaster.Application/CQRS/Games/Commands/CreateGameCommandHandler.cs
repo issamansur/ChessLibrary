@@ -16,11 +16,11 @@ public class CreateGameCommandHandler: BaseHandler, IRequestHandler<CreateGameCo
         // Business logic
         var tenant = GetTenant();
 
-        await tenant.Users.GetById(request.CreatorUserId, cancellationToken);
+        await tenant.Users.GetByIdAsync(request.CreatorUserId, cancellationToken);
         
         var game = Game.Create(request.CreatorUserId);
         
-        await tenant.Games.Create(game, cancellationToken);
+        await tenant.Games.CreateAsync(game, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
         
         return game;

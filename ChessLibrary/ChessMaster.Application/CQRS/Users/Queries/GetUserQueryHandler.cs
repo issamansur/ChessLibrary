@@ -14,7 +14,7 @@ public class GetUserQueryHandler: BaseHandler, IRequestHandler<GetUserQuery, Use
         // Business logic
         var tenant = GetTenant();
         
-        var user = await tenant.Users.GetById(request.Id, cancellationToken);
+        var user = await tenant.Users.GetByIdAsync(request.Id, cancellationToken);
         
         return user;
     }

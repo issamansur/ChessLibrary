@@ -1,9 +1,11 @@
 using Akka.Actor;
+using ChessMaster.Application.CQRS.Games.Commands;
+using ChessMaster.Infrastructure.Actors.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
-public class AkkaNetSystem: IActorService
+public class AkkaNetSystem: IChessActorService
 {
     private readonly IActorRef _chessMaster;
     
@@ -15,20 +17,28 @@ public class AkkaNetSystem: IActorService
             "chess-master"
         );
     }
-    
-    
-    
-    public Task Tell<T>(T message, CancellationToken cancellationToken)
+
+    public Task JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Received message by AkkaNetSystem: {message}");
-        _chessMaster.Tell((message, cancellationToken));
-        
-        return Task.CompletedTask;
+        Console.WriteLine($"Received message by AkkaNetSystem: {joinGameCommand}");
+        try
+        {
+            _chessMaster.Tell(message: joinGameCommand);
+            
+            return Task.CompletedTask;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            return Task.FromException(e);
+        }
     }
 
-    public async Task<TResult> Ask<TRequest, TResult>(TRequest message, CancellationToken cancellationToken)
+    public async Task<Game> MoveGameAsync(MoveGameCommand moveGameCommand, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Received message by AkkaNetSystem: {message}");
-        return await _chessMaster.Ask<TResult>(message, cancellationToken);
+        Console.WriteLine($"Received message by AkkaNetSystem: {moveGameCommand}");
+        
+        return await _chessMaster.Ask<Game>(message: moveGameCommand, cancellationToken: cancellationToken);
     }
 }

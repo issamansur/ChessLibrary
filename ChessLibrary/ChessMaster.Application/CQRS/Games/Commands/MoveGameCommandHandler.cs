@@ -5,8 +5,8 @@ namespace ChessMaster.Application.CQRS.Games.Commands;
 /*
 public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameCommand, Game>
 {
-    IActorService _actorService;
-    public MoveGameCommandHandler(ITenantFactory tenantFactory, IActorService actorService) :
+    IChessActorService _actorService;
+    public MoveGameCommandHandler(ITenantFactory tenantFactory, IChessActorService actorService) :
         base(tenantFactory)
     {
         _actorService = actorService;
@@ -20,7 +20,7 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
         // Business logic
         var tenant = GetTenant();
 
-        var game = await tenant.Games.GetById(request.GameId, cancellationToken);
+        var game = await tenant.Games.GetByIdAsync(request.GameId, cancellationToken);
         if (game == null)
         {
             throw new InvalidOperationException("Game does not exist.");
@@ -30,7 +30,7 @@ public class MoveGameCommandHandler: BaseHandler, IRequestHandler<MoveGameComman
         Console.WriteLine($"New FEN: {newFen}");
         game.UpdateFEN(newFen);
 
-        await tenant.Games.Update(game, cancellationToken);
+        await tenant.Games.UpdateAsync(game, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
 
         return game;

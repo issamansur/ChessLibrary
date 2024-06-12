@@ -16,7 +16,7 @@ public class GetGameQueryHandler: BaseHandler, IRequestHandler<GetGameQuery, Gam
         // Business logic
         var tenant = GetTenant();
         
-        var game = await tenant.Games.GetById(request.GameId, cancellationToken);
+        var game = await tenant.Games.GetByIdAsync(request.GameId, cancellationToken);
 
         return game;
     }
