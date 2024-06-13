@@ -1,9 +1,8 @@
 using Akka.Actor;
 using Akka.Event;
 using ChessMaster.Application.CQRS.Games.Commands;
-using ChessMaster.ChessModels;
-using ChessMaster.ChessModels.States;
-using ChessMaster.ChessModels.Utils;
+using ChessMaster.ChessLibrary;
+using ChessMaster.ChessLibrary.States;
 using ChessMaster.Domain.States;
 using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using ChessMaster.Infrastructure.Actors.Common;
@@ -16,7 +15,6 @@ public class GameMaster: MyUntypedActor
     public Guid GameId { get; init; }
     public Game? Game { get; private set; }
     public Chess Chess { get; private set; }
-    public State CurrentState => Game?.GameState ?? State.None;
     
     public GameMaster(
         IServiceScopeFactory serviceScopeFactory,
@@ -44,41 +42,36 @@ public class GameMaster: MyUntypedActor
         Log.Info($"GameMaster for game: {GameId} stopped");
         SaveGameState();
     }
-    
+
+    protected override void PostRestart(Exception reason)
+    {        
+        Log.Info($"GameMaster for game: {GameId} restarted");
+        
+        base.PostRestart(reason);
+    }
+
     protected override void OnReceive(object message)
     {
         Log.Info($"Received message by GameMaster for game: {GameId}: {message}");
         
+        // Check if game exists
+        if (Game is null)
+        {
+            SendError($"Game: {GameId} not found", true);
+            return;
+        }
+        
+        // Handle messages
         switch (message)
         {
             case JoinGameCommand joinGameCommand:
-                Log.Info($"Received JoinGameMessage for game: {GameId}");
-                
-                Game!.Join(joinGameCommand.PlayerId);
-                using (var scope = _serviceScopeFactory.CreateScope())
-                {
-                    var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
-                    var tenant = tenantFactory.GetRepository();
-                    
-                    tenant.Games.Update(Game);
-                    tenant.Commit();
-                }
-                
+                Log.Info($"Player: {joinGameCommand.PlayerId} try join the game: {GameId}");
+                Join(joinGameCommand.PlayerId);
                 break;
             
             case MoveGameCommand moveGameCommand:
-                Log.Info($"Received MoveGameMessage for game: {GameId}");
-                
-                Chess.Move(moveGameCommand.Move);
-                Game!.UpdateFEN(Chess.GetFen());
-                Sender.Tell(Game);
-                
-                if (Game!.GameState == State.Finished)
-                {
-                    Log.Info($"Game: {GameId} is finished");
-                    Context.Stop(Self);
-                }
-                
+                Log.Info($"Player: {moveGameCommand.PlayerId} try move: {moveGameCommand.Move} in game: {GameId}");
+                Move(moveGameCommand.GameId, moveGameCommand.PlayerId, moveGameCommand.Move);
                 break;
             
             default:
@@ -87,8 +80,84 @@ public class GameMaster: MyUntypedActor
         }
     }
     
+    // Handlers for messages
+    private void Join(Guid playerId)
+    {
+        try
+        {
+            Game!.Join(playerId);
+            
+            Sender.Tell(Game);
+            Log.Info($"Player: {playerId} joined game: {GameId}");
+        }
+        catch (InvalidOperationException e)
+        {
+            SendError(e.Message);
+        }
+
+        using var scope = _serviceScopeFactory.CreateScope();
+
+        var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
+        var tenant = tenantFactory.GetRepository();
+            
+        tenant.Games.Update(Game!);
+        tenant.Commit();
+    }
+    
+    private void Move(Guid gameId, Guid playerId, string move)
+    {
+        if (Game!.GameState == State.Created)
+        {
+            SendError($"Game: {GameId} is not started yet", true);
+            return;
+        }
+        
+        if (playerId != Game!.WhitePlayerId && playerId != Game!.BlackPlayerId)
+        {
+            SendError($"Player: {playerId} is not in game: {GameId}");
+            return;
+        }
+                
+        if (playerId == Game!.WhitePlayerId && Chess.ActiveColor == Color.Black ||
+            playerId == Game!.BlackPlayerId && Chess.ActiveColor == Color.White)
+        {
+            SendError($"Player: {playerId} is not on turn in game: {GameId}");
+            return;
+        }
+                
+        if (char.IsUpper(move[0]) && Chess.ActiveColor == Color.Black ||
+            char.IsLower(move[0]) && Chess.ActiveColor == Color.White)
+        {
+            SendError($"Invalid move: {move}");
+            return;
+        }
+        
+        // Move
+        try
+        {
+            Chess.Move(move);
+        } catch (Exception e)
+        {
+            SendError($"Error while moving in game: {GameId}");
+            return;
+        }
+        
+        Log.Info($"Successfully moved in game: {GameId}");
+        Game!.UpdateFEN(Chess.GetFen());
+        Sender.Tell(Game);
+        
+        // Check if game is finished
+        if (Game!.GameState == State.Finished)
+        {
+            Log.Info($"Game: {GameId} is finished");
+            Context.Stop(Self);
+        }
+    }
+    
+    // Handlers for events
+    
     /// <summary>
-    /// Load game state from database
+    /// Load game state from database (returns false if game not found)
     /// </summary>
     private void LoadGameState()
     {
@@ -104,13 +173,12 @@ public class GameMaster: MyUntypedActor
         
         if (game is null)
         {
-            Log.Error($"Game: {GameId} not found in database");
-            Context.Stop(Self);
+            Log.Info($"Game: {GameId} not found in database");
             return;
         }
             
         Game = game;
-        Chess = Builders.ChessBuild(game.Fen);
+        Chess = game.Fen.ToChess();
             
         Log.Info($"Game: {GameId} state loaded from database");
     }
@@ -130,10 +198,20 @@ public class GameMaster: MyUntypedActor
         var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
         var tenant = tenantFactory.GetRepository();
         
-        Game.UpdateFEN(Chess.GetFen());
         tenant.Games.Update(Game);
         tenant.Commit();
             
         Log.Info($"Game: {GameId} state saved to database");
+    }
+    
+    // Extra methods
+    private void SendError(string message, bool stop = false)
+    {
+        Log.Error(message);
+        Sender.Tell(new Status.Failure(new InvalidOperationException(message)), Self);
+        if (stop)
+        {
+            Context.Stop(Self);
+        }
     }
 }

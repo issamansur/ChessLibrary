@@ -18,27 +18,27 @@ public class AkkaNetSystem: IChessActorService
         );
     }
 
-    public Task JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken)
+    public async Task<Game> JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken)
     {
+        Console.WriteLine("-----------------------------------------------------");
         Console.WriteLine($"Received message by AkkaNetSystem: {joinGameCommand}");
-        try
-        {
-            _chessMaster.Tell(message: joinGameCommand);
-            
-            return Task.CompletedTask;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-
-            return Task.FromException(e);
-        }
+        
+        return await _chessMaster.Ask<Game>(
+            message: joinGameCommand,
+            timeout: TimeSpan.FromSeconds(3),
+            cancellationToken: cancellationToken
+        );
     }
 
     public async Task<Game> MoveGameAsync(MoveGameCommand moveGameCommand, CancellationToken cancellationToken)
     {
+        Console.WriteLine("-----------------------------------------------------");
         Console.WriteLine($"Received message by AkkaNetSystem: {moveGameCommand}");
         
-        return await _chessMaster.Ask<Game>(message: moveGameCommand, cancellationToken: cancellationToken);
+        return await _chessMaster.Ask<Game>(
+            message: moveGameCommand, 
+            timeout: TimeSpan.FromSeconds(3),
+            cancellationToken: cancellationToken
+        );
     }
 }

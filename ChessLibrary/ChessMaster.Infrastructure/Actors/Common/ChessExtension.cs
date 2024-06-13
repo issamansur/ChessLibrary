@@ -1,5 +1,5 @@
-using ChessMaster.ChessModels;
-using ChessMaster.ChessModels.Utils;
+using ChessMaster.ChessLibrary;
+using ChessMaster.ChessLibrary.Utils;
 
 namespace ChessMaster.Infrastructure.Actors.Common;
 
@@ -13,17 +13,5 @@ public static class ChessExtension
     public static Chess ToChess(this string fen)
     {
         return Builders.ChessBuild(fen);
-    }
-    
-    public static void SafeMove(this Chess chess, string move)
-    {
-        try
-        {
-            chess.Move(move);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
     }
 }

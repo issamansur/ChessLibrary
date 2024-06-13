@@ -31,69 +31,30 @@ public class ChessMaster: MyUntypedActor
         switch (message)
         {
             case JoinGameCommand  joinGameMessage:
-                Log.Info($"Received JoinGameMessage for game: {joinGameMessage.GameId}");
+                Log.Info($"Forward message to GameMaster for game: {joinGameMessage.GameId}");
                 GetGameMaster(joinGameMessage.GameId).Forward(joinGameMessage);
-                
                 break;
             
-            // Handle Move
             case MoveGameCommand moveGameMessage:
-                Log.Info($"Received MoveGameMessage for game: {moveGameMessage.GameId}");
+                Log.Info($"Forward message to GameMaster for game: {moveGameMessage.GameId}");
                 GetGameMaster(moveGameMessage.GameId).Forward(moveGameMessage);
-                
                 break;
             
-            // Handle Terminated message
             case Terminated terminated:
                 var gameId = Guids[terminated.ActorRef];
-                Log.Info($"GameMaster for game: {gameId} terminated");
+                Log.Info($"GameMaster for game: {gameId} removed from GameMaster");
                 
                 GameMasters.Remove(gameId);
                 Guids.Remove(terminated.ActorRef);
                 
                 break;
-                
-            // Handle unexpected messages
+            
             default:
-                Log.Info($"Unhandled message by ChessMaster: {message}");
+                Log.Warning($"Unhandled message by ChessMaster: {message}");
                 
                 Unhandled(message);
                 break;
         }
-    }
-    
-    // Handlers for main logic
-    private void JoinCommandHandler(JoinGameCommand joinGameMessage)
-    {
-        if (GameMasters.ContainsKey(joinGameMessage.GameId))
-        {
-            throw new InvalidOperationException($"Game: {joinGameMessage.GameId} already exists");
-        }
-        
-        // UpdateAsync game state in database
-        using (var scope = _serviceScopeFactory.CreateScope())
-        {
-            var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
-            var tenant = tenantFactory.GetRepository();
-            
-            var game = tenant.Games.TryGetById(joinGameMessage.GameId);
-
-            if (game is null)
-            {
-                Context.Sender.Tell(new InvalidOperationException($"Game: {joinGameMessage.GameId} not found"));
-                throw new InvalidOperationException($"Game: {joinGameMessage.GameId} not found");
-            }
-
-            game.Join(joinGameMessage.PlayerId);
-
-            tenant.Games.Update(game);
-            tenant.Commit();
-        }
-
-        // Added actor for game
-        GetGameMaster(joinGameMessage.GameId);
-        
-        GameMasters[joinGameMessage.GameId].Forward(joinGameMessage);
     }
     
     private IActorRef GetGameMaster(Guid gameId)

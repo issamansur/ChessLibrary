@@ -1,0 +1,88 @@
+@WebApi_HostAddress = http://localhost:5273
+
+### Move game (1. e4 e5)
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{WhitePlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "Pe2e4"
+}
+
+###
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{BlackPlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "pe7e5"
+}
+
+### Move game (2. Qf3 h6)
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{WhitePlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "Qd1f3"
+}
+
+###
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{BlackPlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "ph7h6"
+}
+
+### Move game (3. Bc4 h5)
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{WhitePlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "Bf1c4"
+}
+
+###
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{BlackPlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "ph6h5"
+}
+
+### Move game (4. Qf7#)
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{WhitePlayerToken}}
+
+{
+  "gameId": "{{GameId}}",
+  "move": "Qf3f7"
+}
+
+
+

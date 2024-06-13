@@ -47,9 +47,10 @@ public class GamesController : ControllerBase
         var userId = new Guid(User.FindFirstValue(CustomClaimTypes.UserId));
         
         var command = request.ToCommand(userId);
-        await _chessActorService.JoinGameAsync(command, cancellationToken);
+        Game game = await _chessActorService.JoinGameAsync(command, cancellationToken);
+        var response = game.ToJoinResponse();
         
-        return Ok();
+        return Ok(response);
     }
     
     [HttpPost("move", Name = "MoveGame")]

@@ -29,30 +29,43 @@ public class Chess
     // Constructor
     public Chess()
     {
-        GameState = GameState.None;
-        
         Board = new Board();
 
         ActiveColor = Color.White;
         HalfMoveClock = 0;
         FullMoveNumber = 1;
+        
+        GameState = GameState.Playing;
     }
     
     public Chess(Board board, Color activeColor, int halfMoveClock, int fullMoveNumber)
     {
-        GameState = GameState.None;
-        
         Board = board;
 
         ActiveColor = activeColor;
         HalfMoveClock = halfMoveClock;
         FullMoveNumber = fullMoveNumber;
+        
+        UpdateState();
     }
 
     // Methods
-    public void Start()
+    private void UpdateState()
     {
-        GameState = GameState.Playing;
+        // Check for checkmate, stalemate, check and update GameState
+        if (Board.IsCheckmate(ActiveColor))
+        {
+            GameState = GameState.Checkmate;
+        }
+        else if (Board.IsStalemate(ActiveColor))
+        {
+            GameState = GameState.Stalemate;
+        }
+        else
+        if (Board.IsCheck(ActiveColor))
+        {
+            GameState = GameState.Check;
+        }
     }
 
     private bool CanMove(Move move)
@@ -97,19 +110,7 @@ public class Chess
         }
         ActiveColor = ActiveColor.ChangeColor();
         
-        // Check for checkmate, stalemate, check and update GameState
-        if (Board.IsCheckmate(ActiveColor))
-        {
-            GameState = GameState.Checkmate;
-        }
-        else if (Board.IsStalemate(ActiveColor))
-        {
-            GameState = GameState.Stalemate;
-        }
-        else
-        if (Board.IsCheck(ActiveColor))
-        {
-            GameState = GameState.Check;
-        }
+        // Update GameState
+        UpdateState();
     }
 }

@@ -4,6 +4,6 @@ namespace ChessMaster.Infrastructure.Actors.Common;
 
 public interface IChessActorService
 {
-    Task JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken);
+    Task<Game> JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken);
     Task<Game> MoveGameAsync(MoveGameCommand moveGameCommand, CancellationToken cancellationToken);
 }

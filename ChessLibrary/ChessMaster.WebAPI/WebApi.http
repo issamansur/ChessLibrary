@@ -1,9 +1,6 @@
 @WebApi_HostAddress = http://localhost:5273
 
-GET {{WebApi_HostAddress}}/api/
-Accept: application/json
-
-###
+### Login user 1
 
 POST {{WebApi_HostAddress}}/api/accounts/login
 Accept: application/json
@@ -14,7 +11,9 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+> {% client.global.set("auth_token1", response.body.token); %}
+
+### Login user 2
 
 POST {{WebApi_HostAddress}}/api/accounts/login
 Accept: application/json
@@ -23,4 +22,87 @@ Content-Type: application/json
 {
   "login": "private2@world",
   "password": "password"
+}
+
+> {% client.global.set("auth_token2", response.body.token); %}
+
+### Create game
+
+POST {{WebApi_HostAddress}}/api/games/create
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token1}}
+
+{
+  
+}
+
+> {% client.global.set("gameId", response.body.gameId); %}
+
+### Join game (error, because same user)
+
+POST {{WebApi_HostAddress}}/api/games/join
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token1}}
+
+{
+  "gameId": "{{gameId}}"
+}
+
+### Join game (error, because game is not exist)
+
+POST {{WebApi_HostAddress}}/api/games/join
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token2}}
+
+{
+  "gameId": "e7553fb1-ccf3-4c19-91d2-6c09cd87bcf9"
+}
+
+### Join game (success)
+
+POST {{WebApi_HostAddress}}/api/games/join
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token2}}
+
+{
+  "gameId": "{{gameId}}"
+}
+
+### Join game (error, because game is already started)
+
+POST {{WebApi_HostAddress}}/api/games/join
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token2}}
+
+{
+  "gameId": "{{gameId}}"
+}
+
+### Move game (success)
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token1}}
+
+{
+  "gameId": "{{gameId}}",
+  "move": "Qf3f7"
+}
+
+###
+
+POST {{WebApi_HostAddress}}/api/games/move
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token2}}
+
+{
+  "gameId": "{{gameId}}",
+  "move": "ph6h5"
 }
