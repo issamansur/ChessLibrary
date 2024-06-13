@@ -1,6 +1,7 @@
 using Akka.Actor;
 using Akka.Event;
 using ChessMaster.Application.CQRS.Games.Commands;
+using ChessMaster.Application.CQRS.Games.Queries;
 using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +31,11 @@ public class ChessMaster: MyUntypedActor
         
         switch (message)
         {
+            case GetGameQuery getGameMessage:
+                Log.Info($"Forward message to GameMaster for game: {getGameMessage.GameId}");
+                GetGameMaster(getGameMessage.GameId).Forward(getGameMessage);
+                break;
+            
             case JoinGameCommand  joinGameMessage:
                 Log.Info($"Forward message to GameMaster for game: {joinGameMessage.GameId}");
                 GetGameMaster(joinGameMessage.GameId).Forward(joinGameMessage);

@@ -79,7 +79,8 @@ public class GamesController : ControllerBase
         var request = new GetGameRequest(id);
         
         var command = request.ToQuery();
-        var game = await _mediator.Send(command, cancellationToken);
+        //var game = await _mediator.Send(command, cancellationToken);
+        var game = await _chessActorService.GetGameAsync(command, cancellationToken);
         var response = game.ToGetResponse();
         
         return Ok(response);

@@ -29,6 +29,8 @@ public static class DependencyInjection
     private static void AddActors(this IServiceCollection services)
     {
         services.AddSingleton<IChessActorService, Actors.AkkaNet.AkkaNetSystem>();
+        // starts the IHostedService, which creates the ActorSystem and actors
+        services.AddHostedService<Actors.AkkaNet.AkkaNetSystem>(sp => (Actors.AkkaNet.AkkaNetSystem)sp.GetRequiredService<IChessActorService>());
     }
     
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

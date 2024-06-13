@@ -1,6 +1,7 @@
 using Akka.Actor;
 using Akka.Event;
 using ChessMaster.Application.CQRS.Games.Commands;
+using ChessMaster.Application.CQRS.Games.Queries;
 using ChessMaster.ChessLibrary;
 using ChessMaster.ChessLibrary.States;
 using ChessMaster.Domain.States;
@@ -12,7 +13,7 @@ namespace ChessMaster.Infrastructure.Actors.AkkaNet;
 
 public class GameMaster: MyUntypedActor
 {
-    public Guid GameId { get; init; }
+    public Guid GameId { get; private init; }
     public Game? Game { get; private set; }
     public Chess Chess { get; private set; }
     
@@ -64,6 +65,12 @@ public class GameMaster: MyUntypedActor
         // Handle messages
         switch (message)
         {
+            case GetGameQuery getGameQuery:
+                Log.Info($"User get game: {GameId}");
+                Sender.Tell(Game);
+                
+                break;
+            
             case JoinGameCommand joinGameCommand:
                 Log.Info($"Player: {joinGameCommand.PlayerId} try join the game: {GameId}");
                 Join(joinGameCommand.PlayerId);
@@ -71,7 +78,7 @@ public class GameMaster: MyUntypedActor
             
             case MoveGameCommand moveGameCommand:
                 Log.Info($"Player: {moveGameCommand.PlayerId} try move: {moveGameCommand.Move} in game: {GameId}");
-                Move(moveGameCommand.GameId, moveGameCommand.PlayerId, moveGameCommand.Move);
+                Move(moveGameCommand.PlayerId, moveGameCommand.Move);
                 break;
             
             default:
@@ -104,7 +111,7 @@ public class GameMaster: MyUntypedActor
         tenant.Commit();
     }
     
-    private void Move(Guid gameId, Guid playerId, string move)
+    private void Move(Guid playerId, string move)
     {
         if (Game!.GameState == State.Created)
         {

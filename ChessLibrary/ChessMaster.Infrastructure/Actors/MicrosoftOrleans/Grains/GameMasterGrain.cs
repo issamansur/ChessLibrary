@@ -1,6 +1,5 @@
 using System.Threading.Channels;
-using ChessMaster.ChessModels;
-using ChessMaster.ChessModels.Utils;
+using ChessMaster.ChessLibrary;
 using ChessMaster.Infrastructure.Actors.Common;
 using ChessMaster.Infrastructure.Actors.MicrosoftOrleans.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +34,7 @@ public class GameMasterGrain: Grain, IGameMasterGrain
                 var tenant = scope.ServiceProvider.GetRequiredService<ITenantFactory>().GetRepository();
                 // Load FEN from DB if exists
                 GameFromDB = await tenant.Games.GetByIdAsync(GameId, cancellationToken);
-                Game = Builders.ChessBuild(GameFromDB.Fen);
+                Game = GameFromDB.Fen.ToChess();
                 
                 // Set flag to false
                 _isFirstTime = false;
@@ -63,7 +62,7 @@ public class GameMasterGrain: Grain, IGameMasterGrain
     
     public async Task<string> Move(Guid playerId, Guid gameId, string move)
     {
-        Game.SafeMove(move);
+        Game.Move(move);
         return Game.GetFen();
     }
 }
