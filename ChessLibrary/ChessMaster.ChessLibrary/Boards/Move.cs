@@ -1,4 +1,6 @@
-namespace ChessMaster.ChessModels.Boards;
+using ChessMaster.ChessLibrary.Figures;
+
+namespace ChessMaster.ChessLibrary.Boards;
 
 public class Move
 {

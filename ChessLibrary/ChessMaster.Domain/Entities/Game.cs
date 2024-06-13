@@ -1,6 +1,6 @@
-using ChessMaster.ChessModels;
-using ChessMaster.ChessModels.States;
-using ChessMaster.ChessModels.Utils;
+using ChessMaster.ChessLibrary;
+using ChessMaster.ChessLibrary.States;
+using ChessMaster.ChessLibrary.Utils;
 
 namespace ChessMaster.Domain.Entities;
 
@@ -88,9 +88,14 @@ public class Game
     
     public void Join(Guid userId)
     {
-        if (GameState != State.Created)
+        if (GameState == State.InProgress)
         {
-            throw new InvalidOperationException("Game cannot be joined");
+            throw new InvalidOperationException("Game is already in progress");
+        }
+        
+        if (GameState == State.Finished)
+        {
+            throw new InvalidOperationException("Game is already finished");
         }
         
         if (userId == CreatorUserId)
@@ -125,12 +130,12 @@ public class Game
         Fen = fen;
         Chess chess = Builders.ChessBuild(fen);
         
-        if (chess.GameState == ChessModels.States.GameState.Checkmate)
+        if (chess.GameState == ChessLibrary.States.GameState.Checkmate)
         {
             Guid winnerId = (Guid)(chess.ActiveColor == Color.White ? BlackPlayerId! : WhitePlayerId!);
             Finish(winnerId);
         }
-        else if (chess.GameState == ChessModels.States.GameState.Stalemate)
+        else if (chess.GameState == ChessLibrary.States.GameState.Stalemate)
         {
             Finish(null);
         }

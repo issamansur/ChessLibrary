@@ -1,4 +1,4 @@
-using ChessMaster.ChessModels;
+using ChessMaster.ChessLibrary;
 using static NUnit.Framework.Assert;
 
 namespace ChessMaster.Tests.FiguresTests;

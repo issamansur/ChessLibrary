@@ -1,4 +1,4 @@
-namespace ChessMaster.ChessModels.Boards;
+namespace ChessMaster.ChessLibrary.Boards;
 
 
 public class Field

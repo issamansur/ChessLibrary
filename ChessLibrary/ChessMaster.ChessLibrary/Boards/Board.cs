@@ -1,4 +1,8 @@
-namespace ChessMaster.ChessModels.Boards;
+using ChessMaster.ChessLibrary.Figures;
+using ChessMaster.ChessLibrary.States;
+using ChessMaster.ChessLibrary.Utils;
+
+namespace ChessMaster.ChessLibrary.Boards;
 
 public class Board
 {

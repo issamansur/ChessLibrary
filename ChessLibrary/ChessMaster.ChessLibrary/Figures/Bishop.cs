@@ -1,4 +1,7 @@
-namespace ChessMaster.ChessModels.Figures;
+using ChessMaster.ChessLibrary.Boards;
+using ChessMaster.ChessLibrary.States;
+
+namespace ChessMaster.ChessLibrary.Figures;
 
 public class Bishop: Figure
 {

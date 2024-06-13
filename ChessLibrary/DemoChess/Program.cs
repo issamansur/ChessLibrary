@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using ChessMaster.ChessModels.States;
-using ChessMaster.ChessModels.Utils;
-using Chess = ChessMaster.ChessModels.Chess;
-using Figure = ChessMaster.ChessModels.Figures.Figure;
+using ChessMaster.ChessLibrary.States;
+using ChessMaster.ChessLibrary.Utils;
+using Chess = ChessMaster.ChessLibrary.Chess;
+using Figure = ChessMaster.ChessLibrary.Figures.Figure;
 
 Console.OutputEncoding = Encoding.UTF8;
 

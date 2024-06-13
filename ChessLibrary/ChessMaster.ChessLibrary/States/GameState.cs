@@ -1,4 +1,4 @@
-namespace ChessMaster.ChessModels.States;
+namespace ChessMaster.ChessLibrary.States;
 
 public enum GameState
 {

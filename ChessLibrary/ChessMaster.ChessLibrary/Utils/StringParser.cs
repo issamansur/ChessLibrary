@@ -1,7 +1,10 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using ChessMaster.ChessLibrary.Boards;
+using ChessMaster.ChessLibrary.Figures;
+using ChessMaster.ChessLibrary.States;
 
-namespace ChessMaster.ChessModels.Utils;
+namespace ChessMaster.ChessLibrary.Utils;
 
 public static class StringParser
 {
