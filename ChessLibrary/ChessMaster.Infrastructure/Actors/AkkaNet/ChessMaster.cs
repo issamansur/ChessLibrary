@@ -48,7 +48,7 @@ public class ChessMaster: MyUntypedActor
             
             case Terminated terminated:
                 var gameId = Guids[terminated.ActorRef];
-                Log.Info($"GameMaster for game: {gameId} removed from GameMaster");
+                Log.Info($"GameMaster for game: {gameId} removed from ChessMaster");
                 
                 GameMasters.Remove(gameId);
                 Guids.Remove(terminated.ActorRef);

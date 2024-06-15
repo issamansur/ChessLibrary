@@ -218,7 +218,8 @@ public class GameMaster: MyUntypedActor
         Sender.Tell(new Status.Failure(new InvalidOperationException(message)), Self);
         if (stop)
         {
-            Context.Stop(Self);
+            //Context.Stop(Self);
+            Self.GracefulStop(TimeSpan.FromSeconds(1));
         }
     }
 }
