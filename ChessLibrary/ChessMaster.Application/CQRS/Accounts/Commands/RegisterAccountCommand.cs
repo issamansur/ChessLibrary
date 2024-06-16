@@ -1,6 +1,8 @@
+using ChessMaster.Application.DTOs;
+
 namespace ChessMaster.Application.CQRS.Accounts.Commands;
 
-public class RegisterAccountCommand : IRequest<string>
+public class RegisterAccountCommand : IRequest<RegisterResult>
 {
     public string Username { get; }
     public string Email { get; }

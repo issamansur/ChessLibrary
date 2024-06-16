@@ -1,3 +1,3 @@
 namespace ChessMaster.Contracts.DTOs.Accounts;
 
-public record LoginAccountResponse(string Token);
+public record LoginAccountResponse(string Token, Guid UserId, string Username);

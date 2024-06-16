@@ -1,5 +1,6 @@
 using ChessMaster.Application.CQRS.Accounts.Commands;
 using ChessMaster.Application.CQRS.Accounts.Queries;
+using ChessMaster.Application.DTOs;
 using ChessMaster.Contracts.DTOs.Accounts;
 
 namespace ChessMaster.Contracts.MappingExtensions;
@@ -23,13 +24,13 @@ public static class AccountExtensions
         );
     }
     
-    public static RegisterAccountResponse ToRegisterResponse(this string token)
+    public static RegisterAccountResponse ToRegisterResponse(this RegisterResult result)
     {
-        return new RegisterAccountResponse(token);
+        return new RegisterAccountResponse(result.Token, result.User.Id, result.User.Username);
     }
     
-    public static LoginAccountResponse ToLoginResponse(this string token)
+    public static LoginAccountResponse ToLoginResponse(this LoginResult result)
     {
-        return new LoginAccountResponse(token);
+        return new LoginAccountResponse(result.Token, result.User.Id, result.User.Username);
     }
 }

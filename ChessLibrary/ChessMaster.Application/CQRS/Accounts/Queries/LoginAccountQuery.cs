@@ -1,6 +1,8 @@
+using ChessMaster.Application.DTOs;
+
 namespace ChessMaster.Application.CQRS.Accounts.Queries;
 
-public class LoginAccountQuery: IRequest<string>
+public class LoginAccountQuery: IRequest<LoginResult>
 {
     public string Login { get; }
     public string Password { get; }

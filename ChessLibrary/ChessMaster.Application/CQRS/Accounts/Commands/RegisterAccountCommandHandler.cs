@@ -1,8 +1,9 @@
+using ChessMaster.Application.DTOs;
 using ChessMaster.Application.Services;
 
 namespace ChessMaster.Application.CQRS.Accounts.Commands;
 
-public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand, string>
+public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<RegisterAccountCommand, RegisterResult>
 {
     private IAuthService _authService;
     
@@ -16,7 +17,7 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         _authService = authService;
     }
 
-    public async Task<string> Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterResult> Handle(RegisterAccountCommand request, CancellationToken cancellationToken)
     {
         // Validation
         ArgumentNullException.ThrowIfNull(request);
@@ -43,6 +44,6 @@ public class RegisterAccountCommandHandler : BaseHandler, IRequestHandler<Regist
         
         var token = _authService.GenerateToken(account);
 
-        return token;
+        return new RegisterResult(user, token);
     }
 }

@@ -30,6 +30,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{id:guid}", Name = "GetUser")]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = default)
@@ -44,6 +45,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("{username}", Name = "GetUserByUsername")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetByUsername(
         [FromRoute] string username,
         CancellationToken cancellationToken = default)
