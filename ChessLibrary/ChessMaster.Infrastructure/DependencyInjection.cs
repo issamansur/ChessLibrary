@@ -1,5 +1,6 @@
 using System.Text;
 using ChessMaster.Infrastructure.Actors.Common;
+using ChessMaster.Infrastructure.Actors.MicrosoftOrleans.Common;
 using ChessMaster.Infrastructure.Data;
 using ChessMaster.Infrastructure.Data.Common;
 using ChessMaster.Infrastructure.Options;
@@ -7,16 +8,17 @@ using ChessMaster.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ChessMaster.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
     {
         services.AddCQRS();
-        services.AddActors();
+        services.AddActorMicrosoftOrleans(hostBuilder);
         services.AddDatabase(configuration);
         services.AddAuth(configuration);
     }
@@ -26,11 +28,23 @@ public static class DependencyInjection
         services.AddScoped<ITenantFactory, TenantFactory>();
     }
     
-    private static void AddActors(this IServiceCollection services)
+    private static void AddActorAkkaNet(this IServiceCollection services)
     {
         services.AddSingleton<IChessActorService, Actors.AkkaNet.AkkaNetSystem>();
         // starts the IHostedService, which creates the ActorSystem and actors
         services.AddHostedService<Actors.AkkaNet.AkkaNetSystem>(sp => (Actors.AkkaNet.AkkaNetSystem)sp.GetRequiredService<IChessActorService>());
+    }
+    
+    private static void AddActorMicrosoftOrleans(this IServiceCollection services, IHostBuilder hostBuilder)
+    {
+        hostBuilder.UseOrleans(siloBuilder =>
+        {
+            siloBuilder
+                .UseLocalhostClustering();
+        });
+
+        //services.AddGrainService<Actors.MicrosoftOrleans.MicrosoftOrleansSystem>();
+        services.AddSingleton<IChessActorService, Actors.MicrosoftOrleans.MicrosoftOrleansSystem>();
     }
     
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
