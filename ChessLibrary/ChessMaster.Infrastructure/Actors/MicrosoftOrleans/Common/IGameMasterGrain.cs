@@ -2,9 +2,12 @@ using Orleans;
 
 namespace ChessMaster.Infrastructure.Actors.MicrosoftOrleans.Common;
 
-public interface IGameMasterGrain: IGrainWithIntegerKey
+public interface IGameMasterGrain: IGrainWithGuidKey
 {
-    // Task CreateGameAsync(Guid gameId, Guid playerId);
-    //Task JoinGameAsync(Guid gameId, Guid playerId);
-    Task<string> Move(Guid gameId, Guid playerId, string move);
+    [ResponseTimeout("00:00:03")]
+    Task<Game> GetGameAsync(CancellationToken cancellationToken);
+    [ResponseTimeout("00:00:03")]
+    Task<Game> JoinGameAsync(Guid playerId, CancellationToken cancellationToken);
+    [ResponseTimeout("00:00:03")]
+    Task<Game> MoveGameAsync(Guid playerId, string move, CancellationToken cancellationToken);
 }
