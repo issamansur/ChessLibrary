@@ -7,7 +7,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "login": "private@world",
+  "login": "ryan@gosling",
   "password": "password"
 }
 
@@ -20,7 +20,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "login": "private2@world",
+  "login": "antonio@banderas",
   "password": "password"
 }
 

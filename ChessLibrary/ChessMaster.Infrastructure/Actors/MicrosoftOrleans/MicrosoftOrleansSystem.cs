@@ -31,6 +31,6 @@ public class MicrosoftOrleansSystem: IChessActorService
     public async Task<Game> MoveGameAsync(MoveGameCommand moveGameCommand, CancellationToken cancellationToken)
     {
         IGameMasterGrain gameMasterMaster = GrainFactory.GetGrain<IGameMasterGrain>(moveGameCommand.GameId);
-        return await gameMasterMaster.GetGameAsync(cancellationToken);
+        return await gameMasterMaster.MoveGameAsync(moveGameCommand.PlayerId, moveGameCommand.Move, cancellationToken);
     }
 }

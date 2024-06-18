@@ -64,28 +64,27 @@ public class GameMasterGrain: Grain, IGameMasterGrain
         {
             throw new InvalidOperationException("Game not found");
         }
-        
+
         try
         {
             Game!.Join(playerId);
-            
-            Console.WriteLine($"Player: {playerId} joined game: {GameId}");
 
-            return Game;
+            // Save game state in DB
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
+            var tenant = tenantFactory.GetRepository();
+
+            await tenant.Games.UpdateAsync(Game!, cancellationToken);
+            await tenant.CommitAsync(cancellationToken);
+
+            Console.WriteLine($"Player: {playerId} joined game: {GameId}");
         }
         catch (InvalidOperationException e)
         {
-            //SendError(e.Message);
+            SendError(e.Message);
         }
-
-        using var scope = _serviceScopeFactory.CreateScope();
-
-        var tenantFactory = scope.ServiceProvider.GetRequiredService<ITenantFactory>();
-        var tenant = tenantFactory.GetRepository();
-            
-        await tenant.Games.UpdateAsync(Game!, cancellationToken);
-        await tenant.CommitAsync(cancellationToken);
-
+        
         return Game;
     }
 
@@ -133,6 +132,13 @@ public class GameMasterGrain: Grain, IGameMasterGrain
 
         Console.WriteLine($"Successfully moved in game: {GameId}");
         Game!.UpdateFEN(Chess.GetFen());
+        
+        if (Game.GameState == State.Finished)
+        {
+            Console.WriteLine($"Game: {GameId} is finished");
+            await SaveGameState(cancellationToken);
+        }
+        
         return Game;
     }
     
@@ -170,9 +176,6 @@ public class GameMasterGrain: Grain, IGameMasterGrain
         
         using var scope = _serviceScopeFactory.CreateScope();
         var tenant = scope.ServiceProvider.GetRequiredService<ITenantFactory>().GetRepository();
-        
-        var currentFen = Chess.GetFen();
-        Game.UpdateFEN(currentFen);
         
         await tenant.Games.UpdateAsync(Game, cancellationToken);
         await tenant.CommitAsync(cancellationToken);
