@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Orleans.Serialization;
 
 namespace ChessMaster.Infrastructure;
 
@@ -32,18 +33,26 @@ public static class DependencyInjection
     {
         services.AddSingleton<IChessActorService, Actors.AkkaNet.AkkaNetSystem>();
         // starts the IHostedService, which creates the ActorSystem and actors
-        services.AddHostedService<Actors.AkkaNet.AkkaNetSystem>(sp => (Actors.AkkaNet.AkkaNetSystem)sp.GetRequiredService<IChessActorService>());
+        services.AddHostedService<Actors.AkkaNet.AkkaNetSystem>(
+            sp => (Actors.AkkaNet.AkkaNetSystem)sp.GetRequiredService<IChessActorService>()
+        );
     }
     
     private static void AddActorMicrosoftOrleans(this IServiceCollection services, IHostBuilder hostBuilder)
     {
         hostBuilder.UseOrleans(siloBuilder =>
         {
+            services.AddSerializer(
+                serializerBuilder =>
+                {
+                    serializerBuilder.AddJsonSerializer(_ => true);
+                }
+            );
             siloBuilder
                 .UseLocalhostClustering();
         });
 
-        //services.AddGrainService<Actors.MicrosoftOrleans.MicrosoftOrleansSystem>();
+        // No need to start the IHostedService, we start the silo in the hostBuilder
         services.AddSingleton<IChessActorService, Actors.MicrosoftOrleans.MicrosoftOrleansSystem>();
     }
     
