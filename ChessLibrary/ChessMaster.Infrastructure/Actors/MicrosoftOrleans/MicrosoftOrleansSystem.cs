@@ -18,19 +18,19 @@ public class MicrosoftOrleansSystem: IChessActorService
     
     public async Task<Game> GetGameAsync(GetGameQuery getGameQuery, CancellationToken cancellationToken)
     {
-        IGameMasterGrain gameMasterMaster = GrainFactory.GetGrain<IGameMasterGrain>(getGameQuery.GameId);
-        return await gameMasterMaster.GetGameAsync(cancellationToken);
+        IGameMasterGrain gameMaster = GrainFactory.GetGrain<IGameMasterGrain>(getGameQuery.GameId);
+        return await gameMaster.GetGameAsync(cancellationToken);
     }
 
     public async Task<Game> JoinGameAsync(JoinGameCommand joinGameCommand, CancellationToken cancellationToken)
     {
-        IGameMasterGrain gameMasterMaster = GrainFactory.GetGrain<IGameMasterGrain>(joinGameCommand.GameId);
-        return await gameMasterMaster.JoinGameAsync(joinGameCommand.PlayerId, cancellationToken);
+        IGameMasterGrain gameMaster = GrainFactory.GetGrain<IGameMasterGrain>(joinGameCommand.GameId);
+        return await gameMaster.JoinGameAsync(joinGameCommand.PlayerId, cancellationToken);
     }
 
     public async Task<Game> MoveGameAsync(MoveGameCommand moveGameCommand, CancellationToken cancellationToken)
     {
-        IGameMasterGrain gameMasterMaster = GrainFactory.GetGrain<IGameMasterGrain>(moveGameCommand.GameId);
-        return await gameMasterMaster.MoveGameAsync(moveGameCommand.PlayerId, moveGameCommand.Move, cancellationToken);
+        IGameMasterGrain gameMaster = GrainFactory.GetGrain<IGameMasterGrain>(moveGameCommand.GameId);
+        return await gameMaster.MoveGameAsync(moveGameCommand.PlayerId, moveGameCommand.Move, cancellationToken);
     }
 }
