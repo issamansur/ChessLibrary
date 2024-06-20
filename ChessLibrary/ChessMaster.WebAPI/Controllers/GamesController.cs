@@ -48,7 +48,7 @@ public class GamesController : ControllerBase
         
         var command = request.ToCommand(userId);
         Game game = await _chessActorService.JoinGameAsync(command, cancellationToken);
-        var response = game.ToJoinResponse();
+        var response = game.ToGetResponse();
         
         return Ok(response);
     }
