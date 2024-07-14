@@ -5,7 +5,7 @@ using ChessMaster.Application.CQRS.Games.Queries;
 using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ChessMaster.Infrastructure.Actors.AkkaNet;
+namespace ChessMaster.Infrastructure.Actors.AkkaNet.UntypedSystem;
 
 public class ChessMaster: MyUntypedActor
 {

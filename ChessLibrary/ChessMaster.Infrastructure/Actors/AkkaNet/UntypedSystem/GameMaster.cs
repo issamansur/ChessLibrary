@@ -9,7 +9,7 @@ using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using ChessMaster.Infrastructure.Actors.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ChessMaster.Infrastructure.Actors.AkkaNet;
+namespace ChessMaster.Infrastructure.Actors.AkkaNet.UntypedSystem;
 
 public class GameMaster: MyUntypedActor
 {

@@ -1,4 +1,6 @@
 using System.Text;
+using Akka.Actor;
+using ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 using ChessMaster.Infrastructure.Actors.Common;
 using ChessMaster.Infrastructure.Actors.MicrosoftOrleans.Common;
 using ChessMaster.Infrastructure.Data;
@@ -19,7 +21,8 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
     {
         services.AddCQRS();
-        services.AddActorMicrosoftOrleans(hostBuilder);
+        //services.AddActorMicrosoftOrleans(hostBuilder);
+        services.AddActorAkkaNet<Actors.AkkaNet.UntypedSystem.ChessMaster>();
         services.AddDatabase(configuration);
         services.AddAuth(configuration);
     }
@@ -29,12 +32,13 @@ public static class DependencyInjection
         services.AddScoped<ITenantFactory, TenantFactory>();
     }
     
-    private static void AddActorAkkaNet(this IServiceCollection services)
+    private static void AddActorAkkaNet<TActor>(this IServiceCollection services)
+        where TActor: UntypedActor
     {
-        services.AddSingleton<IChessActorService, Actors.AkkaNet.AkkaNetSystem>();
+        services.AddSingleton<IChessActorService, AkkaNetSystem<TActor>>();
         // starts the IHostedService, which creates the ActorSystem and actors
-        services.AddHostedService<Actors.AkkaNet.AkkaNetSystem>(
-            sp => (Actors.AkkaNet.AkkaNetSystem)sp.GetRequiredService<IChessActorService>()
+        services.AddHostedService<AkkaNetSystem<TActor>>(
+            sp => (AkkaNetSystem<TActor>)sp.GetRequiredService<IChessActorService>()
         );
     }
     

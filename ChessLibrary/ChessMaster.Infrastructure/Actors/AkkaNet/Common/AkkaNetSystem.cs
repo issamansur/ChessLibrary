@@ -5,9 +5,10 @@ using ChessMaster.Infrastructure.Actors.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ChessMaster.Infrastructure.Actors.AkkaNet;
+namespace ChessMaster.Infrastructure.Actors.AkkaNet.Common;
 
-public class AkkaNetSystem: IChessActorService, IHostedService
+public class AkkaNetSystem<TActor>: IChessActorService, IHostedService
+    where TActor: UntypedActor
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private IActorRef _chessMaster;
@@ -15,6 +16,12 @@ public class AkkaNetSystem: IChessActorService, IHostedService
     public AkkaNetSystem(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
+        
+        var system = ActorSystem.Create("chess-system");
+        _chessMaster = system.ActorOf(
+            Props.Create(typeof(TActor), _scopeFactory),
+            "chess-master"
+        );
     }
     
     // Handlers
@@ -53,21 +60,16 @@ public class AkkaNetSystem: IChessActorService, IHostedService
             cancellationToken: cancellationToken
         );
     }
-
+    
     // IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var system = ActorSystem.Create("chess-system");
-        _chessMaster = system.ActorOf(
-            ChessMaster.Props(_scopeFactory), 
-            "chess-master"
-        );
-        
         await Task.CompletedTask;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await _chessMaster.GracefulStop(TimeSpan.FromSeconds(3));
+        await Task.CompletedTask;
     }
 }
