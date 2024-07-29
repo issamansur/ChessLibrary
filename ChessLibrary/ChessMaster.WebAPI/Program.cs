@@ -1,5 +1,6 @@
 using ChessMaster.Application.DI;
 using ChessMaster.Infrastructure;
+using ChessMaster.WebAPI;
 using ChessMaster.WebAPI.Middlewares.ExceptionHandler;
 using Microsoft.OpenApi.Models;
 
@@ -10,18 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Host);
 
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("MyPolicy",
-        corsPolicyBuilder =>
-        {
-            corsPolicyBuilder.AllowAnyOrigin()//.WithOrigins("localhost:3000/") // Replace with your domain
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .SetIsOriginAllowedToAllowWildcardSubdomains();
-        });
-});
+// Configure other Services
+builder.Services.ConfigureServices();
 
 // Error Handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -31,35 +22,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-    (option) =>
-    {
-        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter a valid token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
-        option.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
-    }
-);
-
 
 // APP
 var app = builder.Build();
@@ -75,10 +37,7 @@ app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseCors("MyPolicy");
+app.ConfigureApp();
 
 app.MapControllers();
 
